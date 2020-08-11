@@ -1,0 +1,30 @@
+import { Point } from "./Point";
+
+export class BoundingBox {
+  constructor(
+    public x: number,
+    public y: number,
+    public width: number,
+    public height: number
+  ) {}
+
+  isInside(point: Point): boolean {
+    return (
+      point.x >= this.x &&
+      point.x < this.x + this.width &&
+      point.y >= this.y &&
+      point.y < this.y + this.height
+    );
+  }
+
+  ensureBounds(width: number, height: number) {
+    if (this.x < 0) this.x = 0;
+    if (this.y < 0) this.y = 0;
+
+    if (this.width <= 0) this.width = 1;
+    if (this.height <= 0) this.height = 1;
+
+    if (this.x + this.width > width) this.x = width - this.width;
+    if (this.y + this.height > height) this.y = height - this.height;
+  }
+}
