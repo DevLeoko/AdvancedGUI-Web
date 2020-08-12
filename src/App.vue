@@ -2,28 +2,51 @@
   <div id="app">
     <div class="head">
       <div class="input">
-        Width: <input type="number" v-model="width" /> frames
+        <b class="label">Width</b>
+        <span><input type="number" v-model="width" /> frames</span>
       </div>
       <div class="input">
-        Height: <input type="number" v-model="height" /> frames
+        <b class="label">Height</b>
+        <span><input type="number" v-model="height" /> frames</span>
+      </div>
+      <div>
+        <b class="label">ZOOM</b>
+        <select v-model="zoom">
+          <option value="0.5">x0.5</option>
+          <option value="1">x1</option>
+          <option value="2">x2</option>
+          <option value="4">x4</option>
+        </select>
       </div>
     </div>
     <div class="row mainSpace">
       <component-list
+        class="sidebar"
+        id="compTree"
+        root
         :components="elements"
-        @removeitem="removeItem"
         v-model="selected"
       ></component-list>
-      <canvas
-        ref="canvas"
-        id="canvas"
-        @mousedown="onClickDown"
-        @mouseup="onClickUp"
-        @mousemove="onMove"
-        :width="width * 128"
-        :height="height * 128"
-      ></canvas>
-      <div id="sidebar">
+      <div id="canvasContainer">
+        <div id="canvasPadding">
+          <canvas
+            ref="canvas"
+            id="canvas"
+            @mousedown="onClickDown"
+            @mouseup="onClickUp"
+            @mousemove="onMove"
+            :width="width * 128"
+            :height="height * 128"
+          ></canvas>
+        </div>
+      </div>
+      <div class="sidebar" id="settings">
+        <div id="generalSettings" v-if="selected">
+          <div><b class="label">Component ID</b> <input type="text" /></div>
+        </div>
+        <div v-else>
+          <b class="label">No component selected!</b>
+        </div>
         <component
           v-bind:is="selected ? selected.vueComponent : null"
           :component="selected"
@@ -53,6 +76,7 @@ export default Vue.extend({
     return {
       width: 3,
       height: 2,
+      zoom: 1,
 
       selected: null as null | Component,
 
@@ -88,17 +112,16 @@ export default Vue.extend({
       handler() {
         this.redraw();
       }
+    },
+
+    zoom() {
+      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
+        128 *
+        this.zoom}px`;
     }
   },
 
   methods: {
-    removeItem(item: ListItem) {
-      this.elements = this.elements.filter(elem => elem != item);
-      this.elements.forEach(elem => {
-        if (elem.isGroup()) elem.removeItem(item);
-      });
-    },
-
     redraw() {
       const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
         "2d"
@@ -231,68 +254,5 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
-$darkPrimary: #1b1b22;
-
-body {
-  background-color: $darkPrimary;
-  color: #eeeeee;
-}
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-}
-
-#canvas {
-  border: 2px solid #2c3e50;
-  // height: 1024px;
-  height: 512px;
-  image-rendering: pixelated;
-}
-
-.row {
-  display: flex;
-}
-
-.mainSpace {
-  justify-content: space-evenly;
-}
-
-.head {
-  display: flex;
-  padding: 20px 20px;
-
-  .input {
-    background-color: #393e46;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin-right: 20px;
-
-    input {
-      background-color: transparent;
-      border: none;
-      width: 30px;
-      text-align: right;
-      color: #eeeeee;
-      border-bottom: 1px solid #eeeeee;
-    }
-
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    /* Firefox */
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
-  }
-}
-
-#sidebar {
-  min-width: 25vw;
-}
+@import "@/scss/app.scss";
 </style>

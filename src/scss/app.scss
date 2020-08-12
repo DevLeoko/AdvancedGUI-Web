@@ -1,0 +1,131 @@
+body {
+  background-color: $dark2;
+  color: #eeeeee;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.row {
+  display: flex;
+}
+
+.label {
+  color: $light3;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .head {
+    display: flex;
+    align-items: center;
+    padding: 20px 20px;
+    background-color: $dark3;
+  
+    select {
+      background-color: transparent;
+      width: 70px;
+      color: $light;
+  
+      border: 2px solid $dark1;
+      border-radius: 5px;
+      padding: 8px 10px;
+      margin-left: 10px;
+  
+      option {
+        background-color: $dark1;
+      }
+    }
+  
+    .input {
+      margin-right: 20px;
+      cursor: default;
+  
+      span {
+        // background-color: $dark1;
+        border: 2px solid $dark1;
+        border-radius: 5px;
+        padding: 8px 10px;
+        margin-left: 10px;
+        color: $light2;
+      }
+  
+      input {
+        background-color: transparent;
+        border: none;
+        width: 30px;
+        text-align: right;
+        color: $light;
+        // border-bottom: 1px solid $light;
+      }
+  
+      input:focus {
+        outline: none;
+      }
+  
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+  
+      /* Firefox */
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+    }
+  }
+
+  .mainSpace {
+    margin: 0px;
+    flex-grow: 1;
+    overflow: hidden;
+  }
+
+  #compTree{
+    padding: 20px;
+    min-width: 15vw;
+    background-color: $dark1;
+  }
+
+  #settings {
+    padding: 20px;
+    min-width: 20vw;
+    background-color: $dark1;
+  
+    input {
+      background-color: transparent;
+      border: 1px solid $light2;
+      border-radius: 5px;
+    }
+  }
+
+  #canvasContainer {
+    flex-grow: 1;
+    overflow: auto;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+  
+    #canvasPadding {
+      margin: auto;
+      padding: 40px;
+      width: fit-content;
+  
+      #canvas {
+        display: block;
+        border: 1px solid $dark1;
+        height: fit-content;
+        image-rendering: pixelated;
+      }
+    }
+  }
+}

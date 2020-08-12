@@ -75,7 +75,7 @@ export default Vue.extend({
 .dropzone {
   height: 5px;
   width: 100%;
-  background-color: $darkPrimary;
+  background-color: $light;
   transition-duration: 100ms;
 
   &.invisible {
@@ -97,7 +97,7 @@ export default Vue.extend({
 }
 
 .item {
-  padding: 5px 10px;
+  padding: 5px 0px 5px 10px;
   cursor: pointer;
 }
 
