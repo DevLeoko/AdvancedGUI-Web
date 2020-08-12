@@ -11,7 +11,7 @@ export function drawSelection(
 ) {
   const box = element.getBoundingBox();
 
-  canvas.strokeStyle = "rgba(13, 3, 54, 0.6)";
+  canvas.strokeStyle = "rgba(125, 125, 125, 0.6)";
   canvas.fillStyle = "rgb(98, 96, 105)";
   canvas.lineWidth = 1;
   canvas.setLineDash([4, 6]);
