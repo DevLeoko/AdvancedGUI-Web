@@ -19,6 +19,59 @@ body {
   font-size: 13px;
 }
 
+.btn{
+  display: flex;
+  padding: 5px 15px;
+  align-items: center;
+  height: fit-content;
+  width: fit-content;
+
+  .material-icons{
+    font-size: 20px;
+    margin-left: -3px;
+  }
+
+  .text{
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+.absoluteMenu {
+  position: absolute;
+  background-color: $dark3;
+  color: $light2;
+  border-radius: 10px;
+  display: none;
+  box-shadow: $shadow;
+  overflow: hidden;
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background-color: $light4;
+  }
+
+  .entry {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    padding: 7px 15px 7px 10px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $dark1;
+      color: $light;
+    }
+
+    .material-icons {
+      font-size: 15px;
+      margin-right: 5px;
+    }
+  }
+}
+
 #app {
   display: flex;
   flex-direction: column;
@@ -33,7 +86,7 @@ body {
     select {
       background-color: transparent;
       width: 70px;
-      color: $light;
+      color: $light2;
   
       border: 2px solid $dark1;
       border-radius: 5px;
@@ -55,7 +108,7 @@ body {
         border-radius: 5px;
         padding: 8px 10px;
         margin-left: 10px;
-        color: $light2;
+        color: $light4;
       }
   
       input {
@@ -63,7 +116,7 @@ body {
         border: none;
         width: 30px;
         text-align: right;
-        color: $light;
+        color: $light2;
         // border-bottom: 1px solid $light;
       }
   
@@ -91,9 +144,15 @@ body {
   }
 
   #compTree{
-    padding: 20px;
+    padding-top: 25px;
     min-width: 15vw;
     background-color: $dark1;
+
+    .btn{
+      margin: 10px auto 0;
+      background-color: $dark3;
+      color: $light2;
+    }
   }
 
   #settings {

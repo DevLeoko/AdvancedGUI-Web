@@ -3,6 +3,7 @@ import RectangelEditor from "@/components/RectangleEditor.vue";
 import { VueConstructor } from "vue/types/umd";
 import { Rectangular } from "./Rectangular";
 import { Action } from "../Action";
+import { JsonObject } from "../ComponentManager";
 
 export class Rect extends Rectangular {
   constructor(
@@ -39,5 +40,34 @@ export class Rect extends Rectangular {
 
   get icon() {
     return "crop_square";
+  }
+
+  static get displayName() {
+    return "Rect";
+  }
+
+  toJson() {
+    return JSON.stringify({
+      type: Rect.displayName,
+      id: this.id,
+      action: this.clickAction?.toJson(),
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      color: this.color
+    });
+  }
+
+  static fromJson(jsonObj: JsonObject, clickAction: Action | null) {
+    return new Rect(
+      jsonObj.id,
+      clickAction,
+      jsonObj.x,
+      jsonObj.y,
+      jsonObj.width,
+      jsonObj.height,
+      jsonObj.color
+    );
   }
 }

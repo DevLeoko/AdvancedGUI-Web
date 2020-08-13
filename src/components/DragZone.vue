@@ -2,9 +2,10 @@
   <div
     :class="!dragIndication ? 'invisible' : ''"
     class="dropzone"
-    @dragover.self="ev => ev.target.classList.add('targeted')"
+    @dragover.prevent.self="ev => ev.target.classList.add('targeted')"
     @dragleave.self="ev => ev.target.classList.remove('targeted')"
-    @drop.self="ev => ev.target.component"
+    @drop.self="$emit('drop')"
+    ref="zonee"
   ></div>
 </template>
 
@@ -12,7 +13,9 @@
 import Vue from "vue";
 
 export default Vue.extend({
-  props: { dragIndication: { type: Boolean } },
+  props: {
+    dragIndication: { type: Boolean }
+  },
   data() {
     return {};
   }

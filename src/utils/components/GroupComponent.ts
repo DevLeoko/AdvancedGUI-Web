@@ -1,10 +1,15 @@
 import { BoundingBox } from "../BoundingBox";
 import { Point } from "../Point";
 import EmptyEditor from "@/components/EmptyEditor.vue";
-import { VueConstructor, component } from "vue/types/umd";
+import { VueConstructor } from "vue/types/umd";
 import { Component } from "../Component";
 import { Action } from "../Action";
 import { ListItemGroup, ListItem } from "../ListItem";
+import {
+  componentFromJson,
+  JsonObject,
+  isInvisible
+} from "../ComponentManager";
 
 export class GroupComponent extends Component implements ListItemGroup {
   constructor(
@@ -25,7 +30,7 @@ export class GroupComponent extends Component implements ListItemGroup {
   draw(context: CanvasRenderingContext2D): void {
     for (let i = this.components.length - 1; i >= 0; i--) {
       const element = this.components[i];
-      element.draw(context);
+      if (!isInvisible(element.id)) element.draw(context);
     }
   }
 
@@ -80,11 +85,36 @@ export class GroupComponent extends Component implements ListItemGroup {
     return "folder";
   }
 
+  static get displayName() {
+    return "Group";
+  }
+
   isGroup() {
     return true;
   }
 
   getItems() {
     return this.components;
+  }
+
+  toJson() {
+    return JSON.stringify({
+      type: GroupComponent.displayName,
+      id: this.id,
+      action: this.clickAction?.toJson(),
+      components: this.components.map(comp => JSON.parse(comp.toJson()))
+    });
+  }
+
+  static fromJson(jsonObj: JsonObject, clickAction: Action | null) {
+    const comps: Component[] = [];
+
+    (jsonObj.components as JsonObject[]).forEach(comp => {
+      const converted = componentFromJson(comp);
+      if (converted) comps.push(converted);
+      else console.error("Invalid component: ", comp);
+    });
+
+    return new GroupComponent(jsonObj.id, clickAction, comps);
   }
 }

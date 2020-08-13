@@ -20,13 +20,21 @@
       </div>
     </div>
     <div class="row mainSpace">
-      <component-list
-        class="sidebar"
-        id="compTree"
-        root
-        :components="elements"
-        v-model="selected"
-      ></component-list>
+      <div id="compTree">
+        <component-list
+          class="sidebar"
+          root
+          :components="elements"
+          @change="redraw()"
+          v-model="selected"
+        ></component-list>
+
+        <div class="btn">
+          <span class="material-icons">add</span>
+          <span class="text">Add component</span>
+        </div>
+      </div>
+
       <div id="canvasContainer">
         <div id="canvasPadding">
           <canvas
@@ -66,7 +74,7 @@ import { Point } from "./utils/Point";
 import { BoundingBox } from "./utils/BoundingBox";
 import { drawSelection, getHanderAt } from "./utils/Selection";
 import { Modifier, ResizeIcon, moveModifier } from "./utils/Modifier";
-import { ListItem } from "./utils/ListItem";
+import { isInvisible } from "./utils/ComponentManager";
 
 export default Vue.extend({
   name: "App",
@@ -131,7 +139,7 @@ export default Vue.extend({
 
       for (let i = this.elements.length - 1; i >= 0; i--) {
         const element = this.elements[i];
-        element.draw(canvas);
+        if (!isInvisible(element.id)) element.draw(canvas);
       }
 
       if (this.selected) drawSelection(canvas, this.selected);
