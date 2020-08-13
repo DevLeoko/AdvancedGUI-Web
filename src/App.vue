@@ -80,10 +80,27 @@
       </div>
       <div class="sidebar" id="settings">
         <div id="generalSettings" v-if="selected">
-          <div><b class="label">Component ID</b> <input type="text" /></div>
+          <div class="settings-box">
+            <h1><span class="material-icons">tune</span> General settings</h1>
+            <div class="settings-row">
+              <b class="label">Component ID</b>
+              <input type="text" v-model="selected.id" />
+            </div>
+            <div class="settings-row">
+              <b class="label">Visibility</b>
+              <input type="checkbox" />
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="settings-box">
+            <h1><span class="material-icons">touch_app</span> Click Action</h1>
+          </div>
+          <div class="divider"></div>
         </div>
-        <div v-else>
-          <b class="label">No component selected!</b>
+        <div v-else class="settings-box">
+          <h1>
+            <b class="label">no component selected</b>
+          </h1>
         </div>
         <component
           v-bind:is="selected ? selected.vueComponent : null"
