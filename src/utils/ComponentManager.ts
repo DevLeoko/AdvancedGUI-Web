@@ -16,6 +16,9 @@ export type JsonConverter = (
 export const invisible: string[] = [];
 export const converters: { [key: string]: JsonConverter } = {};
 export const generators: { [key: string]: () => Component } = {};
+export const componentInfo: {
+  [key: string]: { displayName: string; icon: string };
+} = {};
 
 export function isInvisible(id: string) {
   return invisible.indexOf(id) != -1;
@@ -52,6 +55,9 @@ function getRandomColor() {
 }
 
 export function setup() {
+  componentInfo[Rect.displayName] = Rect;
+  componentInfo[GroupComponent.displayName] = GroupComponent;
+
   converters[Rect.displayName] = Rect.fromJson;
   converters[GroupComponent.displayName] = GroupComponent.fromJson;
 
@@ -61,11 +67,10 @@ export function setup() {
       null,
       10,
       10,
-      40,
       80,
+      40,
       getRandomColor()
     );
-
   generators[GroupComponent.displayName] = () =>
-    new GroupComponent(ensureUniqueness(Rect.displayName), null, []);
+    new GroupComponent(ensureUniqueness(GroupComponent.displayName), null, []);
 }

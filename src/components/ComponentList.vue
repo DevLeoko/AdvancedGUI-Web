@@ -229,11 +229,13 @@ export default Vue.extend({
 }
 
 .itemName {
+  font-size: 19px;
   align-items: center;
   color: $light2;
 
   .material-icons {
     margin-right: 5px;
+    font-size: 20px;
   }
 
   .dragIndicator {

@@ -85,6 +85,10 @@ export class GroupComponent extends Component implements ListItemGroup {
     return "folder";
   }
 
+  static get icon() {
+    return "folder";
+  }
+
   static get displayName() {
     return "Group";
   }

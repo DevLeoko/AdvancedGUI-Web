@@ -18,6 +18,19 @@
           <option value="4">x4</option>
         </select>
       </div>
+
+      <div class="btn import">
+        <span class="material-icons">cloud_upload</span>
+        <span class="text">Import</span>
+      </div>
+      <div class="btn export">
+        <span class="material-icons">get_app</span>
+        <span class="text">Export savepoint</span>
+      </div>
+      <div class="btn export">
+        <span class="material-icons">get_app</span>
+        <span class="text">Export for usage</span>
+      </div>
     </div>
     <div class="row mainSpace">
       <div id="compTree">
@@ -29,13 +42,29 @@
           v-model="selected"
         ></component-list>
 
-        <div class="btn">
+        <div class="btn" @click="ev => showCompAddMenu(ev)">
           <span class="material-icons">add</span>
           <span class="text">Add component</span>
+
+          <div class="absoluteMenu" ref="compAddMenu">
+            <div v-for="(key, index) in Object.keys(generators)" :key="index">
+              <div class="divider" v-if="index != 0"></div>
+              <div
+                class="entry"
+                @click.stop="addNewCompoenent(key)"
+                :key="index"
+              >
+                <span class="material-icons">{{
+                  componentInfo[key].icon
+                }}</span>
+                {{ key }}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div id="canvasContainer">
+      <div id="canvasContainer" @click.self="selected = null">
         <div id="canvasPadding">
           <canvas
             ref="canvas"
@@ -43,6 +72,7 @@
             @mousedown="onClickDown"
             @mouseup="onClickUp"
             @mousemove="onMove"
+            @mouseleave="onClickUp"
             :width="width * 128"
             :height="height * 128"
           ></canvas>
@@ -74,7 +104,11 @@ import { Point } from "./utils/Point";
 import { BoundingBox } from "./utils/BoundingBox";
 import { drawSelection, getHanderAt } from "./utils/Selection";
 import { Modifier, ResizeIcon, moveModifier } from "./utils/Modifier";
-import { isInvisible } from "./utils/ComponentManager";
+import {
+  isInvisible,
+  generators,
+  componentInfo
+} from "./utils/ComponentManager";
 
 export default Vue.extend({
   name: "App",
@@ -97,6 +131,9 @@ export default Vue.extend({
         elementStartPosition: BoundingBox;
       },
 
+      generators,
+      componentInfo,
+
       elements: [
         new Rect("Blue Rect", null, 10, 15, 300, 30, "blue"),
         new GroupComponent("Main Group", null, [
@@ -112,6 +149,11 @@ export default Vue.extend({
 
   mounted() {
     this.redraw();
+    document.addEventListener("click", this.checkClose, { capture: true });
+  },
+
+  destroyed() {
+    document.removeEventListener("click", this.checkClose, { capture: true });
   },
 
   watch: {
@@ -126,6 +168,17 @@ export default Vue.extend({
       (this.$refs.canvas as HTMLElement).style.height = `${this.height *
         128 *
         this.zoom}px`;
+    },
+
+    height() {
+      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
+        128 *
+        this.zoom}px`;
+      setTimeout(this.redraw, 10);
+    },
+
+    width() {
+      setTimeout(this.redraw, 10);
     }
   },
 
@@ -256,6 +309,29 @@ export default Vue.extend({
         (event.clientY - rect.top) * ((this.width * 128) / rect.width)
       );
       return new Point(x, y);
+    },
+
+    addNewCompoenent(key: string) {
+      const nComp = generators[key]();
+      this.elements.splice(0, 0, nComp);
+      this.selected = nComp;
+      const menu = this.$refs.compAddMenu as HTMLElement;
+      menu.style.display = "none";
+
+      this.redraw();
+    },
+
+    checkClose(ev: MouseEvent) {
+      const menu = this.$refs.compAddMenu as HTMLElement;
+      const canvas = this.$refs.canvas as HTMLElement;
+      if (ev.target != menu) menu.style.display = "none";
+    },
+
+    showCompAddMenu(ev: MouseEvent) {
+      const menu = this.$refs.compAddMenu as HTMLElement;
+      menu.style.top = ev.y + "px";
+      menu.style.left = ev.x + "px";
+      menu.style.display = "block";
     }
   }
 });

@@ -1,12 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&display=swap');
+
 body {
   background-color: $dark2;
   color: #eeeeee;
   padding: 0;
   margin: 0;
   height: 100vh;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Barlow Condensed', sans-serif;
 }
 
 .row {
@@ -16,7 +16,7 @@ body {
 .label {
   color: $light3;
   text-transform: uppercase;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .btn{
@@ -25,16 +25,26 @@ body {
   align-items: center;
   height: fit-content;
   width: fit-content;
+  cursor: pointer;
+
+  
+  background-color: $dark3;
+  color: $light2;
+
+  &:hover{
+    background-color: $dark2;
+  }
 
   .material-icons{
     font-size: 20px;
     margin-left: -3px;
+    margin-right: 5px;
   }
 
   .text{
-    text-transform: uppercase;
-    font-size: 14px;
-    font-weight: 600;
+    // text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 500;
   }
 }
 
@@ -50,7 +60,7 @@ body {
   .divider {
     width: 100%;
     height: 1px;
-    background-color: $light4;
+    background-color: $dark1;
   }
 
   .entry {
@@ -67,7 +77,7 @@ body {
 
     .material-icons {
       font-size: 15px;
-      margin-right: 5px;
+      margin-right: 8px;
     }
   }
 }
@@ -88,14 +98,19 @@ body {
       width: 70px;
       color: $light2;
   
-      border: 2px solid $dark1;
-      border-radius: 5px;
+      border: $inputBorder;
+      border-radius: 8px;
       padding: 8px 10px;
       margin-left: 10px;
   
       option {
         background-color: $dark1;
       }
+    }
+
+    .label {
+      color: $light4;
+      font-weight: 600;
     }
   
     .input {
@@ -104,9 +119,9 @@ body {
   
       span {
         // background-color: $dark1;
-        border: 2px solid $dark1;
-        border-radius: 5px;
-        padding: 8px 10px;
+        border: $inputBorder;
+        border-radius: 8px;
+        padding: 6px 10px;
         margin-left: 10px;
         color: $light4;
       }
@@ -114,7 +129,7 @@ body {
       input {
         background-color: transparent;
         border: none;
-        width: 30px;
+        width: 20px;
         text-align: right;
         color: $light2;
         // border-bottom: 1px solid $light;
@@ -135,6 +150,19 @@ body {
         -moz-appearance: textfield;
       }
     }
+
+    .import{
+      margin-left: auto;
+      // background-color: $blue;
+      border: 1px solid $light3;
+      color: $light3;
+    }
+
+    .export{
+      margin-left: 10px;
+      background-color: $green;
+      color: $dark1;
+    }
   }
 
   .mainSpace {
@@ -150,8 +178,6 @@ body {
 
     .btn{
       margin: 10px auto 0;
-      background-color: $dark3;
-      color: $light2;
     }
   }
 

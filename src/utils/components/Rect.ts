@@ -42,6 +42,10 @@ export class Rect extends Rectangular {
     return "crop_square";
   }
 
+  static get icon() {
+    return "crop_square";
+  }
+
   static get displayName() {
     return "Rect";
   }
