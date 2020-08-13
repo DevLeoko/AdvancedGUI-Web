@@ -11,7 +11,11 @@
           Duplicate
         </div>
         <div class="divider"></div>
-        <div class="entry" v-if="optElem.id" @click.stop="visibilityOpt()">
+        <div
+          class="entry"
+          v-if="optElem.hideable"
+          @click.stop="visibilityOpt()"
+        >
           <span class="material-icons">{{
             invisible.indexOf(optElem.id) != -1
               ? "visibility"
@@ -57,7 +61,6 @@
               :value="value"
               :treeState="treeState"
               @input="val => $emit('input', val)"
-              @removeitem="item => $emit('removeitem', item)"
               @change="$emit('change')"
             ></component-list>
           </div>
@@ -124,14 +127,6 @@ export default Vue.extend({
   },
 
   methods: {
-    removeItem(item: ListItem) {
-      const index = this.components.indexOf(item);
-      if (index != -1) this.components.splice(index, 1);
-      this.components.forEach(elem => {
-        if (elem.isGroup()) elem.removeItem(item);
-      });
-    },
-
     dragStart(target: HTMLElement, elem: ListItem, index: number) {
       target.classList.add("dragging");
       this.treeState.dragElement = elem;

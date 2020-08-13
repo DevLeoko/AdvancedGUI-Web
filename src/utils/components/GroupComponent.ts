@@ -4,7 +4,7 @@ import EmptyEditor from "@/components/EmptyEditor.vue";
 import { VueConstructor } from "vue/types/umd";
 import { Component } from "../Component";
 import { Action } from "../Action";
-import { ListItemGroup, ListItem } from "../ListItem";
+import { ListItemGroup } from "../ListItem";
 import {
   componentFromJson,
   JsonObject,
@@ -12,19 +12,14 @@ import {
 } from "../ComponentManager";
 
 export class GroupComponent extends Component implements ListItemGroup {
+  public isCheck = false;
+
   constructor(
     public id: string,
-    public clickAction: Action | null,
+    public clickAction: Action[],
     public components: Component[]
   ) {
     super(id, clickAction);
-  }
-
-  removeItem(item: ListItem) {
-    this.components = this.components.filter(comp => comp != item);
-    this.components.forEach(comp => {
-      if (comp.isGroup()) comp.removeItem(item);
-    });
   }
 
   draw(context: CanvasRenderingContext2D): void {
@@ -101,16 +96,14 @@ export class GroupComponent extends Component implements ListItemGroup {
     return this.components;
   }
 
-  toJson() {
-    return JSON.stringify({
+  toJsonObj() {
+    return {
       type: GroupComponent.displayName,
-      id: this.id,
-      action: this.clickAction?.toJson(),
       components: this.components.map(comp => JSON.parse(comp.toJson()))
-    });
+    };
   }
 
-  static fromJson(jsonObj: JsonObject, clickAction: Action | null) {
+  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     const comps: Component[] = [];
 
     (jsonObj.components as JsonObject[]).forEach(comp => {

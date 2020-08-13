@@ -5,7 +5,7 @@ import { Action } from "../Action";
 export abstract class Rectangular extends Component {
   constructor(
     public id: string,
-    public clickAction: Action | null,
+    public clickAction: Action[],
     public x: number,
     public y: number,
     public width: number,

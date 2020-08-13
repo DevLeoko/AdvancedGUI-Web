@@ -8,7 +8,7 @@ import { JsonObject } from "../ComponentManager";
 export class Rect extends Rectangular {
   constructor(
     public id: string,
-    public clickAction: Action | null,
+    public clickAction: Action[],
     public x: number,
     public y: number,
     public width: number,
@@ -50,20 +50,18 @@ export class Rect extends Rectangular {
     return "Rect";
   }
 
-  toJson() {
-    return JSON.stringify({
+  toJsonObj() {
+    return {
       type: Rect.displayName,
-      id: this.id,
-      action: this.clickAction?.toJson(),
       x: this.x,
       y: this.y,
       width: this.width,
       height: this.height,
       color: this.color
-    });
+    };
   }
 
-  static fromJson(jsonObj: JsonObject, clickAction: Action | null) {
+  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     return new Rect(
       jsonObj.id,
       clickAction,

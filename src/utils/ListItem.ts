@@ -1,6 +1,7 @@
 export interface ListItem {
-  id?: string;
+  id: string;
   icon: string;
+  hideable: boolean;
   isGroup: () => this is ListItemGroup;
   toJson: () => string;
   duplicate: () => ListItem | null;
@@ -8,5 +9,6 @@ export interface ListItem {
 
 export interface ListItemGroup extends ListItem {
   getItems: () => ListItem[];
-  removeItem: (item: ListItem) => void; //TODO remove
+  isCheck: boolean;
+  itemLimit?: number;
 }

@@ -10,7 +10,7 @@ export interface JsonObject {
 
 export type JsonConverter = (
   jsonObj: JsonObject,
-  clickAction: Action | null
+  clickAction: Action[]
 ) => Component;
 
 export const invisible: string[] = [];
@@ -34,7 +34,7 @@ export function toggleVis(id: string) {
 export function componentFromJson(jsonObj: JsonObject): Component | null {
   if (jsonObj.type) {
     // TODO: convert action
-    return converters[jsonObj.type](jsonObj, null);
+    return converters[jsonObj.type](jsonObj, []);
   } else {
     return null;
   }
@@ -64,7 +64,7 @@ export function setup() {
   generators[Rect.displayName] = () =>
     new Rect(
       ensureUniqueness(Rect.displayName),
-      null,
+      [],
       10,
       10,
       80,
@@ -72,5 +72,5 @@ export function setup() {
       getRandomColor()
     );
   generators[GroupComponent.displayName] = () =>
-    new GroupComponent(ensureUniqueness(GroupComponent.displayName), null, []);
+    new GroupComponent(ensureUniqueness(GroupComponent.displayName), [], []);
 }

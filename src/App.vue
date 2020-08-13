@@ -94,6 +94,31 @@
           <div class="divider"></div>
           <div class="settings-box">
             <h1><span class="material-icons">touch_app</span> Click Action</h1>
+            <div class="settings-row">
+              <div class="btn" @click="ev => showActionAddMenu(ev)">
+                <span class="material-icons">add</span>
+                <span class="text">Add action</span>
+
+                <div class="absoluteMenu" ref="actionAddMenu">
+                  <div
+                    v-for="(key, index) in Object.keys(actions)"
+                    :key="index"
+                  >
+                    <div class="divider" v-if="index != 0"></div>
+                    <div
+                      class="entry"
+                      @click.stop="addNewAction(key)"
+                      :key="index"
+                    >
+                      <span class="material-icons">{{
+                        actions[key].icon
+                      }}</span>
+                      {{ key }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="divider"></div>
         </div>
@@ -126,6 +151,7 @@ import {
   generators,
   componentInfo
 } from "./utils/ComponentManager";
+import { actions } from "./utils/ActionManager";
 
 export default Vue.extend({
   name: "App",
@@ -150,16 +176,25 @@ export default Vue.extend({
 
       generators,
       componentInfo,
+      actions,
 
       elements: [
-        new Rect("Blue Rect", null, 10, 15, 300, 30, "blue"),
-        new GroupComponent("Main Group", null, [
-          new GroupComponent("Group 2", null, [
-            new Rect("Orange", null, 300, 100, 34, 23, "orange"),
-            new Rect("Rect 2", null, 150, 205, 37, 38, "Purple")
-          ]),
-          new Rect("Component", null, 90, 65, 67, 78, "red")
-        ])
+        new Rect("Blue Rect", [], 10, 15, 300, 30, "blue"),
+        new GroupComponent(
+          "Main Group",
+          [],
+          [
+            new GroupComponent(
+              "Group 2",
+              [],
+              [
+                new Rect("Orange", [], 300, 100, 34, 23, "orange"),
+                new Rect("Rect 2", [], 150, 205, 37, 38, "Purple")
+              ]
+            ),
+            new Rect("Component", [], 90, 65, 67, 78, "red")
+          ]
+        )
       ] as Component[]
     };
   },
@@ -200,6 +235,17 @@ export default Vue.extend({
   },
 
   methods: {
+    showActionAddMenu(ev: MouseEvent) {
+      const menu = this.$refs.actionAddMenu as HTMLElement;
+      menu.style.top = ev.y + "px";
+      menu.style.left = ev.x + "px";
+      menu.style.display = "block";
+    },
+
+    addNewAction(key: string) {
+      // TODO
+    },
+
     redraw() {
       const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
         "2d"
@@ -340,7 +386,6 @@ export default Vue.extend({
 
     checkClose(ev: MouseEvent) {
       const menu = this.$refs.compAddMenu as HTMLElement;
-      const canvas = this.$refs.canvas as HTMLElement;
       if (ev.target != menu) menu.style.display = "none";
     },
 
