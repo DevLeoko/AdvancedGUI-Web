@@ -1,11 +1,11 @@
-import { extend } from "vue/types/umd";
 import { CheckAction } from "./CheckAction";
 import { JsonObject } from "../ComponentManager";
 import { Action } from "../Action";
 import { actionsFromJson } from "../ActionManager";
 
 export class PermissionCheck extends CheckAction {
-  public id = "Permission";
+  public static id = "Permission";
+  public id = PermissionCheck.id;
 
   constructor(public actions: Action[], public permission: string) {
     super(actions);
@@ -19,6 +19,8 @@ export class PermissionCheck extends CheckAction {
   }
 
   toCheckDataObj(): JsonObject {
-    throw new Error("Method not implemented.");
+    return {
+      permission: this.permission
+    };
   }
 }

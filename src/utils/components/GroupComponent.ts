@@ -12,8 +12,6 @@ import {
 } from "../ComponentManager";
 
 export class GroupComponent extends Component implements ListItemGroup {
-  public isCheck = false;
-
   constructor(
     public id: string,
     public clickAction: Action[],

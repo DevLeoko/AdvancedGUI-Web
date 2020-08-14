@@ -13,22 +13,22 @@ interface ActionMeta {
 export const actions: { [key: string]: ActionMeta } = {};
 
 export function setup() {
-  actions[CommandAction.prototype.id] = {
+  actions[CommandAction.id] = {
     gernerator: () => new CommandAction("heal %player%", true),
     fromJson: CommandAction.fromJson,
-    icon: CommandAction.prototype.icon
+    icon: CommandAction.icon
   };
 
-  actions[ListAction.prototype.id] = {
+  actions[ListAction.id] = {
     gernerator: () => new ListAction([]),
     fromJson: ListAction.fromJson,
-    icon: ListAction.prototype.icon
+    icon: ListAction.icon
   };
 
-  actions[PermissionCheck.prototype.id] = {
+  actions[PermissionCheck.id] = {
     gernerator: () => new PermissionCheck([], "ag.group.premium"),
     fromJson: PermissionCheck.fromJson,
-    icon: PermissionCheck.prototype.icon
+    icon: PermissionCheck.icon
   };
 }
 

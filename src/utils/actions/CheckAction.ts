@@ -1,11 +1,12 @@
-import { ListItemGroup, ListItem } from "../ListItem";
+import { ListItemGroup } from "../ListItem";
 import { Action } from "../Action";
 import { JsonObject } from "../ComponentManager";
 
 export abstract class CheckAction extends Action implements ListItemGroup {
-  public isCheck = true;
   public itemLimit = 2;
-  public icon = "fact_check";
+  public static icon = "fact_check";
+  public icon = CheckAction.icon;
+  public itemClasses = ["posAction", "negAction"];
 
   constructor(public actions: Action[]) {
     super();

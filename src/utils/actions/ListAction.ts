@@ -4,9 +4,10 @@ import { ListItemGroup } from "../ListItem";
 import { actionsFromJson } from "../ActionManager";
 
 export class ListAction extends Action implements ListItemGroup {
-  public id = "List";
-  public icon = "receipt_long";
-  public isCheck = false;
+  public static id = "List";
+  public static icon = "receipt_long";
+  public id = ListAction.id;
+  public icon = ListAction.icon;
 
   constructor(public actions: Action[]) {
     super();

@@ -39,7 +39,8 @@
           root
           :components="elements"
           @change="redraw()"
-          v-model="selected"
+          :value="selected ? selected.component : null"
+          @input="comp => (selected = { component: comp, action: null })"
         ></component-list>
 
         <div class="btn" @click="ev => showCompAddMenu(ev)">
@@ -84,7 +85,7 @@
             <h1><span class="material-icons">tune</span> General settings</h1>
             <div class="settings-row">
               <b class="label">Component ID</b>
-              <input type="text" v-model="selected.id" />
+              <input type="text" v-model="selected.component.id" />
             </div>
             <div class="settings-row">
               <b class="label">Visibility</b>
@@ -92,8 +93,16 @@
             </div>
           </div>
           <div class="divider"></div>
-          <div class="settings-box">
+          <div class="settings-box clickActions">
             <h1><span class="material-icons">touch_app</span> Click Action</h1>
+            <div class="settings-row">
+              <component-list
+                class="sidebar"
+                root
+                :components="selected.component.clickAction"
+                v-model="selected.action"
+              ></component-list>
+            </div>
             <div class="settings-row">
               <div class="btn" @click="ev => showActionAddMenu(ev)">
                 <span class="material-icons">add</span>
@@ -128,7 +137,7 @@
           </h1>
         </div>
         <component
-          v-bind:is="selected ? selected.vueComponent : null"
+          v-bind:is="selected ? selected.component.vueComponent : null"
           :component="selected"
         ></component>
       </div>
@@ -152,6 +161,7 @@ import {
   componentInfo
 } from "./utils/ComponentManager";
 import { actions } from "./utils/ActionManager";
+import { Action } from "./utils/Action";
 
 export default Vue.extend({
   name: "App",
@@ -163,7 +173,7 @@ export default Vue.extend({
       height: 2,
       zoom: 1,
 
-      selected: null as null | Component,
+      selected: null as null | { component: Component; action: Action | null },
 
       mouseDownTime: Date.now(),
 
@@ -243,7 +253,11 @@ export default Vue.extend({
     },
 
     addNewAction(key: string) {
-      // TODO
+      if (this.selected) {
+        const nAction = actions[key].gernerator();
+        this.selected.component.clickAction.push(nAction);
+        this.selected.action = nAction;
+      }
     },
 
     redraw() {
@@ -258,7 +272,7 @@ export default Vue.extend({
         if (!isInvisible(element.id)) element.draw(canvas);
       }
 
-      if (this.selected) drawSelection(canvas, this.selected);
+      if (this.selected) drawSelection(canvas, this.selected.component);
     },
 
     onClickDown(event: MouseEvent) {
@@ -267,15 +281,22 @@ export default Vue.extend({
       const hovered = this.getElementAt(point);
 
       if (!handler) {
-        if (this.selected && this.selected.getBoundingBox().isInside(point))
+        if (
+          this.selected &&
+          this.selected.component.getBoundingBox().isInside(point)
+        )
           this.mouseDownTime = Date.now();
 
         // Check for change of selection
         if (
           hovered &&
-          (!this.selected || !this.selected.getBoundingBox().isInside(point))
+          (!this.selected ||
+            !this.selected.component.getBoundingBox().isInside(point))
         ) {
-          this.selected = hovered;
+          this.selected = {
+            component: hovered,
+            action: null
+          };
         }
 
         if (!hovered) this.selected = null;
@@ -287,7 +308,7 @@ export default Vue.extend({
         if (handler) {
           modifier = handler.modifier;
           modifierIcon = handler.icon;
-        } else if (this.selected.getBoundingBox().isInside(point)) {
+        } else if (this.selected.component.getBoundingBox().isInside(point)) {
           this.setCursor("move");
           modifier = moveModifier;
         }
@@ -296,7 +317,7 @@ export default Vue.extend({
           this.modifying = {
             startPosition: point,
             icon: modifierIcon,
-            elementStartPosition: this.selected.getBoundingBox(),
+            elementStartPosition: this.selected.component.getBoundingBox(),
             modifier
           };
         }
@@ -309,7 +330,11 @@ export default Vue.extend({
       const point = this.getCursorPosition(event);
 
       if (Date.now() - this.mouseDownTime < 200) {
-        if (this.selected) this.selected = this.selected.refineSelection(point);
+        if (this.selected)
+          this.selected = {
+            component: this.selected.component.refineSelection(point),
+            action: null
+          };
 
         this.redraw();
       }
@@ -345,15 +370,15 @@ export default Vue.extend({
 
         newBounds.ensureBounds(this.width * 128, this.height * 128);
 
-        this.selected?.modify(newBounds);
+        this.selected?.component.modify(newBounds);
       } else {
         const handler = getHanderAt(point);
         if (handler && this.selected) {
           this.setCursor(handler.icon);
         } else if (hovered) {
           if (
-            hovered == this.selected ||
-            this.selected?.getBoundingBox().isInside(point)
+            hovered == this.selected?.component ||
+            this.selected?.component.getBoundingBox().isInside(point)
           ) {
             this.setCursor("move");
           } else this.setCursor("pointer");
@@ -377,7 +402,10 @@ export default Vue.extend({
     addNewCompoenent(key: string) {
       const nComp = generators[key]();
       this.elements.splice(0, 0, nComp);
-      this.selected = nComp;
+      this.selected = {
+        component: nComp,
+        action: null
+      };
       const menu = this.$refs.compAddMenu as HTMLElement;
       menu.style.display = "none";
 
@@ -385,8 +413,12 @@ export default Vue.extend({
     },
 
     checkClose(ev: MouseEvent) {
-      const menu = this.$refs.compAddMenu as HTMLElement;
-      if (ev.target != menu) menu.style.display = "none";
+      const menuComp = this.$refs.compAddMenu as HTMLElement;
+      if (ev.target != menuComp) menuComp.style.display = "none";
+
+      const menuAction = this.$refs.actionAddMenu as HTMLElement;
+      if (menuAction && ev.target != menuAction)
+        menuAction.style.display = "none";
     },
 
     showCompAddMenu(ev: MouseEvent) {

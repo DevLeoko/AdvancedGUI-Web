@@ -6,7 +6,7 @@
           <span class="material-icons">delete</span> Delete
         </div>
         <div class="divider"></div>
-        <div class="entry" @click.stop="duplicateOpt()">
+        <div class="entry" @click.stop="duplicateOpt()" v-if="hasCapacity">
           <span class="material-icons">content_copy</span>
           Duplicate
         </div>
@@ -27,16 +27,17 @@
     </div>
     <div>
       <drag-zone
-        v-if="activeIndex != 0"
+        v-if="activeIndex != 0 && hasCapacity"
         :dragIndication="!!treeState.dragElement"
         @drop="dragDrop(0)"
       ></drag-zone>
-      <div v-for="(elem, index) in components" :key="elem.id">
+      <div v-for="(elem, index) in components" :key="index">
         <div
           class="item"
           :class="
             (value == elem ? 'active ' : '') +
-              (elem.id && invisible.indexOf(elem.id) != -1 ? 'invisible' : '')
+              (elem.id && invisible.indexOf(elem.id) != -1 ? 'invisible' : '') +
+              (itemClasses[index] || '')
           "
           @click.stop="$emit('input', elem)"
           draggable="true"
@@ -60,6 +61,8 @@
               :components="elem.getItems()"
               :value="value"
               :treeState="treeState"
+              :itemLimit="elem.itemLimit"
+              :itemClasses="elem.itemClasses"
               @input="val => $emit('input', val)"
               @change="$emit('change')"
             ></component-list>
@@ -68,7 +71,7 @@
         <drag-zone
           :dragIndication="!!treeState.dragElement"
           @drop="dragDrop(index + 1)"
-          v-if="activeIndex != index && activeIndex != index + 1"
+          v-if="activeIndex != index && activeIndex != index + 1 && hasCapacity"
         ></drag-zone>
       </div>
     </div>
@@ -106,6 +109,13 @@ export default Vue.extend({
       type: Boolean,
       default: false
     },
+    itemLimit: {
+      type: Number
+    },
+    itemClasses: {
+      type: Array as () => string[],
+      default: () => []
+    },
     treeState: {
       type: Object as () => {
         dragElement: null | ListItem;
@@ -124,6 +134,17 @@ export default Vue.extend({
 
   destroyed() {
     document.removeEventListener("click", this.checkClose, { capture: true });
+  },
+
+  computed: {
+    hasCapacity() {
+      if (this.itemLimit === undefined) return true;
+
+      let current = this.components.length;
+      if (this.activeIndex != -2) current--;
+
+      return current < this.itemLimit;
+    }
   },
 
   methods: {
@@ -158,9 +179,16 @@ export default Vue.extend({
 
     openMenu(elem: ListItem, ev: MouseEvent) {
       const moreMenu = this.$refs.moreMenu as HTMLElement;
-      moreMenu.style.top = ev.y + "px";
-      moreMenu.style.left = ev.x + "px";
       moreMenu.style.display = "block";
+
+      setTimeout(() => {
+        let x = ev.x;
+        if (x + moreMenu.offsetWidth > window.innerWidth)
+          x = window.innerWidth - moreMenu.offsetWidth - 5;
+        moreMenu.style.top = ev.y + "px";
+        moreMenu.style.left = x + "px";
+      }, 10);
+
       this.optElem = elem;
     },
 
@@ -221,6 +249,14 @@ export default Vue.extend({
 .item {
   padding: 5px 0px 5px 10px;
   cursor: pointer;
+
+  &.posAction {
+    border-left: 2px solid $green;
+  }
+
+  &.negAction {
+    border-left: 2px solid $red;
+  }
 }
 
 .itemName {

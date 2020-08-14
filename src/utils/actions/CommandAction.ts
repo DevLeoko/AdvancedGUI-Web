@@ -2,8 +2,10 @@ import { Action } from "../Action";
 import { JsonObject } from "../ComponentManager";
 
 export class CommandAction extends Action {
-  public id = "Command";
-  public icon = "play_circle_outline";
+  public static id = "Command";
+  public static icon = "play_circle_outline";
+  public id = CommandAction.id;
+  public icon = CommandAction.icon;
 
   constructor(public command: string, public asConsole: boolean) {
     super();
