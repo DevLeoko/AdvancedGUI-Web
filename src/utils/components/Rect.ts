@@ -1,5 +1,5 @@
 import { BoundingBox } from "../BoundingBox";
-import RectangelEditor from "@/components/RectangleEditor.vue";
+import RectangelEditor from "@/components/editors/RectangleEditor.vue";
 import { VueConstructor } from "vue/types/umd";
 import { Rectangular } from "./Rectangular";
 import { Action } from "../Action";

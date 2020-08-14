@@ -40,7 +40,10 @@
           :components="elements"
           @change="redraw()"
           :value="selected ? selected.component : null"
-          @input="comp => (selected = { component: comp, action: null })"
+          @input="
+            comp => (selected = comp ? { component: comp, action: null } : null)
+          "
+          @copy="val => (copiedComponent = val)"
         ></component-list>
 
         <div class="btn" @click="ev => showCompAddMenu(ev)">
@@ -48,13 +51,16 @@
           <span class="text">Add component</span>
 
           <div class="absoluteMenu" ref="compAddMenu">
+            <template v-if="copiedComponent">
+              <div class="entry" @click.stop="pasteComponent()">
+                <span class="material-icons">content_paste</span>
+                Paste
+              </div>
+              <div class="divider"></div>
+            </template>
             <div v-for="(key, index) in Object.keys(generators)" :key="index">
               <div class="divider" v-if="index != 0"></div>
-              <div
-                class="entry"
-                @click.stop="addNewCompoenent(key)"
-                :key="index"
-              >
+              <div class="entry" @click.stop="addNewCompoenent(key)">
                 <span class="material-icons">{{
                   componentInfo[key].icon
                 }}</span>
@@ -101,6 +107,7 @@
                 root
                 :components="selected.component.clickAction"
                 v-model="selected.action"
+                @copy="val => (copiedAction = val)"
               ></component-list>
             </div>
             <div class="settings-row">
@@ -109,16 +116,19 @@
                 <span class="text">Add action</span>
 
                 <div class="absoluteMenu" ref="actionAddMenu">
+                  <template v-if="copiedAction">
+                    <div class="entry" @click.stop="pasteAction()">
+                      <span class="material-icons">content_paste</span>
+                      Paste
+                    </div>
+                    <div class="divider"></div>
+                  </template>
                   <div
                     v-for="(key, index) in Object.keys(actions)"
                     :key="index"
                   >
                     <div class="divider" v-if="index != 0"></div>
-                    <div
-                      class="entry"
-                      @click.stop="addNewAction(key)"
-                      :key="index"
-                    >
+                    <div class="entry" @click.stop="addNewAction(key)">
                       <span class="material-icons">{{
                         actions[key].icon
                       }}</span>
@@ -158,9 +168,10 @@ import { Modifier, ResizeIcon, moveModifier } from "./utils/Modifier";
 import {
   isInvisible,
   generators,
-  componentInfo
+  componentInfo,
+  componentFromJson
 } from "./utils/ComponentManager";
-import { actions } from "./utils/ActionManager";
+import { actions, actionFromJson } from "./utils/ActionManager";
 import { Action } from "./utils/Action";
 
 export default Vue.extend({
@@ -187,6 +198,9 @@ export default Vue.extend({
       generators,
       componentInfo,
       actions,
+
+      copiedComponent: null as null | string,
+      copiedAction: null as null | string,
 
       elements: [
         new Rect("Blue Rect", [], 10, 15, 300, 30, "blue"),
@@ -426,6 +440,28 @@ export default Vue.extend({
       menu.style.top = ev.y + "px";
       menu.style.left = ev.x + "px";
       menu.style.display = "block";
+    },
+
+    pasteAction() {
+      if (this.selected && this.copiedAction) {
+        const nAction = actionFromJson(JSON.parse(this.copiedAction));
+        this.selected.component.clickAction.push(nAction);
+        this.selected.action = nAction;
+      }
+    },
+
+    pasteComponent() {
+      if (this.copiedComponent) {
+        const nComp = componentFromJson(
+          JSON.parse(this.copiedComponent),
+          true
+        )!;
+        this.elements.splice(0, 0, nComp);
+        this.selected = {
+          component: nComp,
+          action: null
+        };
+      }
     }
   }
 });

@@ -6,11 +6,18 @@
           <span class="material-icons">delete</span> Delete
         </div>
         <div class="divider"></div>
-        <div class="entry" @click.stop="duplicateOpt()" v-if="hasCapacity">
+        <div class="entry" @click.stop="copyOpt()">
           <span class="material-icons">content_copy</span>
-          Duplicate
+          Copy
         </div>
         <div class="divider"></div>
+        <template v-if="hasCapacity">
+          <div class="entry" @click.stop="duplicateOpt()">
+            <span class="material-icons">add_to_photos</span>
+            Duplicate
+          </div>
+          <div class="divider"></div>
+        </template>
         <div
           class="entry"
           v-if="optElem.hideable"
@@ -39,7 +46,7 @@
               (elem.id && invisible.indexOf(elem.id) != -1 ? 'invisible' : '') +
               (itemClasses[index] || '')
           "
-          @click.stop="$emit('input', elem)"
+          @click.stop="$emit('input', value == elem ? null : elem)"
           draggable="true"
           ondragstart="event.dataTransfer.setData('text/plain',null)"
           @dragstart.self="ev => dragStart(ev.target, elem, index)"
@@ -65,6 +72,7 @@
               :itemClasses="elem.itemClasses"
               @input="val => $emit('input', val)"
               @change="$emit('change')"
+              @copy="val => $emit('copy', val)"
             ></component-list>
           </div>
         </div>
@@ -216,6 +224,10 @@ export default Vue.extend({
     visibilityOpt() {
       toggleVis(this.optElem!.id!);
       this.$emit("change");
+    },
+
+    copyOpt() {
+      this.$emit("copy", this.optElem?.toJson());
     }
   }
 });

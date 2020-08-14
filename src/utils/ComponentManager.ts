@@ -31,7 +31,10 @@ export function toggleVis(id: string) {
   else invisible.push(id);
 }
 
-export function componentFromJson(jsonObj: JsonObject): Component | null {
+export function componentFromJson(
+  jsonObj: JsonObject,
+  correctIDs = false //TODO use this
+): Component | null {
   if (jsonObj.type) {
     // TODO: convert action
     return converters[jsonObj.type](jsonObj, []);

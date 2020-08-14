@@ -1,6 +1,6 @@
 import { BoundingBox } from "../BoundingBox";
 import { Point } from "../Point";
-import EmptyEditor from "@/components/EmptyEditor.vue";
+import EmptyEditor from "@/components/editors/EmptyEditor.vue";
 import { VueConstructor } from "vue/types/umd";
 import { Component } from "../Component";
 import { Action } from "../Action";
