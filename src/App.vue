@@ -11,7 +11,7 @@
       </div>
       <div>
         <b class="label">ZOOM</b>
-        <select v-model="zoom">
+        <select v-model.number="zoom">
           <option value="0.5">x0.5</option>
           <option value="1">x1</option>
           <option value="2">x2</option>
@@ -34,11 +34,12 @@
     </div>
     <div class="row mainSpace">
       <div id="compTree">
+        <!-- TODO 1+1  -->
         <component-list
           class="sidebar"
           root
           :components="elements"
-          @change="redraw()"
+          @change="1 + 1"
           :value="selected ? selected.component : null"
           @input="
             comp => (selected = comp ? { component: comp, action: null } : null)
@@ -73,16 +74,17 @@
 
       <div id="canvasContainer" @click.self="selected = null">
         <div id="canvasPadding">
-          <canvas
-            ref="canvas"
-            id="canvas"
-            @mousedown="onClickDown"
-            @mouseup="onClickUp"
-            @mousemove="onMove"
-            @mouseleave="onClickUp"
+          <my-canvas
             :width="width * 128"
             :height="height * 128"
-          ></canvas>
+            :selected="selected ? selected.component : null"
+            :elements="elements"
+            :zoom="zoom"
+            @select="
+              comp =>
+                (selected = comp ? { component: comp, action: null } : null)
+            "
+          ></my-canvas>
         </div>
       </div>
       <div class="sidebar" id="settings">
@@ -148,7 +150,7 @@
         </div>
         <component
           v-bind:is="selected ? selected.component.vueComponent : null"
-          :component="selected"
+          :component="selected ? selected.component : null"
         ></component>
       </div>
     </div>
@@ -157,16 +159,12 @@
 
 <script lang="ts">
 import ComponentList from "./components/ComponentList.vue";
+import MyCanvas from "./components/Canvas.vue";
 import Vue from "vue";
 import { Component } from "./utils/Component";
 import { GroupComponent } from "./utils/components/GroupComponent";
 import { Rect } from "./utils/components/Rect";
-import { Point } from "./utils/Point";
-import { BoundingBox } from "./utils/BoundingBox";
-import { drawSelection, getHanderAt } from "./utils/Selection";
-import { Modifier, ResizeIcon, moveModifier } from "./utils/Modifier";
 import {
-  isInvisible,
   generators,
   componentInfo,
   componentFromJson
@@ -176,7 +174,7 @@ import { Action } from "./utils/Action";
 
 export default Vue.extend({
   name: "App",
-  components: { ComponentList },
+  components: { ComponentList, MyCanvas },
 
   data: () => {
     return {
@@ -186,15 +184,6 @@ export default Vue.extend({
 
       selected: null as null | { component: Component; action: Action | null },
 
-      mouseDownTime: Date.now(),
-
-      modifying: null as null | {
-        modifier: Modifier;
-        icon: ResizeIcon | "move";
-        startPosition: Point;
-        elementStartPosition: BoundingBox;
-      },
-
       generators,
       componentInfo,
       actions,
@@ -203,7 +192,7 @@ export default Vue.extend({
       copiedAction: null as null | string,
 
       elements: [
-        new Rect("Blue Rect", [], 10, 15, 300, 30, "blue"),
+        new Rect("Blue Rect", [], 10, 15, 300, 30, "#22a7f0"),
         new GroupComponent(
           "Main Group",
           [],
@@ -212,11 +201,11 @@ export default Vue.extend({
               "Group 2",
               [],
               [
-                new Rect("Orange", [], 300, 100, 34, 23, "orange"),
-                new Rect("Rect 2", [], 150, 205, 37, 38, "Purple")
+                new Rect("Orange", [], 300, 100, 34, 23, "#f2784b"),
+                new Rect("Rect 2", [], 150, 205, 37, 38, "#5333ed")
               ]
             ),
-            new Rect("Component", [], 90, 65, 67, 78, "red")
+            new Rect("Component", [], 90, 65, 67, 78, "#f64747")
           ]
         )
       ] as Component[]
@@ -224,38 +213,11 @@ export default Vue.extend({
   },
 
   mounted() {
-    this.redraw();
     document.addEventListener("click", this.checkClose, { capture: true });
   },
 
   destroyed() {
     document.removeEventListener("click", this.checkClose, { capture: true });
-  },
-
-  watch: {
-    selected: {
-      deep: true,
-      handler() {
-        this.redraw();
-      }
-    },
-
-    zoom() {
-      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
-        128 *
-        this.zoom}px`;
-    },
-
-    height() {
-      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
-        128 *
-        this.zoom}px`;
-      setTimeout(this.redraw, 10);
-    },
-
-    width() {
-      setTimeout(this.redraw, 10);
-    }
   },
 
   methods: {
@@ -274,145 +236,6 @@ export default Vue.extend({
       }
     },
 
-    redraw() {
-      const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
-        "2d"
-      ) as CanvasRenderingContext2D;
-
-      canvas.clearRect(0, 0, this.width * 128, this.height * 128);
-
-      for (let i = this.elements.length - 1; i >= 0; i--) {
-        const element = this.elements[i];
-        if (!isInvisible(element.id)) element.draw(canvas);
-      }
-
-      if (this.selected) drawSelection(canvas, this.selected.component);
-    },
-
-    onClickDown(event: MouseEvent) {
-      const point = this.getCursorPosition(event);
-      const handler = getHanderAt(point);
-      const hovered = this.getElementAt(point);
-
-      if (!handler) {
-        if (
-          this.selected &&
-          this.selected.component.getBoundingBox().isInside(point)
-        )
-          this.mouseDownTime = Date.now();
-
-        // Check for change of selection
-        if (
-          hovered &&
-          (!this.selected ||
-            !this.selected.component.getBoundingBox().isInside(point))
-        ) {
-          this.selected = {
-            component: hovered,
-            action: null
-          };
-        }
-
-        if (!hovered) this.selected = null;
-      }
-
-      if (this.selected) {
-        let modifier;
-        let modifierIcon: ResizeIcon | "move" = "move";
-        if (handler) {
-          modifier = handler.modifier;
-          modifierIcon = handler.icon;
-        } else if (this.selected.component.getBoundingBox().isInside(point)) {
-          this.setCursor("move");
-          modifier = moveModifier;
-        }
-
-        if (modifier && modifierIcon !== undefined) {
-          this.modifying = {
-            startPosition: point,
-            icon: modifierIcon,
-            elementStartPosition: this.selected.component.getBoundingBox(),
-            modifier
-          };
-        }
-      }
-
-      this.redraw();
-    },
-
-    onClickUp(event: MouseEvent) {
-      const point = this.getCursorPosition(event);
-
-      if (Date.now() - this.mouseDownTime < 200) {
-        if (this.selected)
-          this.selected = {
-            component: this.selected.component.refineSelection(point),
-            action: null
-          };
-
-        this.redraw();
-      }
-
-      this.modifying = null;
-    },
-
-    getElementAt(point: Point) {
-      return this.elements.find(element =>
-        element.getBoundingBox().isInside(point)
-      );
-    },
-
-    setCursor(style: "move" | "default" | "pointer" | "move" | ResizeIcon) {
-      (this.$refs.canvas as HTMLElement).style.cursor = style;
-    },
-
-    onMove(event: MouseEvent) {
-      const point = this.getCursorPosition(event);
-
-      const hovered = this.getElementAt(point);
-
-      if (this.modifying) {
-        this.setCursor(this.modifying.icon);
-
-        const xOff = point.x - this.modifying.startPosition.x;
-        const yOff = point.y - this.modifying.startPosition.y;
-
-        const newBounds = this.modifying.modifier(
-          new Point(xOff, yOff),
-          this.modifying.elementStartPosition
-        );
-
-        newBounds.ensureBounds(this.width * 128, this.height * 128);
-
-        this.selected?.component.modify(newBounds);
-      } else {
-        const handler = getHanderAt(point);
-        if (handler && this.selected) {
-          this.setCursor(handler.icon);
-        } else if (hovered) {
-          if (
-            hovered == this.selected?.component ||
-            this.selected?.component.getBoundingBox().isInside(point)
-          ) {
-            this.setCursor("move");
-          } else this.setCursor("pointer");
-        } else {
-          this.setCursor("default");
-        }
-      }
-    },
-
-    getCursorPosition(event: MouseEvent): Point {
-      const rect = (this.$refs.canvas as HTMLElement).getBoundingClientRect();
-      const x = Math.round(
-        (event.clientX - rect.left) * ((this.width * 128) / rect.width)
-      );
-      const y = Math.round(
-        (event.clientY - rect.top) * ((this.width * 128) / rect.width)
-      );
-      return new Point(x, y);
-    },
-
     addNewCompoenent(key: string) {
       const nComp = generators[key]();
       this.elements.splice(0, 0, nComp);
@@ -422,8 +245,6 @@ export default Vue.extend({
       };
       const menu = this.$refs.compAddMenu as HTMLElement;
       menu.style.display = "none";
-
-      this.redraw();
     },
 
     checkClose(ev: MouseEvent) {
