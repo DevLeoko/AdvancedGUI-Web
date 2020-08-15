@@ -2,6 +2,10 @@ import { Component } from "./Component";
 import { Action } from "./Action";
 import { Rect } from "./components/Rect";
 import { GroupComponent } from "./components/GroupComponent";
+import { Text } from "./components/Text";
+import { Image } from "./components/Image";
+import { Hover } from "./components/Hover";
+import { View } from "./components/View";
 
 export interface JsonObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,9 +64,17 @@ function getRandomColor() {
 export function setup() {
   componentInfo[Rect.displayName] = Rect;
   componentInfo[GroupComponent.displayName] = GroupComponent;
+  componentInfo[Hover.displayName] = Hover;
+  componentInfo[View.displayName] = View;
+  componentInfo[Text.displayName] = Text;
+  componentInfo[Image.displayName] = Image;
 
   converters[Rect.displayName] = Rect.fromJson;
   converters[GroupComponent.displayName] = GroupComponent.fromJson;
+  converters[Hover.displayName] = Hover.fromJson;
+  converters[View.displayName] = View.fromJson;
+  converters[Text.displayName] = Text.fromJson;
+  converters[Image.displayName] = Image.fromJson;
 
   generators[Rect.displayName] = () =>
     new Rect(
@@ -74,6 +86,35 @@ export function setup() {
       40,
       getRandomColor()
     );
+
   generators[GroupComponent.displayName] = () =>
     new GroupComponent(ensureUniqueness(GroupComponent.displayName), [], []);
+  generators[Hover.displayName] = () =>
+    new Hover(ensureUniqueness(Hover.displayName), [], []);
+  generators[View.displayName] = () =>
+    new View(ensureUniqueness(View.displayName), [], []);
+
+  generators[Text.displayName] = () =>
+    new Text(
+      ensureUniqueness(Text.displayName),
+      [],
+      10,
+      10,
+      "Text",
+      "Verdana",
+      20,
+      "#67809f"
+    );
+
+  generators[Image.displayName] = () =>
+    new Image(
+      ensureUniqueness(Image.displayName),
+      [],
+      10,
+      10,
+      50,
+      50,
+      "Play",
+      true
+    );
 }

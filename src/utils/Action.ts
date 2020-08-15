@@ -3,11 +3,12 @@ import { ListItem, ListItemGroup } from "./ListItem";
 import { actionFromJson } from "./ActionManager";
 
 export abstract class Action implements ListItem {
+  public static icon = "play_circle_outline";
+  public icon = Action.icon;
   public hideable = false;
 
   abstract toDataObj(): JsonObject;
   abstract get id(): string;
-  abstract get icon(): string;
 
   toJsonObj() {
     return {

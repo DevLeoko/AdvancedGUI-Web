@@ -92,28 +92,26 @@
           <div class="settings-box">
             <h1><span class="material-icons">tune</span> General settings</h1>
             <div class="settings-row">
-              <b class="label">Component ID</b>
+              <span class="label">Component ID</span>
               <input type="text" v-model="selected.component.id" />
             </div>
             <div class="settings-row">
-              <b class="label">Visibility</b>
+              <span class="label">Visibility</span>
               <input type="checkbox" />
             </div>
           </div>
           <div class="divider"></div>
           <div class="settings-box clickActions">
             <h1><span class="material-icons">touch_app</span> Click Action</h1>
+            <component-list
+              class="sidebar"
+              root
+              :components="selected.component.clickAction"
+              v-model="selected.action"
+              @copy="val => (copiedAction = val)"
+            ></component-list>
             <div class="settings-row">
-              <component-list
-                class="sidebar"
-                root
-                :components="selected.component.clickAction"
-                v-model="selected.action"
-                @copy="val => (copiedAction = val)"
-              ></component-list>
-            </div>
-            <div class="settings-row">
-              <div class="btn" @click="ev => showActionAddMenu(ev)">
+              <div class="btn addAction" @click="ev => showActionAddMenu(ev)">
                 <span class="material-icons">add</span>
                 <span class="text">Add action</span>
 
@@ -140,20 +138,40 @@
                 </div>
               </div>
             </div>
+
+            <div v-if="selected && selected.action" id="actionEditor">
+              <h2>
+                <span class="material-icons">edit</span> Edit
+                {{ selected.action.id.toLowerCase() }} action
+              </h2>
+              <component
+                v-bind:is="actions[selected.action.id].component"
+                :action="selected.action"
+              ></component>
+            </div>
           </div>
           <div class="divider"></div>
+          <div class="settings-box">
+            <h1>
+              <span class="material-icons">{{ selected.component.icon }}</span>
+              {{ selected.component.displayName }}
+            </h1>
+            <component
+              v-bind:is="selected.component.vueComponent"
+              :component="selected.component"
+              :maxWidth="width * 128"
+              :maxHeight="height * 128"
+            ></component>
+          </div>
         </div>
         <div v-else class="settings-box">
           <h1>
             <b class="label">no component selected</b>
           </h1>
         </div>
-        <component
-          v-bind:is="selected ? selected.component.vueComponent : null"
-          :component="selected ? selected.component : null"
-        ></component>
       </div>
     </div>
+    <div ref="imageContainer" style="display:none"></div>
   </div>
 </template>
 
@@ -170,6 +188,7 @@ import {
   componentFromJson
 } from "./utils/ComponentManager";
 import { actions, actionFromJson } from "./utils/ActionManager";
+import { setupImageManager } from "./utils/ImageManager";
 import { Action } from "./utils/Action";
 
 export default Vue.extend({
@@ -180,13 +199,15 @@ export default Vue.extend({
     return {
       width: 3,
       height: 2,
-      zoom: 1,
+      zoom: 2,
 
       selected: null as null | { component: Component; action: Action | null },
 
       generators,
       componentInfo,
       actions,
+
+      setupImageManager,
 
       copiedComponent: null as null | string,
       copiedAction: null as null | string,
@@ -214,6 +235,7 @@ export default Vue.extend({
 
   mounted() {
     document.addEventListener("click", this.checkClose, { capture: true });
+    this.setupImageManager(this.$refs.imageContainer as HTMLElement);
   },
 
   destroyed() {
@@ -230,7 +252,7 @@ export default Vue.extend({
 
     addNewAction(key: string) {
       if (this.selected) {
-        const nAction = actions[key].gernerator();
+        const nAction = actions[key].generator(this.selected.component);
         this.selected.component.clickAction.push(nAction);
         this.selected.action = nAction;
       }

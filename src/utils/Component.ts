@@ -12,14 +12,19 @@ import {
 
 export abstract class Component implements ListItem {
   public hideable = true;
+  public resizeable = false;
 
   constructor(public id: string, public clickAction: Action[]) {}
 
   abstract draw(context: CanvasRenderingContext2D): void;
   abstract getBoundingBox(): BoundingBox;
-  abstract modify(newBoundingBox: BoundingBox): void;
+  abstract modify(
+    newBoundingBox: BoundingBox,
+    singleAxisAction?: boolean
+  ): void;
   abstract get vueComponent(): VueConstructor<Vue>;
   abstract get icon(): string;
+  abstract get displayName(): string;
   abstract toJsonObj(): JsonObject;
 
   toJson() {
@@ -33,10 +38,6 @@ export abstract class Component implements ListItem {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   refineSelection(point: Point): Component {
     return this;
-  }
-
-  get resizeable() {
-    return false;
   }
 
   isGroup(): this is ListItemGroup {

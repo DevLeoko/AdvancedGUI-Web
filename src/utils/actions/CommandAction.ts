@@ -3,9 +3,7 @@ import { JsonObject } from "../ComponentManager";
 
 export class CommandAction extends Action {
   public static id = "Command";
-  public static icon = "play_circle_outline";
   public id = CommandAction.id;
-  public icon = CommandAction.icon;
 
   constructor(public command: string, public asConsole: boolean) {
     super();

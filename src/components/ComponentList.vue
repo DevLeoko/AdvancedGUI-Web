@@ -43,7 +43,9 @@
           class="item"
           :class="
             (value == elem ? 'active ' : '') +
-              (elem.id && invisible.indexOf(elem.id) != -1 ? 'invisible' : '') +
+              (elem.id && invisible.indexOf(elem.id) != -1
+                ? 'invisible '
+                : '') +
               (itemClasses[index] || '')
           "
           @click.stop="$emit('input', value == elem ? null : elem)"
@@ -218,6 +220,7 @@ export default Vue.extend({
     deleteOpt() {
       const index = this.components.indexOf(this.optElem!);
       if (index != -1) this.components.splice(index, 1);
+      // TODO: ensure consistency with selection
       this.$emit("change");
     },
 
@@ -268,6 +271,21 @@ export default Vue.extend({
 
   &.negAction {
     border-left: 2px solid $red;
+  }
+
+  &.not-hovered {
+    border-left: 2px solid transparentize($color: $blue, $amount: 0.5);
+    margin-left: -3px;
+  }
+
+  &.primary {
+    border-left: 2px solid transparentize($color: $blue, $amount: 0.5);
+    margin-left: -3px;
+  }
+
+  &.hovered {
+    border-left: 2px solid transparentize($color: $blue, $amount: 0.8);
+    margin-left: -3px;
   }
 }
 

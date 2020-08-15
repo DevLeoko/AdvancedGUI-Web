@@ -19,6 +19,12 @@ body {
   font-size: 14px;
 }
 
+a {
+  color: $blue;
+  cursor: pointer;
+  text-decoration: none;
+}
+
 .btn{
   display: flex;
   padding: 5px 15px;
@@ -61,6 +67,10 @@ body {
     width: 100%;
     height: 1px;
     background-color: $dark1;
+
+    &.lighter{
+      background-color: $light3;
+    }
   }
 
   .entry {
@@ -188,6 +198,8 @@ body {
 
   #settings {
     min-width: 20vw;
+    max-width: 25vw;
+    overflow-y: auto;
     background-color: $dark1;
 
     .settings-box{
@@ -201,7 +213,7 @@ body {
       background-color: $dark2;
     }
 
-    h1{
+    h1, h2{
       display: flex;
       align-items: center;
       justify-content: center;
@@ -219,9 +231,39 @@ body {
       }
     }
 
+    .label.heading{
+      margin-top: 15px;
+    }
+
+    h2{
+      font-size: 20px;
+
+      .material-icons{
+        font-size: 18px;
+        margin-right: 10px;
+      }
+    }
+
+    h3{
+      color: $light3;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+
     .settings-row {
       margin: 10px 0 0;
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      &.disribute{
+        justify-content: space-between;
+      }
     }
+
+    
   
     input {
       background-color: transparent;
@@ -236,9 +278,68 @@ body {
       }
     }
 
+    input[type="color"]{
+      padding: 0px;
+    }
+
+    .input-box{
+      width: fit-content;
+      border: $inputBorder;
+      border-radius: 5px;
+      color: $light2;
+      padding: 5px 10px;
+      margin-right: 15px;
+
+      display: flex;
+      align-items: center;
+
+      span {
+        padding-left: 10px;
+        min-width: 20px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      input, select {
+        background-color: transparent;
+        border: none;
+        padding: 0 10px 0 0;
+        width: 40px;
+        text-align: right;
+        font-size: 15px;
+        border-radius: 0;
+        border-right: 1.2px solid $light3;
+        color: $light2;
+
+        option {
+          background-color: $dark2;
+          color: $light2;
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+
     .clickActions{
-      .btn{
+      .addAction{
         margin: 0 auto 10px;
+        background-color: transparent;
+        border: 1px solid $light2;
+        color: $light2;
+      }
+
+      #actionEditor{
+        // border: 2px solid $dark2;
+        box-shadow: $shadowStrong;
+        margin: 20px 0 0;
+        padding: 15px;
+
+        h2{
+          margin-top: 0;
+          justify-content: start;
+        }
       }
     }
   }

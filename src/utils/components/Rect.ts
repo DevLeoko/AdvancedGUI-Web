@@ -1,11 +1,17 @@
 import { BoundingBox } from "../BoundingBox";
 import RectangelEditor from "@/components/editors/RectangleEditor.vue";
-import { VueConstructor } from "vue/types/umd";
 import { Rectangular } from "./Rectangular";
 import { Action } from "../Action";
 import { JsonObject } from "../ComponentManager";
 
 export class Rect extends Rectangular {
+  public static displayName = "Rect";
+  public static icon = "crop_free";
+  public displayName = Rect.displayName;
+  public icon = Rect.icon;
+  public vueComponent = RectangelEditor;
+  public resizeable = true;
+
   constructor(
     public id: string,
     public clickAction: Action[],
@@ -28,26 +34,6 @@ export class Rect extends Rectangular {
     this.y = newBoundingBox.y;
     this.width = newBoundingBox.width;
     this.height = newBoundingBox.height;
-  }
-
-  get resizeable() {
-    return true;
-  }
-
-  get vueComponent(): VueConstructor<Vue> {
-    return RectangelEditor;
-  }
-
-  get icon() {
-    return "crop_free";
-  }
-
-  static get icon() {
-    return "crop_free";
-  }
-
-  static get displayName() {
-    return "Rect";
   }
 
   toJsonObj() {

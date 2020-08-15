@@ -1,5 +1,7 @@
 <template>
-  <h1>Nothing to see here!</h1>
+  <div class="settings-row">
+    <span class="label">This component has no specific settings</span>
+  </div>
 </template>
 
 <script lang="ts">
@@ -12,4 +14,4 @@ export default Vue.extend({
 });
 </script>
 
-<style lnag="scss" scoped></style>
+<style lang="scss" scoped></style>

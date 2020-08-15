@@ -1,7 +1,6 @@
 import { BoundingBox } from "../BoundingBox";
 import { Point } from "../Point";
 import EmptyEditor from "@/components/editors/EmptyEditor.vue";
-import { VueConstructor } from "vue/types/umd";
 import { Component } from "../Component";
 import { Action } from "../Action";
 import { ListItemGroup } from "../ListItem";
@@ -12,6 +11,12 @@ import {
 } from "../ComponentManager";
 
 export class GroupComponent extends Component implements ListItemGroup {
+  public static displayName = "Group";
+  public static icon = "folder";
+  public displayName = GroupComponent.displayName;
+  public icon = GroupComponent.icon;
+  public vueComponent = EmptyEditor;
+
   constructor(
     public id: string,
     public clickAction: Action[],
@@ -65,25 +70,10 @@ export class GroupComponent extends Component implements ListItemGroup {
 
   refineSelection(point: Point): Component {
     return (
-      this.components.find(comp => comp.getBoundingBox().isInside(point)) ||
-      this
+      this.components.find(
+        comp => comp.getBoundingBox().isInside(point) && !isInvisible(comp.id)
+      ) || this
     );
-  }
-
-  get vueComponent(): VueConstructor<Vue> {
-    return EmptyEditor;
-  }
-
-  get icon() {
-    return "folder";
-  }
-
-  static get icon() {
-    return "folder";
-  }
-
-  static get displayName() {
-    return "Group";
   }
 
   isGroup() {
@@ -101,15 +91,22 @@ export class GroupComponent extends Component implements ListItemGroup {
     };
   }
 
-  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
+  static componentsFromJson(jsonObj: JsonObject[]) {
     const comps: Component[] = [];
 
-    (jsonObj.components as JsonObject[]).forEach(comp => {
+    jsonObj.forEach(comp => {
       const converted = componentFromJson(comp);
       if (converted) comps.push(converted);
       else console.error("Invalid component: ", comp);
     });
 
+    return comps;
+  }
+
+  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
+    const comps: Component[] = GroupComponent.componentsFromJson(
+      jsonObj.components
+    );
     return new GroupComponent(jsonObj.id, clickAction, comps);
   }
 }

@@ -1,0 +1,75 @@
+import { BoundingBox } from "../BoundingBox";
+import TextEditor from "@/components/editors/TextEditor.vue";
+import { Action } from "../Action";
+import { JsonObject } from "../ComponentManager";
+import { Component } from "../Component";
+
+export class Text extends Component {
+  public static displayName = "Text";
+  public static icon = "text_fields";
+  public displayName = Text.displayName;
+  public icon = Text.icon;
+  public vueComponent = TextEditor;
+  // TODO: placeholder: boolean
+
+  private lastWidth = 50;
+
+  constructor(
+    public id: string,
+    public clickAction: Action[],
+    public x: number,
+    public y: number,
+    public text: string,
+    public font: string,
+    public size: number,
+    public color: string
+  ) {
+    super(id, clickAction);
+  }
+
+  draw(context: CanvasRenderingContext2D): void {
+    context.font = `${this.size}px ${this.font}`;
+    context.fillStyle = this.color;
+    context.fillText(this.text, this.x, this.y);
+    this.lastWidth = context.measureText(this.text).width;
+  }
+
+  modify(newBoundingBox: BoundingBox): void {
+    this.x = newBoundingBox.x;
+    this.y = newBoundingBox.y + this.size;
+  }
+
+  getBoundingBox() {
+    return new BoundingBox(
+      this.x,
+      this.y - this.size,
+      this.lastWidth,
+      this.size
+    );
+  }
+
+  toJsonObj() {
+    return {
+      type: Text.displayName,
+      x: this.x,
+      y: this.y,
+      text: this.text,
+      font: this.font,
+      size: this.size,
+      color: this.color
+    };
+  }
+
+  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
+    return new Text(
+      jsonObj.id,
+      clickAction,
+      jsonObj.x,
+      jsonObj.y,
+      jsonObj.text,
+      jsonObj.font,
+      jsonObj.size,
+      jsonObj.color
+    );
+  }
+}

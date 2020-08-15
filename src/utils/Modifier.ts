@@ -9,6 +9,7 @@ export const resizers: Resizer[] = [
     handle: (box: BoundingBox) =>
       new Point(box.x + box.width / 2, box.y - HANDLE_OFFEST),
     icon: "n-resize",
+    singleAxisAction: true,
     modifier: (diff, sBox) =>
       new BoundingBox(sBox.x, sBox.y + diff.y, sBox.width, sBox.height - diff.y)
   },
@@ -17,6 +18,7 @@ export const resizers: Resizer[] = [
     handle: (box: BoundingBox) =>
       new Point(box.x + box.width + HANDLE_OFFEST, box.y + box.height / 2),
     icon: "e-resize",
+    singleAxisAction: true,
     modifier: (diff, sBox) =>
       new BoundingBox(sBox.x, sBox.y, sBox.width + diff.x, sBox.height)
   },
@@ -25,6 +27,7 @@ export const resizers: Resizer[] = [
     handle: (box: BoundingBox) =>
       new Point(box.x + box.width / 2, box.y + box.height + HANDLE_OFFEST),
     icon: "n-resize",
+    singleAxisAction: true,
     modifier: (diff, sBox) =>
       new BoundingBox(sBox.x, sBox.y, sBox.width, sBox.height + diff.y)
   },
@@ -33,6 +36,7 @@ export const resizers: Resizer[] = [
     handle: (box: BoundingBox) =>
       new Point(box.x - HANDLE_OFFEST, box.y + box.height / 2),
     icon: "e-resize",
+    singleAxisAction: true,
     modifier: (diff, sBox) =>
       new BoundingBox(sBox.x + diff.x, sBox.y, sBox.width - diff.x, sBox.height)
   },
@@ -41,6 +45,7 @@ export const resizers: Resizer[] = [
     handle: (box: BoundingBox) =>
       new Point(box.x - HANDLE_OFFEST, box.y - HANDLE_OFFEST),
     icon: "nw-resize",
+    singleAxisAction: false,
     modifier: (diff, sBox) =>
       new BoundingBox(
         sBox.x + diff.x,
@@ -54,6 +59,7 @@ export const resizers: Resizer[] = [
     handle: (box: BoundingBox) =>
       new Point(box.x + box.width + HANDLE_OFFEST, box.y - HANDLE_OFFEST),
     icon: "ne-resize",
+    singleAxisAction: false,
     modifier: (diff, sBox) =>
       new BoundingBox(
         sBox.x,
@@ -70,6 +76,7 @@ export const resizers: Resizer[] = [
         box.y + box.height + HANDLE_OFFEST
       ),
     icon: "nw-resize",
+    singleAxisAction: false,
     modifier: (diff, sBox) =>
       new BoundingBox(sBox.x, sBox.y, sBox.width + diff.x, sBox.height + diff.y)
   },
@@ -78,6 +85,7 @@ export const resizers: Resizer[] = [
     handle: (box: BoundingBox) =>
       new Point(box.x - HANDLE_OFFEST, box.y + box.height + HANDLE_OFFEST),
     icon: "ne-resize",
+    singleAxisAction: false,
     modifier: (diff, sBox) =>
       new BoundingBox(
         sBox.x + diff.x,
@@ -100,6 +108,7 @@ export interface Resizer {
   handle: (box: BoundingBox) => Point;
   icon: ResizeIcon;
   modifier: Modifier;
+  singleAxisAction: boolean;
   lastPosition?: BoundingBox;
 }
 

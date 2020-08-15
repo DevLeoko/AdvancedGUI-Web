@@ -53,11 +53,13 @@ export default Vue.extend({
         icon: ResizeIcon | "move";
         startPosition: Point;
         elementStartPosition: BoundingBox;
+        singleAxis: boolean;
       }
     };
   },
 
   mounted() {
+    this.adjustHeight();
     this.redraw();
   },
 
@@ -77,13 +79,11 @@ export default Vue.extend({
     },
 
     zoom() {
-      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
-        this.zoom}px`;
+      this.adjustHeight();
     },
 
     height() {
-      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
-        this.zoom}px`;
+      this.adjustHeight();
       setTimeout(this.redraw, 10);
     },
 
@@ -93,6 +93,11 @@ export default Vue.extend({
   },
 
   methods: {
+    adjustHeight() {
+      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
+        this.zoom}px`;
+    },
+
     redraw() {
       const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
         "2d"
@@ -131,9 +136,11 @@ export default Vue.extend({
       if (this.selected) {
         let modifier;
         let modifierIcon: ResizeIcon | "move" = "move";
+        let singleAxis = false;
         if (handler) {
           modifier = handler.modifier;
           modifierIcon = handler.icon;
+          singleAxis = handler.singleAxisAction;
         } else if (this.selected.getBoundingBox().isInside(point)) {
           this.setCursor("move");
           modifier = moveModifier;
@@ -144,7 +151,8 @@ export default Vue.extend({
             startPosition: point,
             icon: modifierIcon,
             elementStartPosition: this.selected.getBoundingBox(),
-            modifier
+            modifier,
+            singleAxis
           };
         }
       }
@@ -193,7 +201,7 @@ export default Vue.extend({
 
         newBounds.ensureBounds(this.width, this.height);
 
-        this.selected?.modify(newBounds);
+        this.selected?.modify(newBounds, this.modifying.singleAxis);
       } else {
         const handler = getHanderAt(point);
         if (handler && this.selected) {
