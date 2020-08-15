@@ -342,6 +342,33 @@ a {
         }
       }
     }
+
+    .gen-box{
+      .label{
+        min-width: 70px;
+        // text-align: right;
+      }
+
+      .id-box{
+        input{
+          width: 100px;
+          text-align: center;
+          color: $light3;
+          // border-color: $dark3;
+        }
+          
+        .material-icons {
+          font-size: 20px;
+          color: $light3;
+          cursor: pointer;
+          margin-left: 7px;
+  
+          &:hover{
+          color: $light2;
+          }
+        }
+      }
+    }
   }
 
   #canvasContainer {

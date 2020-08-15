@@ -85,7 +85,7 @@ export default Vue.extend({
     ensureBounds() {
       const bounds = this.component.getBoundingBox();
       bounds.ensureBounds(this.maxWidth, this.maxHeight);
-      this.component.modify(bounds, true);
+      this.component.modify(bounds);
     },
 
     triggerFileSelector() {

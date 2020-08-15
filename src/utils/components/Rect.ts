@@ -2,7 +2,7 @@ import { BoundingBox } from "../BoundingBox";
 import RectangelEditor from "@/components/editors/RectangleEditor.vue";
 import { Rectangular } from "./Rectangular";
 import { Action } from "../Action";
-import { JsonObject } from "../ComponentManager";
+import { JsonObject, getRandomColor } from "../ComponentManager";
 
 export class Rect extends Rectangular {
   public static displayName = "Rect";
@@ -14,6 +14,7 @@ export class Rect extends Rectangular {
 
   constructor(
     public id: string,
+    public name: string,
     public clickAction: Action[],
     public x: number,
     public y: number,
@@ -21,7 +22,7 @@ export class Rect extends Rectangular {
     public height: number,
     public color: string
   ) {
-    super(id, clickAction, x, y, width, height);
+    super(id, name, clickAction, x, y, width, height);
   }
 
   draw(context: CanvasRenderingContext2D): void {
@@ -50,12 +51,26 @@ export class Rect extends Rectangular {
   static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     return new Rect(
       jsonObj.id,
+      jsonObj.name,
       clickAction,
       jsonObj.x,
       jsonObj.y,
       jsonObj.width,
       jsonObj.height,
       jsonObj.color
+    );
+  }
+
+  static generator() {
+    return new Rect(
+      "-",
+      Rect.displayName,
+      [],
+      10,
+      10,
+      80,
+      40,
+      getRandomColor()
     );
   }
 }

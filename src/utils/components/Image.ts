@@ -15,6 +15,7 @@ export class Image extends Rectangular {
 
   constructor(
     public id: string,
+    public name: string,
     public clickAction: Action[],
     public x: number,
     public y: number,
@@ -23,7 +24,7 @@ export class Image extends Rectangular {
     public image: string,
     public keepImageRatio: boolean
   ) {
-    super(id, clickAction, x, y, width, height);
+    super(id, name, clickAction, x, y, width, height);
   }
 
   draw(context: CanvasRenderingContext2D): void {
@@ -36,7 +37,7 @@ export class Image extends Rectangular {
     );
   }
 
-  modify(newBoundingBox: BoundingBox, singleAxisAction = false): void {
+  modify(newBoundingBox: BoundingBox): void {
     this.x = newBoundingBox.x;
     this.y = newBoundingBox.y;
 
@@ -93,6 +94,7 @@ export class Image extends Rectangular {
   static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     return new Image(
       jsonObj.id,
+      jsonObj.name,
       clickAction,
       jsonObj.x,
       jsonObj.y,
@@ -101,5 +103,9 @@ export class Image extends Rectangular {
       jsonObj.image,
       jsonObj.keepImageRatio
     );
+  }
+
+  static generator() {
+    return new Image("-", Image.displayName, [], 10, 10, 50, 50, "Play", true);
   }
 }

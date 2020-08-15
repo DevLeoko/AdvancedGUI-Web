@@ -57,7 +57,7 @@
         >
           <div class="itemName row">
             <span class="material-icons dragIndicator">drag_indicator</span>
-            <span class="material-icons"> {{ elem.icon }} </span>{{ elem.id }}
+            <span class="material-icons"> {{ elem.icon }} </span>{{ elem.name }}
 
             <span
               class="material-icons moreMenuBtn"

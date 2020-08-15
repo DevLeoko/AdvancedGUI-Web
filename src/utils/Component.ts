@@ -4,17 +4,17 @@ import { Point } from "./Point";
 import { VueConstructor } from "vue/types/umd";
 import { Action } from "./Action";
 import { ListItem, ListItemGroup } from "./ListItem";
-import {
-  componentFromJson,
-  ensureUniqueness,
-  JsonObject
-} from "./ComponentManager";
+import { componentFromJson, JsonObject } from "./ComponentManager";
 
 export abstract class Component implements ListItem {
   public hideable = true;
   public resizeable = false;
 
-  constructor(public id: string, public clickAction: Action[]) {}
+  constructor(
+    public id: string,
+    public name: string,
+    public clickAction: Action[]
+  ) {}
 
   abstract draw(context: CanvasRenderingContext2D): void;
   abstract getBoundingBox(): BoundingBox;
@@ -30,6 +30,7 @@ export abstract class Component implements ListItem {
   toJson() {
     return JSON.stringify({
       id: this.id,
+      name: this.name,
       action: this.clickAction.forEach(action => action.toJsonObj()),
       ...this.toJsonObj()
     });
@@ -44,15 +45,9 @@ export abstract class Component implements ListItem {
     return false;
   }
 
-  private dupIds(item: ListItem) {
-    item.id = ensureUniqueness(item.id + "-dup");
-    if (item.isGroup()) item.getItems().forEach(comp => this.dupIds(comp));
-  }
-
   duplicate(): ListItem | null {
-    const nComp = componentFromJson(JSON.parse(this.toJson()));
+    const nComp = componentFromJson(JSON.parse(this.toJson()), true);
     if (nComp) {
-      this.dupIds(nComp as ListItem);
       return nComp as ListItem;
     }
     return null;

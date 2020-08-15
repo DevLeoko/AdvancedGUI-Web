@@ -18,10 +18,11 @@ export class View extends GroupComponent {
 
   constructor(
     public id: string,
+    public name: string,
     public clickAction: Action[],
     public components: Component[]
   ) {
-    super(id, clickAction, components);
+    super(id, name, clickAction, components);
   }
 
   getCurrentComponent(): Component | null {
@@ -39,10 +40,19 @@ export class View extends GroupComponent {
     return this;
   }
 
-  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
+  static fromJson(
+    jsonObj: JsonObject,
+    clickAction: Action[],
+    reassignIDs: boolean
+  ) {
     const comps: Component[] = GroupComponent.componentsFromJson(
-      jsonObj.components
+      jsonObj.components,
+      reassignIDs
     );
-    return new View(jsonObj.id, clickAction, comps);
+    return new View(jsonObj.id, jsonObj.name, clickAction, comps);
+  }
+
+  static generator() {
+    return new View("-", View.displayName, [], []);
   }
 }

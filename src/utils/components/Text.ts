@@ -16,6 +16,7 @@ export class Text extends Component {
 
   constructor(
     public id: string,
+    public name: string,
     public clickAction: Action[],
     public x: number,
     public y: number,
@@ -24,7 +25,7 @@ export class Text extends Component {
     public size: number,
     public color: string
   ) {
-    super(id, clickAction);
+    super(id, name, clickAction);
   }
 
   draw(context: CanvasRenderingContext2D): void {
@@ -63,6 +64,7 @@ export class Text extends Component {
   static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     return new Text(
       jsonObj.id,
+      jsonObj.name,
       clickAction,
       jsonObj.x,
       jsonObj.y,
@@ -70,6 +72,20 @@ export class Text extends Component {
       jsonObj.font,
       jsonObj.size,
       jsonObj.color
+    );
+  }
+
+  static generator() {
+    return new Text(
+      "-",
+      Text.displayName,
+      [],
+      10,
+      10,
+      "Text",
+      "VT323",
+      20,
+      "#67809f"
     );
   }
 }

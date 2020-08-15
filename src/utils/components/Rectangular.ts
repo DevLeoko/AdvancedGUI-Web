@@ -5,13 +5,14 @@ import { Action } from "../Action";
 export abstract class Rectangular extends Component {
   constructor(
     public id: string,
+    public name: string,
     public clickAction: Action[],
     public x: number,
     public y: number,
     public width: number,
     public height: number
   ) {
-    super(id, clickAction);
+    super(id, name, clickAction);
   }
 
   getBoundingBox(): BoundingBox {

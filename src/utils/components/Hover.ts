@@ -19,10 +19,11 @@ export class Hover extends GroupComponent {
 
   constructor(
     public id: string,
+    public name: string,
     public clickAction: Action[],
     public components: Component[]
   ) {
-    super(id, clickAction, components);
+    super(id, name, clickAction, components);
   }
 
   getCurrentComponent(): Component | null {
@@ -40,10 +41,19 @@ export class Hover extends GroupComponent {
     return this;
   }
 
-  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
+  static fromJson(
+    jsonObj: JsonObject,
+    clickAction: Action[],
+    reassignIDs: boolean
+  ) {
     const comps: Component[] = GroupComponent.componentsFromJson(
-      jsonObj.components
+      jsonObj.components,
+      reassignIDs
     );
-    return new Hover(jsonObj.id, clickAction, comps);
+    return new Hover(jsonObj.id, jsonObj.name, clickAction, comps);
+  }
+
+  static generator() {
+    return new Hover("-", Hover.displayName, [], []);
   }
 }

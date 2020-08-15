@@ -19,10 +19,11 @@ export class GroupComponent extends Component implements ListItemGroup {
 
   constructor(
     public id: string,
+    public name: string,
     public clickAction: Action[],
     public components: Component[]
   ) {
-    super(id, clickAction);
+    super(id, name, clickAction);
   }
 
   draw(context: CanvasRenderingContext2D): void {
@@ -91,11 +92,11 @@ export class GroupComponent extends Component implements ListItemGroup {
     };
   }
 
-  static componentsFromJson(jsonObj: JsonObject[]) {
+  static componentsFromJson(jsonObj: JsonObject[], reassignIDs: boolean) {
     const comps: Component[] = [];
 
     jsonObj.forEach(comp => {
-      const converted = componentFromJson(comp);
+      const converted = componentFromJson(comp, reassignIDs);
       if (converted) comps.push(converted);
       else console.error("Invalid component: ", comp);
     });
@@ -103,10 +104,19 @@ export class GroupComponent extends Component implements ListItemGroup {
     return comps;
   }
 
-  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
+  static fromJson(
+    jsonObj: JsonObject,
+    clickAction: Action[],
+    reassignIDs: boolean
+  ) {
     const comps: Component[] = GroupComponent.componentsFromJson(
-      jsonObj.components
+      jsonObj.components,
+      reassignIDs
     );
-    return new GroupComponent(jsonObj.id, clickAction, comps);
+    return new GroupComponent(jsonObj.id, jsonObj.name, clickAction, comps);
+  }
+
+  static generator() {
+    return new GroupComponent("-", GroupComponent.displayName, [], []);
   }
 }

@@ -59,7 +59,10 @@
               </div>
               <div class="divider"></div>
             </template>
-            <div v-for="(key, index) in Object.keys(generators)" :key="index">
+            <div
+              v-for="(key, index) in Object.keys(componentInfo)"
+              :key="index"
+            >
               <div class="divider" v-if="index != 0"></div>
               <div class="entry" @click.stop="addNewCompoenent(key)">
                 <span class="material-icons">{{
@@ -89,11 +92,23 @@
       </div>
       <div class="sidebar" id="settings">
         <div id="generalSettings" v-if="selected">
-          <div class="settings-box">
+          <div class="settings-box gen-box">
             <h1><span class="material-icons">tune</span> General settings</h1>
             <div class="settings-row">
-              <span class="label">Component ID</span>
-              <input type="text" v-model="selected.component.id" />
+              <span class="label">Name</span>
+              <input type="text" v-model="selected.component.name" />
+            </div>
+            <div class="settings-row id-box">
+              <span class="label">ID</span>
+              <input
+                type="text"
+                :value="selected.component.id"
+                @input="$refs.idInput.value = selected.component.id"
+                ref="idInput"
+              />
+              <span class="material-icons" @click="copyID()" ref="copyIcon"
+                >content_copy</span
+              >
             </div>
             <div class="settings-row">
               <span class="label">Visibility</span>
@@ -180,12 +195,10 @@ import ComponentList from "./components/ComponentList.vue";
 import MyCanvas from "./components/Canvas.vue";
 import Vue from "vue";
 import { Component } from "./utils/Component";
-import { GroupComponent } from "./utils/components/GroupComponent";
-import { Rect } from "./utils/components/Rect";
 import {
-  generators,
   componentInfo,
-  componentFromJson
+  componentFromJson,
+  registerComponent
 } from "./utils/ComponentManager";
 import { actions, actionFromJson } from "./utils/ActionManager";
 import { setupImageManager } from "./utils/ImageManager";
@@ -203,7 +216,6 @@ export default Vue.extend({
 
       selected: null as null | { component: Component; action: Action | null },
 
-      generators,
       componentInfo,
       actions,
 
@@ -213,22 +225,22 @@ export default Vue.extend({
       copiedAction: null as null | string,
 
       elements: [
-        new Rect("Blue Rect", [], 10, 15, 300, 30, "#22a7f0"),
-        new GroupComponent(
-          "Main Group",
-          [],
-          [
-            new GroupComponent(
-              "Group 2",
-              [],
-              [
-                new Rect("Orange", [], 300, 100, 34, 23, "#f2784b"),
-                new Rect("Rect 2", [], 150, 205, 37, 38, "#5333ed")
-              ]
-            ),
-            new Rect("Component", [], 90, 65, 67, 78, "#f64747")
-          ]
-        )
+        // new Rect("Blue Rect", [], 10, 15, 300, 30, "#22a7f0"),
+        // new GroupComponent(
+        //   "Main Group",
+        //   [],
+        //   [
+        //     new GroupComponent(
+        //       "Group 2",
+        //       [],
+        //       [
+        //         new Rect("Orange", [], 300, 100, 34, 23, "#f2784b"),
+        //         new Rect("Rect 2", [], 150, 205, 37, 38, "#5333ed")
+        //       ]
+        //     ),
+        //     new Rect("Component", [], 90, 65, 67, 78, "#f64747")
+        //   ]
+        // )
       ] as Component[]
     };
   },
@@ -259,7 +271,9 @@ export default Vue.extend({
     },
 
     addNewCompoenent(key: string) {
-      const nComp = generators[key]();
+      const nComp = componentInfo[key].generator();
+      registerComponent(nComp);
+
       this.elements.splice(0, 0, nComp);
       this.selected = {
         component: nComp,
@@ -305,6 +319,18 @@ export default Vue.extend({
           action: null
         };
       }
+    },
+
+    copyID() {
+      const input = this.$refs.idInput as HTMLInputElement;
+      const icon = this.$refs.copyIcon as HTMLElement;
+
+      input.select();
+      input.setSelectionRange(0, 99999);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      document.execCommand("copy");
+
+      icon.innerText = "assignment_turned_in";
     }
   }
 });
