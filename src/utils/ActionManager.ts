@@ -6,6 +6,9 @@ import { PermissionCheck } from "./actions/PermissionCheck";
 import { VueConstructor } from "vue";
 
 import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
+import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
+import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
+import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
 import { MessageAction } from "./actions/MessageAction";
 import { VisiblityAction } from "./actions/VisibilityAction";
 import { Component } from "./Component";
@@ -31,19 +34,19 @@ export function setup() {
     generator: () => new MessageAction("&a&lHey there!"),
     fromJson: MessageAction.fromJson,
     icon: MessageAction.icon,
-    component: CommandEditor
+    component: MessageEditor
   };
   actions[VisiblityAction.id] = {
     generator: comp => new VisiblityAction(comp.id, true),
     fromJson: VisiblityAction.fromJson,
     icon: VisiblityAction.icon,
-    component: CommandEditor
+    component: VisibilityEditor
   };
   actions[ViewAction.id] = {
     generator: () => new ViewAction("", ""),
     fromJson: ViewAction.fromJson,
     icon: ViewAction.icon,
-    component: CommandEditor
+    component: ViewEditor
   };
 
   actions[ListAction.id] = {

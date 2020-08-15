@@ -331,6 +331,8 @@ export default Vue.extend({
       document.execCommand("copy");
 
       icon.innerText = "assignment_turned_in";
+
+      setTimeout(() => (icon.innerText = "content_copy"), 1000);
     }
   }
 });

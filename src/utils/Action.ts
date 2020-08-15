@@ -10,6 +10,10 @@ export abstract class Action implements ListItem {
   abstract toDataObj(): JsonObject;
   abstract get id(): string;
 
+  get name() {
+    return this.id;
+  }
+
   toJsonObj() {
     return {
       id: this.id,

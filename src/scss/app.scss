@@ -54,6 +54,10 @@ a {
   }
 }
 
+.red-text{
+  color: $red !important;
+}
+
 .absoluteMenu {
   position: absolute;
   background-color: $dark3;
@@ -265,7 +269,7 @@ a {
 
     
   
-    input {
+    input, textarea {
       background-color: transparent;
       border: $inputBorder;
       border-radius: 5px;
