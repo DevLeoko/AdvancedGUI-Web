@@ -2,7 +2,7 @@
   <canvas
     ref="canvas"
     id="canvas"
-    @mousedown="onClickDown"
+    @mousedown.prevent="onClickDown"
     @mouseup="onClickUp"
     @mousemove="onMove"
     @mouseleave="onClickUp"
@@ -16,7 +16,11 @@ import Vue from "vue";
 import { Point } from "@/utils/Point";
 import { ResizeIcon, Modifier, moveModifier } from "@/utils/Modifier";
 import { Component } from "@/utils/Component";
-import { isInvisible } from "@/utils/ComponentManager";
+import {
+  isInvisible,
+  invisible,
+  components as registeredComponents
+} from "@/utils/ComponentManager";
 import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
 
@@ -54,7 +58,10 @@ export default Vue.extend({
         startPosition: Point;
         elementStartPosition: BoundingBox;
         singleAxis: boolean;
-      }
+      },
+
+      invisible,
+      registeredComponents
     };
   },
 
@@ -89,6 +96,17 @@ export default Vue.extend({
 
     width() {
       setTimeout(this.redraw, 10);
+    },
+
+    registeredComponents() {
+      if (this.selected && !this.registeredComponents[this.selected.id])
+        this.$emit("select", null);
+
+      this.redraw();
+    },
+
+    invisible() {
+      this.redraw();
     }
   },
 

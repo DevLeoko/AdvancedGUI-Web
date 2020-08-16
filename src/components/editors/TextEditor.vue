@@ -9,6 +9,10 @@
       <span class="label">Text</span>
       <input type="text" v-model="component.text" />
     </div>
+    <div class="settings-row">
+      <span class="label">Contains placeholders</span>
+      <input type="checkbox" v-model="component.placeholder" />
+    </div>
     <br />
     <span class="label">Style</span>
     <div class="settings-row">

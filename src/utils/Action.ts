@@ -32,4 +32,8 @@ export abstract class Action implements ListItem {
   duplicate() {
     return actionFromJson(this.toJsonObj());
   }
+
+  delete() {
+    // Action objects are generally not tracked
+  }
 }

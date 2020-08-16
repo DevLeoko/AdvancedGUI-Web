@@ -7,6 +7,7 @@ import { Image } from "./components/Image";
 import { Hover } from "./components/Hover";
 import { View } from "./components/View";
 import Vue from "vue";
+import { actionsFromJson } from "./ActionManager";
 
 export interface JsonObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,11 +70,11 @@ export function componentFromJson(
   reassignIDs = false
 ): Component | null {
   if (jsonObj.type) {
-    // TODO: convert action
+    const actions = actionsFromJson(jsonObj.action);
     if (reassignIDs) jsonObj.id = getUniqueID();
     const component = componentInfo[jsonObj.type].fromJson(
       jsonObj,
-      [],
+      actions,
       reassignIDs
     );
     Vue.set(components, component.id, component);
@@ -95,6 +96,10 @@ export function getRandomColor() {
 export function registerComponent(component: Component) {
   component.id = getUniqueID();
   Vue.set(components, component.id, component);
+}
+
+export function unregisterComponent(component: Component) {
+  Vue.delete(components, component.id);
 }
 
 export function setup() {

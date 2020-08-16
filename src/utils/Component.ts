@@ -4,7 +4,11 @@ import { Point } from "./Point";
 import { VueConstructor } from "vue/types/umd";
 import { Action } from "./Action";
 import { ListItem, ListItemGroup } from "./ListItem";
-import { componentFromJson, JsonObject } from "./ComponentManager";
+import {
+  componentFromJson,
+  JsonObject,
+  unregisterComponent
+} from "./ComponentManager";
 
 export abstract class Component implements ListItem {
   public hideable = true;
@@ -31,7 +35,7 @@ export abstract class Component implements ListItem {
     return JSON.stringify({
       id: this.id,
       name: this.name,
-      action: this.clickAction.forEach(action => action.toJsonObj()),
+      action: this.clickAction.map(action => action.toJsonObj()),
       ...this.toJsonObj()
     });
   }
@@ -51,5 +55,9 @@ export abstract class Component implements ListItem {
       return nComp as ListItem;
     }
     return null;
+  }
+
+  delete() {
+    unregisterComponent(this);
   }
 }

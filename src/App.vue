@@ -34,12 +34,10 @@
     </div>
     <div class="row mainSpace">
       <div id="compTree">
-        <!-- TODO 1+1  -->
         <component-list
           class="sidebar"
           root
           :components="elements"
-          @change="1 + 1"
           :value="selected ? selected.component : null"
           @input="
             comp => (selected = comp ? { component: comp, action: null } : null)
@@ -76,7 +74,7 @@
       </div>
 
       <div id="canvasContainer" @click.self="selected = null">
-        <div id="canvasPadding">
+        <div id="canvasPadding" @click.self="selected = null">
           <my-canvas
             :width="width * 128"
             :height="height * 128"

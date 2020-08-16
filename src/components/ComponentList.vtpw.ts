@@ -1,4 +1,4 @@
-<template>
+/*<template>
   <div>
     <div class="moreMenu absoluteMenu" ref="moreMenu">
       <template v-if="optElem">
@@ -73,6 +73,7 @@
               :itemLimit="elem.itemLimit"
               :itemClasses="elem.itemClasses"
               @input="val => $emit('input', val)"
+              @change="$emit('change')"
               @copy="val => $emit('copy', val)"
             ></component-list>
           </div>
@@ -85,13 +86,17 @@
       </div>
     </div>
   </div>
-</template>
+</template>*/
 
-<script lang="ts">
+/*<script lang="ts">*/
 import DragZone from "./DragZone.vue";
 import Vue from "vue";
 import { ListItem } from "@/utils/ListItem";
-import { toggleVis, invisible } from "@/utils/ComponentManager";
+import {
+  toggleVis,
+  invisible,
+  unregisterComponent
+} from "@/utils/ComponentManager";
 
 export default Vue.extend({
   name: "ComponentList",
@@ -182,6 +187,8 @@ export default Vue.extend({
         this.treeState.dragElementsList?.splice(oldIndex, 1);
 
       this.components.splice(index, 0, this.treeState.dragElement);
+
+      this.$emit("change");
     },
 
     openMenu(elem: ListItem, ev: MouseEvent) {
@@ -211,6 +218,7 @@ export default Vue.extend({
           this.components.push(nComp);
         }
       }
+      this.$emit("change");
     },
 
     deleteOpt() {
@@ -219,10 +227,13 @@ export default Vue.extend({
         this.components.splice(index, 1);
         this.optElem?.delete();
       }
+
+      this.$emit("change");
     },
 
     visibilityOpt() {
       toggleVis(this.optElem!.id!);
+      this.$emit("change");
     },
 
     copyOpt() {
@@ -230,9 +241,9 @@ export default Vue.extend({
     }
   }
 });
-</script>
+/*</script>*/
 
-<style lang="scss" scoped>
+/*<style lang="scss" scoped>
 .dropzone {
   height: 5px;
   width: 100%;
@@ -330,4 +341,4 @@ export default Vue.extend({
 .subFolder {
   margin-left: 20px;
 }
-</style>
+</style>*/

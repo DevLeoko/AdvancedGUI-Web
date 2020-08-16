@@ -119,4 +119,10 @@ export class GroupComponent extends Component implements ListItemGroup {
   static generator() {
     return new GroupComponent("-", GroupComponent.displayName, [], []);
   }
+
+  delete() {
+    super.delete();
+
+    this.components.forEach(comp => comp.delete());
+  }
 }

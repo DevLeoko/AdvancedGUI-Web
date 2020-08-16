@@ -10,7 +10,6 @@ export class Text extends Component {
   public displayName = Text.displayName;
   public icon = Text.icon;
   public vueComponent = TextEditor;
-  // TODO: placeholder: boolean
 
   private lastWidth = 50;
 
@@ -23,7 +22,8 @@ export class Text extends Component {
     public text: string,
     public font: string,
     public size: number,
-    public color: string
+    public color: string,
+    public placeholder: boolean
   ) {
     super(id, name, clickAction);
   }
@@ -57,7 +57,8 @@ export class Text extends Component {
       text: this.text,
       font: this.font,
       size: this.size,
-      color: this.color
+      color: this.color,
+      placeholder: this.placeholder
     };
   }
 
@@ -71,7 +72,8 @@ export class Text extends Component {
       jsonObj.text,
       jsonObj.font,
       jsonObj.size,
-      jsonObj.color
+      jsonObj.color,
+      jsonObj.placeholder
     );
   }
 
@@ -85,7 +87,8 @@ export class Text extends Component {
       "Text",
       "VT323",
       20,
-      "#67809f"
+      "#67809f",
+      false
     );
   }
 }
