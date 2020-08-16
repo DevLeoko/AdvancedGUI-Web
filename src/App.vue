@@ -157,7 +157,7 @@
             <div v-if="selected && selected.action" id="actionEditor">
               <h2>
                 <span class="material-icons">edit</span> Edit
-                {{ selected.action.id.toLowerCase() }} action
+                {{ selected.action.id.toLowerCase() }}
               </h2>
               <component
                 v-bind:is="actions[selected.action.id].component"
@@ -257,9 +257,11 @@ export default Vue.extend({
   methods: {
     showActionAddMenu(ev: MouseEvent) {
       const menu = this.$refs.actionAddMenu as HTMLElement;
-      menu.style.top = ev.y + "px";
-      menu.style.left = ev.x + "px";
       menu.style.display = "block";
+      setTimeout(() => {
+        menu.style.top = ev.y + 10 + "px";
+        menu.style.left = ev.x - menu.offsetWidth / 2 + "px";
+      }, 10);
     },
 
     addNewAction(key: string) {

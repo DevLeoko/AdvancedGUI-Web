@@ -66,7 +66,7 @@ export function toggleVis(id: string) {
 
 export function componentFromJson(
   jsonObj: JsonObject,
-  reassignIDs = false //TODO use this
+  reassignIDs = false
 ): Component | null {
   if (jsonObj.type) {
     // TODO: convert action

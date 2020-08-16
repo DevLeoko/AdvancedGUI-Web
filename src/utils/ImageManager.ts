@@ -14,14 +14,16 @@ export async function registerImage(file: File | Blob, imageName: string) {
   const url = await getBase64(file);
 
   const imageElement = document.createElement("img") as HTMLImageElement;
+  imageElement.onload = () => {
+    Vue.set(images, imageName, {
+      name: imageName,
+      data: imageElement,
+      ratio: imageElement.naturalWidth / imageElement.naturalHeight
+    });
+  };
+
   imageElement.src = url;
   imageContainer.appendChild(imageElement);
-
-  Vue.set(images, imageName, {
-    name: imageName,
-    data: imageElement,
-    ratio: imageElement.width / imageElement.height
-  });
 }
 
 export function setupImageManager(hiddenImageContainer: HTMLElement) {

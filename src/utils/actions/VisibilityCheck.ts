@@ -3,24 +3,24 @@ import { JsonObject } from "../ComponentManager";
 import { Action } from "../Action";
 import { actionsFromJson } from "../ActionManager";
 
-export class PermissionCheck extends CheckAction {
-  public static id = "Permission Check";
-  public id = PermissionCheck.id;
+export class VisibilityCheck extends CheckAction {
+  public static id = "Visiblity Check";
+  public id = VisibilityCheck.id;
 
-  constructor(public actions: Action[], public permission: string) {
+  constructor(public actions: Action[], public component: string) {
     super(actions);
   }
 
   static fromJson(jsonObj: JsonObject) {
-    return new PermissionCheck(
+    return new VisibilityCheck(
       actionsFromJson(jsonObj.actions),
-      jsonObj.permission
+      jsonObj.component
     );
   }
 
   toCheckDataObj(): JsonObject {
     return {
-      permission: this.permission
+      component: this.component
     };
   }
 }

@@ -66,6 +66,7 @@ a {
   display: none;
   box-shadow: $shadow;
   overflow: hidden;
+  transition-duration: 50ms;
 
   .divider {
     width: 100%;
@@ -342,7 +343,13 @@ a {
 
         h2{
           margin-top: 0;
+          margin-bottom: 10px;
           justify-content: start;
+        }
+        
+        p {
+          color: $light2;
+          margin-top: 5px;
         }
       }
     }

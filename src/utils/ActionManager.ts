@@ -9,10 +9,17 @@ import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
 import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
 import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
 import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
+import VisibilityCheckEditor from "@/components/actionEditors/checks/VisibilityCheckEditor.vue";
+import PermissionCheckEditor from "@/components/actionEditors/checks/PermissionCheckEditor.vue";
+import MoneyCheckEditor from "@/components/actionEditors/checks/MoneyCheckEditor.vue";
+import ItemCheckEditor from "@/components/actionEditors/checks/ItemCheckEditor.vue";
 import { MessageAction } from "./actions/MessageAction";
 import { VisiblityAction } from "./actions/VisibilityAction";
 import { Component } from "./Component";
 import { ViewAction } from "./actions/ViewAction";
+import { ItemCheck } from "./actions/ItemCheck";
+import { MoneyCheck } from "./actions/MoneyCheck";
+import { VisibilityCheck } from "./actions/VisibilityCheck";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;
@@ -58,7 +65,26 @@ export function setup() {
   actions[PermissionCheck.id] = {
     generator: () => new PermissionCheck([], "ag.group.premium"),
     fromJson: PermissionCheck.fromJson,
-    icon: PermissionCheck.icon
+    icon: PermissionCheck.icon,
+    component: PermissionCheckEditor
+  };
+  actions[ItemCheck.id] = {
+    generator: () => new ItemCheck([], 3, 264, null),
+    fromJson: ItemCheck.fromJson,
+    icon: ItemCheck.icon,
+    component: ItemCheckEditor
+  };
+  actions[MoneyCheck.id] = {
+    generator: () => new MoneyCheck([], 50),
+    fromJson: MoneyCheck.fromJson,
+    icon: MoneyCheck.icon,
+    component: MoneyCheckEditor
+  };
+  actions[VisibilityCheck.id] = {
+    generator: () => new VisibilityCheck([], ""),
+    fromJson: VisibilityCheck.fromJson,
+    icon: VisibilityCheck.icon,
+    component: VisibilityCheckEditor
   };
 }
 
