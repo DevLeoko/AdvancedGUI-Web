@@ -1,3 +1,5 @@
+import Vue from "vue";
+
 export function getBase64(file: File | Blob): Promise<string> {
   const reader = new FileReader();
   reader.readAsDataURL(file);
@@ -16,18 +18,22 @@ export interface Font {
 
 export const fonts: { [key: string]: Font } = {};
 
-export async function registerFont(file: File | Blob, fontName: string) {
-  const dataUrl = await getBase64(file);
+export async function registerFontBase64(dataUrl: string, fontName: string) {
   const font = new FontFace(fontName, `url(${dataUrl})`);
   // wait for font to be loaded
   await font.load();
   // add font to document
   document.fonts.add(font);
 
-  fonts[fontName] = {
+  Vue.set(fonts, fontName, {
     name: fontName,
     data: dataUrl
-  };
+  });
+}
+
+export async function registerFont(file: File | Blob, fontName: string) {
+  const dataUrl = await getBase64(file);
+  await registerFontBase64(dataUrl, fontName);
 }
 
 export function registerDefaultFonts() {

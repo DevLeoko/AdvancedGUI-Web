@@ -357,7 +357,6 @@ a {
     .gen-box{
       .label{
         min-width: 70px;
-        // text-align: right;
       }
 
       .id-box{
@@ -385,9 +384,6 @@ a {
   #canvasContainer {
     flex-grow: 1;
     overflow: auto;
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
   
     #canvasPadding {
       margin: auto;

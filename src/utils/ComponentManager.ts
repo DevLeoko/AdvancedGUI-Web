@@ -8,10 +8,24 @@ import { Hover } from "./components/Hover";
 import { View } from "./components/View";
 import Vue from "vue";
 import { actionsFromJson } from "./ActionManager";
+import { Font } from "./FontManager";
 
 export interface JsonObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
+}
+
+export interface ExportData {
+  type: "savepoint" | "usage";
+  invisible: string[];
+  fonts: Font[];
+  width: number;
+  height: number;
+  images: {
+    name: string;
+    data: string;
+  }[];
+  componentTree: GroupComponent;
 }
 
 export type JsonConverter = (
@@ -94,7 +108,7 @@ export function getRandomColor() {
 }
 
 export function registerComponent(component: Component) {
-  component.id = getUniqueID();
+  if (component.id == "-") component.id = getUniqueID();
   Vue.set(components, component.id, component);
 }
 

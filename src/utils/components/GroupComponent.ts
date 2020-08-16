@@ -87,7 +87,7 @@ export class GroupComponent extends Component implements ListItemGroup {
 
   toJsonObj() {
     return {
-      type: GroupComponent.displayName,
+      type: this.displayName,
       components: this.components.map(comp => JSON.parse(comp.toJson()))
     };
   }

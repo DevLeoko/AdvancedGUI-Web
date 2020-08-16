@@ -1,4 +1,4 @@
-<template>
+/*<template>
   <div id="app">
     <div class="head">
       <div class="input">
@@ -195,9 +195,9 @@
       @change="checkForUpload()"
     />
   </div>
-</template>
+</template>*/
 
-<script lang="ts">
+/*<script lang="ts">*/
 import ComponentList from "./components/ComponentList.vue";
 import MyCanvas from "./components/Canvas.vue";
 import Vue from "vue";
@@ -438,8 +438,8 @@ export default Vue.extend({
     }
   }
 });
-</script>
+/*</script>*/
 
-<style lang="scss">
+/*<style lang="scss">
 @import "@/scss/app.scss";
-</style>
+</style>*/

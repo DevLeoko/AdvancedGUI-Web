@@ -38,6 +38,9 @@ export default Vue.extend({
       type: Number,
       required: true
     },
+    pauseRendering: {
+      type: Boolean
+    },
     selected: {
       type: Object as () => Component | null,
       required: false
@@ -107,6 +110,10 @@ export default Vue.extend({
 
     invisible() {
       this.redraw();
+    },
+
+    pauseRendering() {
+      this.redraw();
     }
   },
 
@@ -117,6 +124,8 @@ export default Vue.extend({
     },
 
     redraw() {
+      if (this.pauseRendering) return;
+
       const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
         "2d"
       ) as CanvasRenderingContext2D;

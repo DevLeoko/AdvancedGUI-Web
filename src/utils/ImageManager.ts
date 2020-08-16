@@ -10,9 +10,7 @@ export interface Image {
 export const images: { [key: string]: Image } = {};
 let imageContainer: HTMLElement;
 
-export async function registerImage(file: File | Blob, imageName: string) {
-  const url = await getBase64(file);
-
+export async function registerImageBase64(dataUrl: string, imageName: string) {
   const imageElement = document.createElement("img") as HTMLImageElement;
   imageElement.onload = () => {
     Vue.set(images, imageName, {
@@ -22,8 +20,13 @@ export async function registerImage(file: File | Blob, imageName: string) {
     });
   };
 
-  imageElement.src = url;
+  imageElement.src = dataUrl;
   imageContainer.appendChild(imageElement);
+}
+
+export async function registerImage(file: File | Blob, imageName: string) {
+  const url = await getBase64(file);
+  await registerImageBase64(url, imageName);
 }
 
 export function setupImageManager(hiddenImageContainer: HTMLElement) {
