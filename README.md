@@ -1,4 +1,14 @@
-# advancedgui-web
+# AdvancedGUI Web Panel
+
+This is the official Web Panel to create layouts for the AdvancedGUI-System. In it's core it is a graphic editor using Vue and HTML5 Canvas. The panel depends on a minimum of other resources to keep it simple and lightweight.
+
+The code, especially the component and action system, are hightly modular making it very easy to add new and very complex logic with as little code as possible.
+
+## Licensing
+Note that even though the project is licensed under our custom MIT based license, third-party materials, such as graphics or fonts may be subject to copyright restrictions or other licenses.
+
+## Demo
+The master branch is deployed to: https://advancedgui.netlify.app/
 
 ## Project setup
 ```
@@ -14,16 +24,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
