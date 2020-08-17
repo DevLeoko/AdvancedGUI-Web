@@ -7,7 +7,8 @@ import { ListItem, ListItemGroup } from "./ListItem";
 import {
   componentFromJson,
   JsonObject,
-  unregisterComponent
+  unregisterComponent,
+  ComponentType
 } from "./ComponentManager";
 
 export abstract class Component implements ListItem {
@@ -28,7 +29,7 @@ export abstract class Component implements ListItem {
   ): void;
   abstract get vueComponent(): VueConstructor<Vue>;
   abstract get icon(): string;
-  abstract get displayName(): string;
+  abstract get displayName(): ComponentType;
   abstract toJsonObj(): JsonObject;
 
   toJson() {

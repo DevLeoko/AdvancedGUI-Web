@@ -2,10 +2,10 @@ import { BoundingBox } from "../BoundingBox";
 import RectangelEditor from "@/components/editors/RectangleEditor.vue";
 import { Rectangular } from "./Rectangular";
 import { Action } from "../Action";
-import { JsonObject, getRandomColor } from "../ComponentManager";
+import { JsonObject, getRandomColor, ComponentType } from "../ComponentManager";
 
 export class Rect extends Rectangular {
-  public static displayName = "Rect";
+  public static displayName: ComponentType = "Rect";
   public static icon = "crop_free";
   public displayName = Rect.displayName;
   public icon = Rect.icon;

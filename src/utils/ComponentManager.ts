@@ -15,6 +15,14 @@ export interface JsonObject {
   [key: string]: any;
 }
 
+export type ComponentType =
+  | "Rect"
+  | "Group"
+  | "Hover"
+  | "Text"
+  | "Image"
+  | "View";
+
 export interface ExportData {
   type: "savepoint" | "usage";
   invisible: string[];
@@ -118,9 +126,9 @@ export function unregisterComponent(component: Component) {
 
 export function setup() {
   componentInfo[Rect.displayName] = Rect;
+  componentInfo[Text.displayName] = Text;
+  componentInfo[Image.displayName] = Image;
   componentInfo[GroupComponent.displayName] = GroupComponent;
   componentInfo[Hover.displayName] = Hover;
   componentInfo[View.displayName] = View;
-  componentInfo[Text.displayName] = Text;
-  componentInfo[Image.displayName] = Image;
 }

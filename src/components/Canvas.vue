@@ -189,10 +189,17 @@ export default Vue.extend({
 
     onClickUp(event: MouseEvent) {
       const point = this.getCursorPosition(event);
+      const hovered = this.getElementAt(point);
 
       if (Date.now() - this.mouseDownTime < 200) {
-        if (this.selected)
-          this.$emit("select", this.selected.refineSelection(point));
+        if (this.selected) {
+          if (
+            hovered &&
+            this.containsComponentAtPoint(hovered, this.selected, point)
+          )
+            this.$emit("select", this.selected.refineSelection(point));
+          else this.$emit("select", hovered);
+        }
 
         this.redraw();
       }
@@ -204,6 +211,22 @@ export default Vue.extend({
       return this.elements.find(element =>
         element.getBoundingBox().isInside(point)
       );
+    },
+
+    containsComponentAtPoint(
+      comp: Component,
+      find: Component,
+      point: Point
+    ): boolean {
+      let lastFound = comp;
+
+      do {
+        if (lastFound == find) return true;
+        comp = lastFound;
+        lastFound = comp.refineSelection(point);
+      } while (lastFound != comp);
+
+      return lastFound == find;
     },
 
     setCursor(style: "move" | "default" | "pointer" | "move" | ResizeIcon) {

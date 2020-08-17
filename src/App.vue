@@ -27,7 +27,7 @@
         <span class="material-icons">get_app</span>
         <span class="text">Export savepoint</span>
       </div>
-      <div class="btn export">
+      <div class="btn export" @click="exportModal = true">
         <span class="material-icons">get_app</span>
         <span class="text">Export for usage</span>
       </div>
@@ -185,6 +185,12 @@
         </div>
       </div>
     </div>
+
+    <export-prompt
+      v-model="exportModal"
+      @export="externalExport()"
+    ></export-prompt>
+    <loading-screen></loading-screen>
     <div ref="imageContainer" style="display:none"></div>
     <a ref="downloadAnchor" style="display:none"></a>
     <input
@@ -198,6 +204,8 @@
 </template>
 
 <script lang="ts">
+import LoadingScreen, { loading, error } from "./components/LoadingScreen.vue";
+import ExportPrompt from "./components/ExportPrompt.vue";
 import ComponentList from "./components/ComponentList.vue";
 import MyCanvas from "./components/Canvas.vue";
 import Vue from "vue";
@@ -222,7 +230,7 @@ import { GroupComponent } from "./utils/components/GroupComponent";
 
 export default Vue.extend({
   name: "App",
-  components: { ComponentList, MyCanvas },
+  components: { ComponentList, MyCanvas, ExportPrompt, LoadingScreen },
 
   data: () => {
     return {
@@ -234,6 +242,8 @@ export default Vue.extend({
 
       componentInfo,
       actions,
+
+      exportModal: false,
 
       setupImageManager,
 
@@ -339,9 +349,16 @@ export default Vue.extend({
     },
 
     exportSavepoint() {
+      loading(true);
+      setTimeout(() => {
+        this.exportData(JSON.stringify(this.bundleToJson()));
+        loading(false);
+      });
+    },
+
+    exportData(data: string) {
       const dataStr =
-        "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(this.bundleToJson()));
+        "data:text/json;charset=utf-8," + encodeURIComponent(data);
       const dlAnchorElem = this.$refs.downloadAnchor as HTMLElement;
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute("download", "AdvancedGUI.json");
@@ -373,10 +390,8 @@ export default Vue.extend({
 
     async loadFromJsonObj(jsonObj: ExportData, resetOld: boolean) {
       this.pauseRendering = true;
-      if (jsonObj.type != "savepoint") {
-        console.error("This .json file is not an AdvancedGUI savepoint!");
-        return;
-      }
+      if (jsonObj.type != "savepoint")
+        throw Error("This .json file is not an AdvancedGUI savepoint!");
 
       this.selected = null;
       this.copiedAction = null;
@@ -403,7 +418,12 @@ export default Vue.extend({
           this.elements.push(component);
           registerComponent(component);
         } else {
-          console.error("Unable to import component", componentData);
+          throw Error(
+            `Unable to import component ${JSON.stringify(componentData).substr(
+              0,
+              100
+            )}`
+          );
         }
       });
 
@@ -427,14 +447,38 @@ export default Vue.extend({
       const selector = this.$refs.importFileSelect as HTMLInputElement;
 
       if (selector.files?.length) {
+        loading(true);
         const file = selector.files[0];
         const json = await file.text();
-        this.loadFromJsonObj(JSON.parse(json), true);
+        this.loadFromJsonObj(JSON.parse(json), true)
+          .then(() => loading(false))
+          .catch((err: Error) => error(err.message));
       }
     },
 
     triggerImportSelector() {
       (this.$refs.importFileSelect as HTMLElement).click();
+    },
+
+    externalExport() {
+      this.exportModal = false;
+      loading(true);
+      fetch(
+        "https://advancedgui-convert.netlify.app/.netlify/functions/convert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(this.bundleToJson())
+        }
+      )
+        .then(resp => resp.text())
+        .then(data => {
+          this.exportData(data);
+          loading(false);
+        })
+        .catch((err: Error) => error(`Error durring export: ${err.message}`));
     }
   }
 });

@@ -1,11 +1,11 @@
 import { BoundingBox } from "../BoundingBox";
 import TextEditor from "@/components/editors/TextEditor.vue";
 import { Action } from "../Action";
-import { JsonObject } from "../ComponentManager";
+import { JsonObject, ComponentType } from "../ComponentManager";
 import { Component } from "../Component";
 
 export class Text extends Component {
-  public static displayName = "Text";
+  public static displayName: ComponentType = "Text";
   public static icon = "text_fields";
   public displayName = Text.displayName;
   public icon = Text.icon;

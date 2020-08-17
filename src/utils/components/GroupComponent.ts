@@ -7,11 +7,12 @@ import { ListItemGroup } from "../ListItem";
 import {
   componentFromJson,
   JsonObject,
-  isInvisible
+  isInvisible,
+  ComponentType
 } from "../ComponentManager";
 
 export class GroupComponent extends Component implements ListItemGroup {
-  public static displayName = "Group";
+  public static displayName: ComponentType = "Group";
   public static icon = "folder";
   public displayName = GroupComponent.displayName;
   public icon = GroupComponent.icon;

@@ -2,11 +2,11 @@ import { BoundingBox } from "../BoundingBox";
 import ImageEditor from "@/components/editors/ImageEditor.vue";
 import { Rectangular } from "./Rectangular";
 import { Action } from "../Action";
-import { JsonObject } from "../ComponentManager";
+import { JsonObject, ComponentType } from "../ComponentManager";
 import { images } from "../ImageManager";
 
 export class Image extends Rectangular {
-  public static displayName = "Image";
+  public static displayName: ComponentType = "Image";
   public static icon = "image";
   public displayName = Image.displayName;
   public icon = Image.icon;

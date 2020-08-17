@@ -7,11 +7,19 @@
             v-for="(comp, index) in component.components"
             :key="index"
             :value="index"
-            >{{ index == 0 ? `Default (${comp.id})` : comp.id }}</option
+            >{{ index == 0 ? `Default (${comp.name})` : comp.name }}</option
           >
         </select>
         <span>Show component</span>
       </div>
+    </div>
+    <div class="settings-row">
+      <p>
+        The View-Component is a Group-Component that can contain multiple
+        components. The first one is the normal component that will be displayed
+        by default. With the View-Change-Action you can make the View-Component
+        display one of the other components.
+      </p>
     </div>
   </div>
 </template>
@@ -37,6 +45,10 @@ export default Vue.extend({
 #viewSettings {
   select {
     width: 140px !important;
+  }
+
+  p {
+    color: $light3 !important;
   }
 }
 </style>

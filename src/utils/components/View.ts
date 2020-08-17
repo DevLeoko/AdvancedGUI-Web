@@ -1,12 +1,12 @@
 import ViewEditor from "@/components/editors/ViewEditor.vue";
 import { Component } from "../Component";
 import { Action } from "../Action";
-import { JsonObject, isInvisible } from "../ComponentManager";
+import { JsonObject, isInvisible, ComponentType } from "../ComponentManager";
 import { GroupComponent } from "./GroupComponent";
 import { Point } from "../Point";
 
 export class View extends GroupComponent {
-  public static displayName = "View";
+  public static displayName: ComponentType = "View";
   public static icon = "view_carousel";
   public displayName = View.displayName;
   public icon = View.icon;
@@ -35,9 +35,8 @@ export class View extends GroupComponent {
   }
 
   refineSelection(point: Point): Component {
-    const found = super.refineSelection(point);
-    if (found == this.getCurrentComponent()) return found;
-    return this;
+    const current = this.getCurrentComponent();
+    return current?.getBoundingBox().isInside(point) ? current : this;
   }
 
   static fromJson(
