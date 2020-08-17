@@ -111,7 +111,11 @@
             </div>
             <div class="settings-row">
               <span class="label">Visibility</span>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                :checked="invisible.indexOf(selected.component.id) == -1"
+                @change="toggleVis(selected.component.id)"
+              />
             </div>
           </div>
           <div class="divider"></div>
@@ -215,6 +219,7 @@ import {
   componentFromJson,
   registerComponent,
   invisible,
+  toggleVis,
   ExportData,
   unregisterComponent
 } from "./utils/ComponentManager";
@@ -252,7 +257,10 @@ export default Vue.extend({
 
       elements: [] as Component[],
 
-      pauseRendering: false
+      pauseRendering: false,
+
+      invisible,
+      toggleVis
     };
   },
 
@@ -406,6 +414,8 @@ export default Vue.extend({
 
         this.width = jsonObj.width;
         this.height = jsonObj.height;
+
+        Object.assign(invisible, []);
       }
 
       invisible.push(...jsonObj.invisible);
@@ -453,6 +463,7 @@ export default Vue.extend({
         this.loadFromJsonObj(JSON.parse(json), true)
           .then(() => loading(false))
           .catch((err: Error) => error(err.message));
+        selector.value = "";
       }
     },
 
