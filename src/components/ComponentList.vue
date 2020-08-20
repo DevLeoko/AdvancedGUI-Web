@@ -208,7 +208,7 @@ export default Vue.extend({
       if (this.optElem) {
         const nComp = this.optElem.duplicate();
         if (nComp) {
-          this.components.push(nComp);
+          this.components.splice(0, 0, nComp);
         }
       }
     },

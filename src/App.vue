@@ -405,8 +405,8 @@ export default Vue.extend({
       this.copiedAction = null;
       this.copiedComponent = null;
 
-      Object.assign(images, {});
-      Object.assign(fonts, {});
+      Object.keys(images).forEach(key => delete images[key]);
+      Object.keys(fonts).forEach(key => delete fonts[key]);
 
       if (resetOld) {
         this.elements.forEach(elem => unregisterComponent(elem));
@@ -415,7 +415,7 @@ export default Vue.extend({
         this.width = jsonObj.width;
         this.height = jsonObj.height;
 
-        Object.assign(invisible, []);
+        invisible.splice(0, invisible.length);
       }
 
       invisible.push(...jsonObj.invisible);
