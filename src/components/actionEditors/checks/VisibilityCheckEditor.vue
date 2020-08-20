@@ -2,13 +2,13 @@
   <div id="visCheckSettings">
     <div class="settings-row">
       <span class="label">Component ID</span>
-      <input type="text" v-model="action.component" />
+      <input type="text" v-model="action.targetId" />
     </div>
-    <p class="label" :class="components[action.component] ? '' : 'red-text'">
+    <p class="label" :class="components[action.targetId] ? '' : 'red-text'">
       TARGET{{
-        !components[action.component]
+        !components[action.targetId]
           ? " NOT FOUND!"
-          : ": " + components[action.component].name
+          : ": " + components[action.targetId].name
       }}
     </p>
     <p>

@@ -14,7 +14,7 @@ import PermissionCheckEditor from "@/components/actionEditors/checks/PermissionC
 import MoneyCheckEditor from "@/components/actionEditors/checks/MoneyCheckEditor.vue";
 import ItemCheckEditor from "@/components/actionEditors/checks/ItemCheckEditor.vue";
 import { MessageAction } from "./actions/MessageAction";
-import { VisiblityAction } from "./actions/VisibilityAction";
+import { VisibilityAction } from "./actions/VisibilityAction";
 import { Component } from "./Component";
 import { ViewAction } from "./actions/ViewAction";
 import { ItemCheck } from "./actions/ItemCheck";
@@ -43,10 +43,10 @@ export function setup() {
     icon: MessageAction.icon,
     component: MessageEditor
   };
-  actions[VisiblityAction.id] = {
-    generator: comp => new VisiblityAction(comp.id, true),
-    fromJson: VisiblityAction.fromJson,
-    icon: VisiblityAction.icon,
+  actions[VisibilityAction.id] = {
+    generator: comp => new VisibilityAction(comp.id, true),
+    fromJson: VisibilityAction.fromJson,
+    icon: VisibilityAction.icon,
     component: VisibilityEditor
   };
   actions[ViewAction.id] = {

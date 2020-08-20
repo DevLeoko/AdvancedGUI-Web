@@ -4,23 +4,23 @@ import { Action } from "../Action";
 import { actionsFromJson } from "../ActionManager";
 
 export class VisibilityCheck extends CheckAction {
-  public static id = "Visiblity Check";
+  public static id = "Visibility Check";
   public id = VisibilityCheck.id;
 
-  constructor(public actions: Action[], public component: string) {
+  constructor(public actions: Action[], public targetId: string) {
     super(actions);
   }
 
   static fromJson(jsonObj: JsonObject) {
     return new VisibilityCheck(
       actionsFromJson(jsonObj.actions),
-      jsonObj.component
+      jsonObj.targetId
     );
   }
 
   toCheckDataObj(): JsonObject {
     return {
-      component: this.component
+      targetId: this.targetId
     };
   }
 }

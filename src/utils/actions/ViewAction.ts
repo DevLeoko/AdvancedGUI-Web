@@ -5,17 +5,17 @@ export class ViewAction extends Action {
   public static id = "View";
   public id = ViewAction.id;
 
-  constructor(public target: string, public activate: string) {
+  constructor(public targetId: string, public activate: string) {
     super();
   }
 
   static fromJson(jsonObj: JsonObject) {
-    return new ViewAction(jsonObj.target, jsonObj.activate);
+    return new ViewAction(jsonObj.targetId, jsonObj.activate);
   }
 
   toDataObj() {
     return {
-      target: this.target,
+      targetId: this.targetId,
       activate: this.activate
     };
   }

@@ -15,6 +15,7 @@ export abstract class CheckAction extends Action implements ListItemGroup {
 
   toDataObj() {
     return {
+      check: true,
       actions: this.actions.map(action => action.toJsonObj()),
       ...this.toCheckDataObj()
     };

@@ -1,22 +1,22 @@
 import { Action } from "../Action";
 import { JsonObject } from "../ComponentManager";
 
-export class VisiblityAction extends Action {
-  public static id = "Visiblity";
-  public id = VisiblityAction.id;
+export class VisibilityAction extends Action {
+  public static id = "Visibility";
+  public id = VisibilityAction.id;
 
-  constructor(public target: string, public visible: boolean) {
+  constructor(public targetId: string, public visibility: boolean) {
     super();
   }
 
   static fromJson(jsonObj: JsonObject) {
-    return new VisiblityAction(jsonObj.target, jsonObj.visible);
+    return new VisibilityAction(jsonObj.targetId, jsonObj.visibility);
   }
 
   toDataObj() {
     return {
-      target: this.target,
-      visible: this.visible
+      targetId: this.targetId,
+      visibility: this.visibility
     };
   }
 }

@@ -2,28 +2,29 @@
   <div id="visSettings">
     <div class="settings-row">
       <span class="label">Component ID</span>
-      <input type="text" v-model="action.target" />
+      <input type="text" v-model="action.targetId" />
     </div>
-    <p class="label" :class="components[action.target] ? '' : 'red-text'">
+    <p class="label" :class="components[action.targetId] ? '' : 'red-text'">
       TARGET{{
-        !components[action.target]
+        !components[action.targetId]
           ? " NOT FOUND!"
-          : ": " + components[action.target].name
+          : ": " + components[action.targetId].name
       }}
     </p>
     <div class="settings-row">
       <span class="label">Visible</span>
-      <input type="checkbox" v-model="action.visible" />
+      <input type="checkbox" v-model="action.visibility" />
     </div>
     <p class="label">
-      Action will make component {{ action.visible ? "visible" : "invisible" }}
+      Action will make component
+      {{ action.visibility ? "visible" : "invisible" }}
     </p>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { VisiblityAction } from "@/utils/actions/VisibilityAction";
+import { VisibilityAction } from "@/utils/actions/VisibilityAction";
 import { components } from "../../utils/ComponentManager";
 
 export default Vue.extend({
@@ -35,7 +36,7 @@ export default Vue.extend({
 
   props: {
     action: {
-      type: Object as () => VisiblityAction,
+      type: Object as () => VisibilityAction,
       required: true
     }
   }

@@ -2,23 +2,23 @@
   <div id="viewSettings">
     <div class="settings-row">
       <span class="label">View ID</span>
-      <input type="text" v-model="action.target" />
+      <input type="text" v-model="action.targetId" />
     </div>
     <p
       class="label"
       :class="
-        components[action.target] &&
-        components[action.target].displayName == 'View'
+        components[action.targetId] &&
+        components[action.targetId].displayName == 'View'
           ? ''
           : 'red-text'
       "
     >
       TARGET{{
-        !components[action.target]
+        !components[action.targetId]
           ? " NOT FOUND!"
-          : components[action.target].displayName != "View"
+          : components[action.targetId].displayName != "View"
           ? " is not a View"
-          : ": " + components[action.target].name
+          : ": " + components[action.targetId].name
       }}
     </p>
     <div class="settings-row">
@@ -66,7 +66,7 @@ export default Vue.extend({
 
   methods: {
     isChild() {
-      const targetComp = this.components[this.action.target] as View;
+      const targetComp = this.components[this.action.targetId] as View;
 
       return (
         targetComp &&
