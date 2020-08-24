@@ -5,6 +5,14 @@
       <input type="color" v-model="component.color" />
       <input type="text" class="colorInput" v-model="component.color" />
     </div>
+    <div class="settings-row">
+      <span class="label">Transparent</span>
+      <input
+        type="checkbox"
+        :checked="component.color == 'transparent'"
+        @change="setTransparent"
+      />
+    </div>
     <br />
     <span class="label">Dimensions</span>
     <div class="settings-row">
@@ -61,6 +69,12 @@ export default Vue.extend({
       const bounds = this.component.getBoundingBox();
       bounds.ensureBounds(this.maxWidth, this.maxHeight);
       this.component.modify(bounds);
+    },
+
+    setTransparent(ev: InputEvent) {
+      if ((ev?.target as HTMLInputElement).checked)
+        this.component.color = "transparent";
+      else this.component.color = "#ffffff";
     }
   }
 });
