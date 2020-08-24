@@ -69,7 +69,7 @@ export function setup() {
     component: PermissionCheckEditor
   };
   actions[ItemCheck.id] = {
-    generator: () => new ItemCheck([], 3, 264, null),
+    generator: () => new ItemCheck([], 3, "gold_ingot"),
     fromJson: ItemCheck.fromJson,
     icon: ItemCheck.icon,
     component: ItemCheckEditor

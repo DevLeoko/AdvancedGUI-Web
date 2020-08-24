@@ -470,7 +470,10 @@ export default Vue.extend({
         const json = await file.text();
         this.loadFromJsonObj(JSON.parse(json), true)
           .then(() => loading(false))
-          .catch((err: Error) => error(err.message));
+          .catch((err: Error) => {
+            console.log(err);
+            error(err.message);
+          });
         selector.value = "";
       }
     },

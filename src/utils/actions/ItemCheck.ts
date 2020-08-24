@@ -10,8 +10,7 @@ export class ItemCheck extends CheckAction {
   constructor(
     public actions: Action[],
     public amount: number,
-    public itemId: number,
-    public subId: number | null
+    public itemName: string
   ) {
     super(actions);
   }
@@ -20,16 +19,14 @@ export class ItemCheck extends CheckAction {
     return new ItemCheck(
       actionsFromJson(jsonObj.actions),
       jsonObj.amount,
-      jsonObj.itemId,
-      jsonObj.subId
+      jsonObj.itemName
     );
   }
 
   toCheckDataObj(): JsonObject {
     return {
       amount: this.amount,
-      itemId: this.itemId,
-      subId: this.subId
+      itemName: this.itemName
     };
   }
 }
