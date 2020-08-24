@@ -56,16 +56,24 @@
           @dragover.prevent
         >
           <div class="itemName row">
-            <span class="material-icons dragIndicator">drag_indicator</span>
+            <span
+              v-if="elem.isGroup()"
+              class="material-icons expandBtn"
+              @click.stop="elem.expaned = !elem.expaned"
+              >{{
+                elem.expaned ? "keyboard_arrow_down" : "keyboard_arrow_right"
+              }}</span
+            >
             <span class="material-icons"> {{ elem.icon }} </span>{{ elem.name }}
 
+            <span class="material-icons dragIndicator">drag_indicator</span>
             <span
               class="material-icons moreMenuBtn"
               @click.stop="ev => openMenu(elem, ev)"
               >more_vert</span
             >
           </div>
-          <div class="subFolder" v-if="elem.isGroup()">
+          <div class="subFolder" v-if="elem.isGroup() && elem.expaned">
             <component-list
               :components="elem.getItems()"
               :value="value"
@@ -190,9 +198,14 @@ export default Vue.extend({
 
       setTimeout(() => {
         let x = ev.x;
+        let y = ev.y;
         if (x + moreMenu.offsetWidth > window.innerWidth)
           x = window.innerWidth - moreMenu.offsetWidth - 5;
-        moreMenu.style.top = ev.y + "px";
+
+        if (y + moreMenu.offsetHeight > window.innerHeight)
+          y = ev.y - moreMenu.offsetHeight - 5;
+
+        moreMenu.style.top = y + "px";
         moreMenu.style.left = x + "px";
       }, 10);
 
@@ -271,17 +284,17 @@ export default Vue.extend({
 
   &.not-hovered {
     border-left: 2px solid transparentize($color: $blue, $amount: 0.5);
-    margin-left: -3px;
+    // margin-left: -3px;
   }
 
   &.primary {
     border-left: 2px solid transparentize($color: $blue, $amount: 0.5);
-    margin-left: -3px;
+    // margin-left: -3px;
   }
 
   &.hovered {
     border-left: 2px solid transparentize($color: $blue, $amount: 0.8);
-    margin-left: -3px;
+    // margin-left: -3px;
   }
 }
 
@@ -297,7 +310,8 @@ export default Vue.extend({
 
   .dragIndicator {
     color: transparent;
-    margin-left: -10px;
+    // margin-left: -10px;
+    margin-left: auto;
     margin-right: 0;
   }
 
@@ -305,8 +319,13 @@ export default Vue.extend({
     color: $light4;
   }
 
-  .moreMenuBtn {
-    margin-left: auto;
+  .expandBtn {
+    margin-left: -6px;
+    margin-right: 1px;
+  }
+
+  .moreMenuBtn,
+  .expandBtn {
     color: $light3;
 
     &:hover {

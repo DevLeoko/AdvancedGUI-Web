@@ -35,7 +35,7 @@
     <div class="row mainSpace">
       <div id="compTree">
         <component-list
-          class="sidebar"
+          class="actualTree"
           root
           :components="elements"
           :value="selected ? selected.component : null"
@@ -315,9 +315,17 @@ export default Vue.extend({
 
     showCompAddMenu(ev: MouseEvent) {
       const menu = this.$refs.compAddMenu as HTMLElement;
-      menu.style.top = ev.y + "px";
-      menu.style.left = ev.x + "px";
       menu.style.display = "block";
+
+      setTimeout(() => {
+        let y = ev.y;
+
+        if (y + menu.offsetHeight > window.innerHeight)
+          y = ev.y - menu.offsetHeight - 5;
+
+        menu.style.top = y + "px";
+        menu.style.left = ev.x + "px";
+      }, 3);
     },
 
     pasteAction() {

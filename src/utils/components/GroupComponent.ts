@@ -17,6 +17,7 @@ export class GroupComponent extends Component implements ListItemGroup {
   public displayName = GroupComponent.displayName;
   public icon = GroupComponent.icon;
   public vueComponent = EmptyEditor;
+  public expaned = true;
 
   constructor(
     public id: string,

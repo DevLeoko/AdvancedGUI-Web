@@ -7,6 +7,7 @@ export abstract class CheckAction extends Action implements ListItemGroup {
   public static icon = "fact_check";
   public icon = CheckAction.icon;
   public itemClasses = ["posAction", "negAction"];
+  public expaned = true;
 
   constructor(public actions: Action[]) {
     super();

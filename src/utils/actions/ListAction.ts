@@ -8,6 +8,7 @@ export class ListAction extends Action implements ListItemGroup {
   public static icon = "receipt_long";
   public id = ListAction.id;
   public icon = ListAction.icon;
+  public expaned = true;
 
   constructor(public actions: Action[]) {
     super();

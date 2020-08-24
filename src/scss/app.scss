@@ -191,13 +191,24 @@ a {
   }
 
   #compTree{
-    padding-top: 25px;
     min-width: 15vw;
     max-width: 25vw;
     background-color: $dark1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+
+    .actualTree{
+      margin-top: 0;
+      padding: 10px 5px 10px 0;
+      height: 90%;
+      overflow-y: auto;
+      box-sizing: border-box;
+      border-bottom: 1px solid $dark3;
+    }
 
     .btn{
-      margin: 15px auto 0;
+      margin: auto auto;
     }
   }
 
