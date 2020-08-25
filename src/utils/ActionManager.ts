@@ -57,7 +57,7 @@ export function setup() {
   };
 
   actions[ListAction.id] = {
-    generator: () => new ListAction([]),
+    generator: () => new ListAction([], true),
     fromJson: ListAction.fromJson,
     icon: ListAction.icon
   };

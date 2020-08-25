@@ -59,9 +59,9 @@
             <span
               v-if="elem.isGroup()"
               class="material-icons expandBtn"
-              @click.stop="elem.expaned = !elem.expaned"
+              @click.stop="elem.expanded = !elem.expanded"
               >{{
-                elem.expaned ? "keyboard_arrow_down" : "keyboard_arrow_right"
+                elem.expanded ? "keyboard_arrow_down" : "keyboard_arrow_right"
               }}</span
             >
             <span class="material-icons"> {{ elem.icon }} </span>{{ elem.name }}
@@ -73,7 +73,7 @@
               >more_vert</span
             >
           </div>
-          <div class="subFolder" v-if="elem.isGroup() && elem.expaned">
+          <div class="subFolder" v-if="elem.isGroup() && elem.expanded">
             <component-list
               :components="elem.getItems()"
               :value="value"

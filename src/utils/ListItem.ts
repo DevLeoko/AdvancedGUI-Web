@@ -10,7 +10,7 @@ export interface ListItem {
 
 export interface ListItemGroup extends ListItem {
   getItems: () => ListItem[];
-  expaned: boolean;
+  expanded: boolean;
   itemLimit?: number;
   itemClasses?: string[];
 }

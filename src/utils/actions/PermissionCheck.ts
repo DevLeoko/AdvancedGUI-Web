@@ -7,14 +7,19 @@ export class PermissionCheck extends CheckAction {
   public static id = "Permission Check";
   public id = PermissionCheck.id;
 
-  constructor(public actions: Action[], public permission: string) {
-    super(actions);
+  constructor(
+    public actions: Action[],
+    public permission: string,
+    public expanded: boolean
+  ) {
+    super(actions, expanded);
   }
 
   static fromJson(jsonObj: JsonObject) {
     return new PermissionCheck(
       actionsFromJson(jsonObj.actions),
-      jsonObj.permission
+      jsonObj.permission,
+      jsonObj.expanded
     );
   }
 

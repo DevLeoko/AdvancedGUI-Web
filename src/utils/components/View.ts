@@ -20,9 +20,10 @@ export class View extends GroupComponent {
     public id: string,
     public name: string,
     public clickAction: Action[],
-    public components: Component[]
+    public components: Component[],
+    public expanded: boolean
   ) {
-    super(id, name, clickAction, components);
+    super(id, name, clickAction, components, expanded);
   }
 
   getCurrentComponent(): Component | null {
@@ -48,10 +49,16 @@ export class View extends GroupComponent {
       jsonObj.components,
       reassignIDs
     );
-    return new View(jsonObj.id, jsonObj.name, clickAction, comps);
+    return new View(
+      jsonObj.id,
+      jsonObj.name,
+      clickAction,
+      comps,
+      jsonObj.expanded
+    );
   }
 
   static generator() {
-    return new View("-", View.displayName, [], []);
+    return new View("-", View.displayName, [], [], true);
   }
 }

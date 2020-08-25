@@ -17,13 +17,13 @@ export class GroupComponent extends Component implements ListItemGroup {
   public displayName = GroupComponent.displayName;
   public icon = GroupComponent.icon;
   public vueComponent = EmptyEditor;
-  public expaned = true;
 
   constructor(
     public id: string,
     public name: string,
     public clickAction: Action[],
-    public components: Component[]
+    public components: Component[],
+    public expanded: boolean
   ) {
     super(id, name, clickAction);
   }
@@ -90,7 +90,8 @@ export class GroupComponent extends Component implements ListItemGroup {
   toJsonObj() {
     return {
       type: this.displayName,
-      components: this.components.map(comp => JSON.parse(comp.toJson()))
+      components: this.components.map(comp => JSON.parse(comp.toJson())),
+      expanded: this.expanded
     };
   }
 
@@ -115,11 +116,17 @@ export class GroupComponent extends Component implements ListItemGroup {
       jsonObj.components,
       reassignIDs
     );
-    return new GroupComponent(jsonObj.id, jsonObj.name, clickAction, comps);
+    return new GroupComponent(
+      jsonObj.id,
+      jsonObj.name,
+      clickAction,
+      comps,
+      jsonObj.expanded
+    );
   }
 
   static generator() {
-    return new GroupComponent("-", GroupComponent.displayName, [], []);
+    return new GroupComponent("-", GroupComponent.displayName, [], [], true);
   }
 
   delete() {

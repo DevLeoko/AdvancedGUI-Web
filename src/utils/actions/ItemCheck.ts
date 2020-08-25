@@ -10,16 +10,18 @@ export class ItemCheck extends CheckAction {
   constructor(
     public actions: Action[],
     public amount: number,
-    public itemName: string
+    public itemName: string,
+    public expanded: boolean
   ) {
-    super(actions);
+    super(actions, expanded);
   }
 
   static fromJson(jsonObj: JsonObject) {
     return new ItemCheck(
       actionsFromJson(jsonObj.actions),
       jsonObj.amount,
-      jsonObj.itemName
+      jsonObj.itemName,
+      jsonObj.expanded
     );
   }
 
