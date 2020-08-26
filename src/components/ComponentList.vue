@@ -218,10 +218,12 @@ export default Vue.extend({
     },
 
     duplicateOpt() {
-      if (this.optElem) {
+      const index = this.components.indexOf(this.optElem!);
+      if (this.optElem && index != -1) {
         const nComp = this.optElem.duplicate();
         if (nComp) {
-          this.components.splice(0, 0, nComp);
+          this.components.splice(index, 0, nComp);
+          this.$emit("input", nComp);
         }
       }
     },
