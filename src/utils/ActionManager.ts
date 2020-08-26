@@ -63,25 +63,25 @@ export function setup() {
   };
 
   actions[PermissionCheck.id] = {
-    generator: () => new PermissionCheck([], "ag.group.premium"),
+    generator: () => new PermissionCheck([], "ag.group.premium", true),
     fromJson: PermissionCheck.fromJson,
     icon: PermissionCheck.icon,
     component: PermissionCheckEditor
   };
   actions[ItemCheck.id] = {
-    generator: () => new ItemCheck([], 3, "gold_ingot"),
+    generator: () => new ItemCheck([], 3, "gold_ingot", true),
     fromJson: ItemCheck.fromJson,
     icon: ItemCheck.icon,
     component: ItemCheckEditor
   };
   actions[MoneyCheck.id] = {
-    generator: () => new MoneyCheck([], 50),
+    generator: () => new MoneyCheck([], 50, true),
     fromJson: MoneyCheck.fromJson,
     icon: MoneyCheck.icon,
     component: MoneyCheckEditor
   };
   actions[VisibilityCheck.id] = {
-    generator: () => new VisibilityCheck([], ""),
+    generator: () => new VisibilityCheck([], "", true),
     fromJson: VisibilityCheck.fromJson,
     icon: VisibilityCheck.icon,
     component: VisibilityCheckEditor

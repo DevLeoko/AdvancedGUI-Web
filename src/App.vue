@@ -386,7 +386,8 @@ export default Vue.extend({
         "component_tree",
         "-",
         [],
-        this.elements
+        this.elements,
+        true
       );
       const exportJsonObj: ExportData = {
         type: "savepoint",

@@ -70,6 +70,13 @@ export default Vue.extend({
 
   mounted() {
     this.adjustHeight();
+
+    const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
+      "2d"
+    ) as CanvasRenderingContext2D;
+
+    canvas.imageSmoothingEnabled = false;
+
     this.redraw();
   },
 
@@ -126,9 +133,9 @@ export default Vue.extend({
     redraw() {
       if (this.pauseRendering) return;
 
-      const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
-        "2d"
-      ) as CanvasRenderingContext2D;
+      const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext("2d", {
+        alpha: false
+      }) as CanvasRenderingContext2D;
 
       canvas.clearRect(0, 0, this.width, this.height);
 

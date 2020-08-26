@@ -120,6 +120,7 @@ export default Vue.extend({
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
+      image-rendering: pixelated;
       margin: 10px;
       cursor: pointer;
 
