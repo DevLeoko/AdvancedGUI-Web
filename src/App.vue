@@ -164,7 +164,11 @@
               </h2>
               <component
                 v-bind:is="actions[selected.action.id].component"
-                :action="selected.action"
+                :action="
+                  selected.action.isCheck()
+                    ? selected.action.check
+                    : selected.action
+                "
               ></component>
             </div>
           </div>

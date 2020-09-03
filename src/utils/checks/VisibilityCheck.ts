@@ -1,31 +1,26 @@
-import { CheckAction } from "../actions/CheckAction";
 import { JsonObject } from "../ComponentManager";
-import { Action } from "../Action";
-import { actionsFromJson } from "../ActionManager";
+import { Check } from "./Check";
 
-export class VisibilityCheck extends CheckAction {
+import VisibilityCheckEditor from "@/components/actionEditors/checks/VisibilityCheckEditor.vue";
+
+export class VisibilityCheck implements Check {
   public static id = "Visibility Check";
-  public id = VisibilityCheck.id;
+  public static component = VisibilityCheckEditor;
+  public name = VisibilityCheck.id;
 
-  constructor(
-    public actions: Action[],
-    public targetId: string,
-    public expanded: boolean
-  ) {
-    super(actions, expanded);
-  }
+  constructor(public targetId: string) {}
 
   static fromJson(jsonObj: JsonObject) {
-    return new VisibilityCheck(
-      actionsFromJson(jsonObj.actions),
-      jsonObj.targetId,
-      jsonObj.expanded
-    );
+    return new VisibilityCheck(jsonObj.targetId);
   }
 
   toCheckDataObj(): JsonObject {
     return {
       targetId: this.targetId
     };
+  }
+
+  static generator() {
+    return new VisibilityCheck("");
   }
 }

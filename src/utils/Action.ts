@@ -1,6 +1,7 @@
 import { JsonObject } from "./ComponentManager";
 import { ListItem, ListItemGroup } from "./ListItem";
 import { actionFromJson } from "./ActionManager";
+import { CheckAction } from "./actions/CheckAction";
 
 export abstract class Action implements ListItem {
   public static icon = "play_circle_outline";
@@ -35,5 +36,9 @@ export abstract class Action implements ListItem {
 
   delete() {
     // Action objects are generally not tracked
+  }
+
+  public isCheck(): this is CheckAction {
+    return false;
   }
 }

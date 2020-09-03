@@ -1,31 +1,26 @@
-import { CheckAction } from "../actions/CheckAction";
 import { JsonObject } from "../ComponentManager";
-import { Action } from "../Action";
-import { actionsFromJson } from "../ActionManager";
+import { Check } from "./Check";
 
-export class PermissionCheck extends CheckAction {
+import PermissionCheckEditor from "@/components/actionEditors/checks/PermissionCheckEditor.vue";
+
+export class PermissionCheck implements Check {
   public static id = "Permission Check";
-  public id = PermissionCheck.id;
+  public static component = PermissionCheckEditor;
+  public name = PermissionCheck.id;
 
-  constructor(
-    public actions: Action[],
-    public permission: string,
-    public expanded: boolean
-  ) {
-    super(actions, expanded);
-  }
+  constructor(public permission: string) {}
 
   static fromJson(jsonObj: JsonObject) {
-    return new PermissionCheck(
-      actionsFromJson(jsonObj.actions),
-      jsonObj.permission,
-      jsonObj.expanded
-    );
+    return new PermissionCheck(jsonObj.permission);
   }
 
   toCheckDataObj(): JsonObject {
     return {
       permission: this.permission
     };
+  }
+
+  static generator() {
+    return new PermissionCheck("ag.group.premium");
   }
 }

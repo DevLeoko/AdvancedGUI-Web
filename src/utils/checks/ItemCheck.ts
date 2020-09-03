@@ -1,28 +1,17 @@
-import { CheckAction } from "../actions/CheckAction";
 import { JsonObject } from "../ComponentManager";
-import { Action } from "../Action";
-import { actionsFromJson } from "../ActionManager";
+import { Check } from "./Check";
 
-export class ItemCheck extends CheckAction {
+import ItemCheckEditor from "@/components/actionEditors/checks/ItemCheckEditor.vue";
+
+export class ItemCheck implements Check {
   public static id = "Item Check";
-  public id = ItemCheck.id;
+  public static component = ItemCheckEditor;
+  public name = ItemCheck.id;
 
-  constructor(
-    public actions: Action[],
-    public amount: number,
-    public itemName: string,
-    public expanded: boolean
-  ) {
-    super(actions, expanded);
-  }
+  constructor(public amount: number, public itemName: string) {}
 
   static fromJson(jsonObj: JsonObject) {
-    return new ItemCheck(
-      actionsFromJson(jsonObj.actions),
-      jsonObj.amount,
-      jsonObj.itemName,
-      jsonObj.expanded
-    );
+    return new ItemCheck(jsonObj.amount, jsonObj.itemName);
   }
 
   toCheckDataObj(): JsonObject {
@@ -30,5 +19,9 @@ export class ItemCheck extends CheckAction {
       amount: this.amount,
       itemName: this.itemName
     };
+  }
+
+  static generator() {
+    return new ItemCheck(3, "gold_ingot");
   }
 }

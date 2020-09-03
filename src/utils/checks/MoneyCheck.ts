@@ -1,31 +1,26 @@
-import { CheckAction } from "../actions/CheckAction";
 import { JsonObject } from "../ComponentManager";
-import { Action } from "../Action";
-import { actionsFromJson } from "../ActionManager";
+import { Check } from "./Check";
 
-export class MoneyCheck extends CheckAction {
+import MoneyCheckEditor from "@/components/actionEditors/checks/MoneyCheckEditor.vue";
+
+export class MoneyCheck implements Check {
   public static id = "Money Check";
-  public id = MoneyCheck.id;
+  public static component = MoneyCheckEditor;
+  public name = MoneyCheck.id;
 
-  constructor(
-    public actions: Action[],
-    public amount: number,
-    public expanded: boolean
-  ) {
-    super(actions, expanded);
-  }
+  constructor(public amount: number) {}
 
   static fromJson(jsonObj: JsonObject) {
-    return new MoneyCheck(
-      actionsFromJson(jsonObj.actions),
-      jsonObj.amount,
-      jsonObj.expanded
-    );
+    return new MoneyCheck(jsonObj.amount);
   }
 
   toCheckDataObj(): JsonObject {
     return {
       amount: this.amount
     };
+  }
+
+  static generator() {
+    return new MoneyCheck(30);
   }
 }
