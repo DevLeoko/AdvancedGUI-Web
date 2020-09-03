@@ -9,7 +9,7 @@
       <input type="text" v-model="action.value" />
     </div>
     <p>
-      Action will check whether the placeholder matches the specified value.
+      Used to check whether the placeholder matches the specified value.
     </p>
   </div>
 </template>

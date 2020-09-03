@@ -12,8 +12,7 @@
       }}
     </p>
     <p>
-      Action will check whether the component is currently visible for the
-      player
+      Used to check whether the component is currently visible for the player
     </p>
   </div>
 </template>

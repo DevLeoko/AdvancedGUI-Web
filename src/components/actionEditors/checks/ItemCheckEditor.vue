@@ -11,9 +11,8 @@
       <input type="text" v-model="action.itemName" />
     </div>
     <p>
-      This action will check whether the player has at least the specified
-      amount of the specified item. Press F3+H ingame and hover an item to see
-      its name.
+      Used to check whether the player has at least the specified amount of the
+      specified item. Press F3+H ingame and hover an item to see its name.
     </p>
   </div>
 </template>

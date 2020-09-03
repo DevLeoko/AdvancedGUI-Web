@@ -9,6 +9,7 @@ import { View } from "../components/View";
 import Vue from "vue";
 import { actionsFromJson } from "./ActionManager";
 import { Font } from "./FontManager";
+import { CheckComponent } from "../components/CheckComponent";
 
 export interface JsonObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +22,8 @@ export type ComponentType =
   | "Hover"
   | "Text"
   | "Image"
-  | "View";
+  | "View"
+  | "Check";
 
 export interface ExportData {
   type: "savepoint" | "usage";
@@ -131,5 +133,6 @@ export function setup() {
   componentInfo[Image.displayName] = Image;
   componentInfo[GroupComponent.displayName] = GroupComponent;
   componentInfo[Hover.displayName] = Hover;
+  componentInfo[CheckComponent.displayName] = CheckComponent;
   componentInfo[View.displayName] = View;
 }

@@ -7,8 +7,8 @@
       </div>
     </div>
     <p>
-      This action will check whether the player has at least the specified
-      amount of money (through Vault)
+      Used to check whether the player has at least the specified amount of
+      money (through Vault)
     </p>
   </div>
 </template>
