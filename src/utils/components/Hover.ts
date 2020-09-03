@@ -1,7 +1,11 @@
 import HoverEditor from "@/components/editors/HoverEditor.vue";
-import { Component } from "../Component";
-import { Action } from "../Action";
-import { JsonObject, isInvisible, ComponentType } from "../ComponentManager";
+import { Component } from "./Component";
+import { Action } from "../actions/Action";
+import {
+  JsonObject,
+  isInvisible,
+  ComponentType
+} from "../manager/ComponentManager";
 import { GroupComponent } from "./GroupComponent";
 import { Point } from "../Point";
 

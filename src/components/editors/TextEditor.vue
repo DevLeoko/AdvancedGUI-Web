@@ -59,7 +59,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Text } from "@/utils/components/Text";
-import { registerFont, fonts } from "@/utils/FontManager";
+import { registerFont, fonts } from "@/utils/manager/FontManager";
 
 export default Vue.extend({
   data() {

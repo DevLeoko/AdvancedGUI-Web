@@ -1,9 +1,9 @@
 import { BoundingBox } from "../BoundingBox";
 import ImageEditor from "@/components/editors/ImageEditor.vue";
 import { Rectangular } from "./Rectangular";
-import { Action } from "../Action";
-import { JsonObject, ComponentType } from "../ComponentManager";
-import { images } from "../ImageManager";
+import { Action } from "../actions/Action";
+import { JsonObject, ComponentType } from "../manager/ComponentManager";
+import { images } from "../manager/ImageManager";
 
 export class Image extends Rectangular {
   public static displayName: ComponentType = "Image";

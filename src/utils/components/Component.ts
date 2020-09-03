@@ -1,15 +1,15 @@
-import { BoundingBox } from "./BoundingBox";
-import { Point } from "./Point";
+import { BoundingBox } from "../BoundingBox";
+import { Point } from "../Point";
 
 import { VueConstructor } from "vue/types/umd";
-import { Action } from "./Action";
-import { ListItem, ListItemGroup } from "./ListItem";
+import { Action } from "../actions/Action";
+import { ListItem, ListItemGroup } from "../ListItem";
 import {
   componentFromJson,
   JsonObject,
   unregisterComponent,
   ComponentType
-} from "./ComponentManager";
+} from "../manager/ComponentManager";
 
 export abstract class Component implements ListItem {
   public hideable = true;

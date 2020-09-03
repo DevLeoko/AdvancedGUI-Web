@@ -25,7 +25,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { VisibilityAction } from "@/utils/actions/VisibilityAction";
-import { components } from "../../utils/ComponentManager";
+import { components } from "@/utils/manager/ComponentManager";
 
 export default Vue.extend({
   data() {

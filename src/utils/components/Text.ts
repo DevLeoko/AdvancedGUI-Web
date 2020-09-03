@@ -1,8 +1,8 @@
 import { BoundingBox } from "../BoundingBox";
 import TextEditor from "@/components/editors/TextEditor.vue";
-import { Action } from "../Action";
-import { JsonObject, ComponentType } from "../ComponentManager";
-import { Component } from "../Component";
+import { Action } from "../actions/Action";
+import { JsonObject, ComponentType } from "../manager/ComponentManager";
+import { Component } from "./Component";
 
 export class Text extends Component {
   public static displayName: ComponentType = "Text";

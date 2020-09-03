@@ -1,11 +1,11 @@
-import { Component } from "./Component";
-import { Action } from "./Action";
-import { Rect } from "./components/Rect";
-import { GroupComponent } from "./components/GroupComponent";
-import { Text } from "./components/Text";
-import { Image } from "./components/Image";
-import { Hover } from "./components/Hover";
-import { View } from "./components/View";
+import { Component } from "../components/Component";
+import { Action } from "../actions/Action";
+import { Rect } from "../components/Rect";
+import { GroupComponent } from "../components/GroupComponent";
+import { Text } from "../components/Text";
+import { Image } from "../components/Image";
+import { Hover } from "../components/Hover";
+import { View } from "../components/View";
 import Vue from "vue";
 import { actionsFromJson } from "./ActionManager";
 import { Font } from "./FontManager";
@@ -25,6 +25,7 @@ export type ComponentType =
 
 export interface ExportData {
   type: "savepoint" | "usage";
+  // version: string;
   invisible: string[];
   fonts: Font[];
   width: number;

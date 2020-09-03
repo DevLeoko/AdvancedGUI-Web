@@ -1,4 +1,4 @@
-import { JsonObject } from "../ComponentManager";
+import { JsonObject } from "../manager/ComponentManager";
 
 export interface Check {
   name: string;

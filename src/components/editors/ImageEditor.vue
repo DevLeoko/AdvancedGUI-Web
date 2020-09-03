@@ -51,7 +51,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Image } from "@/utils/components/Image";
-import { images, registerImage } from "@/utils/ImageManager";
+import { images, registerImage } from "@/utils/manager/ImageManager";
 
 export default Vue.extend({
   data() {

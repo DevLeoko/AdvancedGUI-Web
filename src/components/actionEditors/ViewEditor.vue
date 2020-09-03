@@ -46,9 +46,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { components } from "../../utils/ComponentManager";
+import { components } from "@/utils/manager/ComponentManager";
 import { ViewAction } from "@/utils/actions/ViewAction";
-import { View } from "../../utils/components/View";
+import { View } from "@/utils/components/View";
 
 export default Vue.extend({
   data() {

@@ -1,4 +1,4 @@
-import { JsonObject } from "../ComponentManager";
+import { JsonObject } from "../manager/ComponentManager";
 import { Check } from "./Check";
 
 import PermissionCheckEditor from "@/components/actionEditors/checks/PermissionCheckEditor.vue";

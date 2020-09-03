@@ -1,4 +1,4 @@
-import { JsonObject } from "../ComponentManager";
+import { JsonObject } from "../manager/ComponentManager";
 import { Check } from "./Check";
 
 import MoneyCheckEditor from "@/components/actionEditors/checks/MoneyCheckEditor.vue";

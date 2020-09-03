@@ -1,7 +1,7 @@
-import { JsonObject } from "./ComponentManager";
-import { ListItem, ListItemGroup } from "./ListItem";
-import { actionFromJson } from "./ActionManager";
-import { CheckAction } from "./actions/CheckAction";
+import { JsonObject } from "../manager/ComponentManager";
+import { ListItem, ListItemGroup } from "../ListItem";
+import { actionFromJson } from "../manager/ActionManager";
+import { CheckAction } from "./CheckAction";
 
 export abstract class Action implements ListItem {
   public static icon = "play_circle_outline";

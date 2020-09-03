@@ -15,12 +15,12 @@
 import Vue from "vue";
 import { Point } from "@/utils/Point";
 import { ResizeIcon, Modifier, moveModifier } from "@/utils/Modifier";
-import { Component } from "@/utils/Component";
+import { Component } from "@/utils/components/Component";
 import {
   isInvisible,
   invisible,
   components as registeredComponents
-} from "@/utils/ComponentManager";
+} from "@/utils/manager/ComponentManager";
 import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
 

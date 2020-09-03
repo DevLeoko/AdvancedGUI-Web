@@ -217,7 +217,7 @@ import ExportPrompt from "./components/ExportPrompt.vue";
 import ComponentList from "./components/ComponentList.vue";
 import MyCanvas from "./components/Canvas.vue";
 import Vue from "vue";
-import { Component } from "./utils/Component";
+import { Component } from "@/utils/components/Component";
 import {
   componentInfo,
   componentFromJson,
@@ -226,15 +226,15 @@ import {
   toggleVis,
   ExportData,
   unregisterComponent
-} from "./utils/ComponentManager";
-import { actions, actionFromJson } from "./utils/ActionManager";
+} from "./utils/manager/ComponentManager";
+import { actions, actionFromJson } from "./utils/manager/ActionManager";
 import {
   setupImageManager,
   images,
   registerImageBase64
-} from "./utils/ImageManager";
-import { Action } from "./utils/Action";
-import { fonts, registerFontBase64 } from "./utils/FontManager";
+} from "./utils/manager/ImageManager";
+import { Action } from "./utils/actions/Action";
+import { fonts, registerFontBase64 } from "./utils/manager/FontManager";
 import { GroupComponent } from "./utils/components/GroupComponent";
 
 export default Vue.extend({

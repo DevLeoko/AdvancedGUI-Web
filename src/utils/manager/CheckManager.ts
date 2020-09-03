@@ -1,10 +1,10 @@
 import { VueConstructor } from "vue";
 
-import { ItemCheck } from "./checks/ItemCheck";
-import { MoneyCheck } from "./checks/MoneyCheck";
-import { PermissionCheck } from "./checks/PermissionCheck";
-import { VisibilityCheck } from "./checks/VisibilityCheck";
-import { Check } from "./checks/Check";
+import { ItemCheck } from "../checks/ItemCheck";
+import { MoneyCheck } from "../checks/MoneyCheck";
+import { PermissionCheck } from "../checks/PermissionCheck";
+import { VisibilityCheck } from "../checks/VisibilityCheck";
+import { Check } from "../checks/Check";
 import { JsonObject } from "./ComponentManager";
 
 interface CheckMeta {

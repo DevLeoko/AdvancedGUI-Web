@@ -1,6 +1,6 @@
 import { BoundingBox } from "../BoundingBox";
-import { Component } from "../Component";
-import { Action } from "../Action";
+import { Component } from "./Component";
+import { Action } from "../actions/Action";
 
 export abstract class Rectangular extends Component {
   constructor(

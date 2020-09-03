@@ -1,7 +1,7 @@
-import { Action } from "../Action";
-import { JsonObject } from "../ComponentManager";
+import { Action } from "./Action";
+import { JsonObject } from "../manager/ComponentManager";
 import { ListItemGroup } from "../ListItem";
-import { actionsFromJson } from "../ActionManager";
+import { actionsFromJson } from "../manager/ActionManager";
 
 export class ListAction extends Action implements ListItemGroup {
   public static id = "List";

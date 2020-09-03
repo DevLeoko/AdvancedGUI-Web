@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Vue from "vue";
 import App from "./App.vue";
-import { setup as componentSetup } from "./utils/ComponentManager";
-import { setup as actionSetup } from "./utils/ActionManager";
-import { setup as checkSetup } from "./utils/CheckManager";
-import { registerDefaultFonts } from "./utils/FontManager";
+import { setup as componentSetup } from "./utils/manager/ComponentManager";
+import { setup as actionSetup } from "./utils/manager/ActionManager";
+import { setup as checkSetup } from "./utils/manager/CheckManager";
+import { registerDefaultFonts } from "./utils/manager/FontManager";
 
 Vue.config.productionTip = false;
 

@@ -1,4 +1,4 @@
-import { Component } from "./Component";
+import { Component } from "./components/Component";
 import { resizers } from "./Modifier";
 import { BoundingBox } from "./BoundingBox";
 import { Point } from "./Point";

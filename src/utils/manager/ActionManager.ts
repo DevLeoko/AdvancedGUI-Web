@@ -1,19 +1,19 @@
-import { Action } from "./Action";
+import { Action } from "../actions/Action";
 import { JsonObject } from "./ComponentManager";
-import { CommandAction } from "./actions/CommandAction";
-import { ListAction } from "./actions/ListAction";
+import { CommandAction } from "../actions/CommandAction";
+import { ListAction } from "../actions/ListAction";
 import { VueConstructor } from "vue";
 
 import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
 import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
 import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
 import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
-import { MessageAction } from "./actions/MessageAction";
-import { VisibilityAction } from "./actions/VisibilityAction";
-import { Component } from "./Component";
-import { ViewAction } from "./actions/ViewAction";
+import { MessageAction } from "../actions/MessageAction";
+import { VisibilityAction } from "../actions/VisibilityAction";
+import { Component } from "../components/Component";
+import { ViewAction } from "../actions/ViewAction";
 import { checks } from "./CheckManager";
-import { CheckAction } from "./actions/CheckAction";
+import { CheckAction } from "../actions/CheckAction";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;

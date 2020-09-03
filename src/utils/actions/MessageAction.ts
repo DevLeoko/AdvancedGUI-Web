@@ -1,5 +1,5 @@
-import { Action } from "../Action";
-import { JsonObject } from "../ComponentManager";
+import { Action } from "./Action";
+import { JsonObject } from "../manager/ComponentManager";
 
 export class MessageAction extends Action {
   public static id = "Message";

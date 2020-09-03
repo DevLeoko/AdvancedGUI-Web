@@ -1,8 +1,12 @@
 import { BoundingBox } from "../BoundingBox";
 import RectangelEditor from "@/components/editors/RectangleEditor.vue";
 import { Rectangular } from "./Rectangular";
-import { Action } from "../Action";
-import { JsonObject, getRandomColor, ComponentType } from "../ComponentManager";
+import { Action } from "../actions/Action";
+import {
+  JsonObject,
+  getRandomColor,
+  ComponentType
+} from "../manager/ComponentManager";
 
 export class Rect extends Rectangular {
   public static displayName: ComponentType = "Rect";

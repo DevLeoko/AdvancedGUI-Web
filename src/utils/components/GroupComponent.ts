@@ -1,15 +1,15 @@
 import { BoundingBox } from "../BoundingBox";
 import { Point } from "../Point";
 import EmptyEditor from "@/components/editors/EmptyEditor.vue";
-import { Component } from "../Component";
-import { Action } from "../Action";
+import { Component } from "./Component";
+import { Action } from "../actions/Action";
 import { ListItemGroup } from "../ListItem";
 import {
   componentFromJson,
   JsonObject,
   isInvisible,
   ComponentType
-} from "../ComponentManager";
+} from "../manager/ComponentManager";
 
 export class GroupComponent extends Component implements ListItemGroup {
   public static displayName: ComponentType = "Group";

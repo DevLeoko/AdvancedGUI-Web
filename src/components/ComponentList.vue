@@ -99,7 +99,7 @@
 import DragZone from "./DragZone.vue";
 import Vue from "vue";
 import { ListItem } from "@/utils/ListItem";
-import { toggleVis, invisible } from "@/utils/ComponentManager";
+import { toggleVis, invisible } from "@/utils/manager/ComponentManager";
 
 export default Vue.extend({
   name: "ComponentList",

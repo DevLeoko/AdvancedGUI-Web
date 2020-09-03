@@ -1,9 +1,9 @@
 import { ListItemGroup } from "../ListItem";
-import { Action } from "../Action";
+import { Action } from "./Action";
 import { Check } from "../checks/Check";
-import { JsonObject } from "../ComponentManager";
-import { actionsFromJson } from "../ActionManager";
-import { checkFromJson } from "../CheckManager";
+import { JsonObject } from "../manager/ComponentManager";
+import { actionsFromJson } from "../manager/ActionManager";
+import { checkFromJson } from "../manager/CheckManager";
 
 export class CheckAction extends Action implements ListItemGroup {
   public itemLimit = 2;
