@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { MoneyCheck } from "@/utils/actions/MoneyCheck";
+import { MoneyCheck } from "@/utils/checks/MoneyCheck";
 
 export default Vue.extend({
   data() {

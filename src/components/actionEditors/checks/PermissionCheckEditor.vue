@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { PermissionCheck } from "@/utils/actions/PermissionCheck";
+import { PermissionCheck } from "@/utils/checks/PermissionCheck";
 
 export default Vue.extend({
   data() {

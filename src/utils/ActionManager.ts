@@ -2,7 +2,6 @@ import { Action } from "./Action";
 import { JsonObject } from "./ComponentManager";
 import { CommandAction } from "./actions/CommandAction";
 import { ListAction } from "./actions/ListAction";
-import { PermissionCheck } from "./actions/PermissionCheck";
 import { VueConstructor } from "vue";
 
 import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
@@ -17,9 +16,10 @@ import { MessageAction } from "./actions/MessageAction";
 import { VisibilityAction } from "./actions/VisibilityAction";
 import { Component } from "./Component";
 import { ViewAction } from "./actions/ViewAction";
-import { ItemCheck } from "./actions/ItemCheck";
-import { MoneyCheck } from "./actions/MoneyCheck";
-import { VisibilityCheck } from "./actions/VisibilityCheck";
+import { ItemCheck } from "./checks/ItemCheck";
+import { MoneyCheck } from "./checks/MoneyCheck";
+import { PermissionCheck } from "./checks/PermissionCheck";
+import { VisibilityCheck } from "./checks/VisibilityCheck";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;

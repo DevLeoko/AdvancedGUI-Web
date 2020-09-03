@@ -1,4 +1,4 @@
-import { CheckAction } from "./CheckAction";
+import { CheckAction } from "../actions/CheckAction";
 import { JsonObject } from "../ComponentManager";
 import { Action } from "../Action";
 import { actionsFromJson } from "../ActionManager";

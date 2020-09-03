@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { components } from "@/utils/ComponentManager";
-import { VisibilityCheck } from "@/utils/actions/VisibilityCheck";
+import { VisibilityCheck } from "@/utils/checks/VisibilityCheck";
 
 export default Vue.extend({
   data() {

@@ -1,31 +1,31 @@
-import { CheckAction } from "./CheckAction";
+import { CheckAction } from "../actions/CheckAction";
 import { JsonObject } from "../ComponentManager";
 import { Action } from "../Action";
 import { actionsFromJson } from "../ActionManager";
 
-export class PermissionCheck extends CheckAction {
-  public static id = "Permission Check";
-  public id = PermissionCheck.id;
+export class VisibilityCheck extends CheckAction {
+  public static id = "Visibility Check";
+  public id = VisibilityCheck.id;
 
   constructor(
     public actions: Action[],
-    public permission: string,
+    public targetId: string,
     public expanded: boolean
   ) {
     super(actions, expanded);
   }
 
   static fromJson(jsonObj: JsonObject) {
-    return new PermissionCheck(
+    return new VisibilityCheck(
       actionsFromJson(jsonObj.actions),
-      jsonObj.permission,
+      jsonObj.targetId,
       jsonObj.expanded
     );
   }
 
   toCheckDataObj(): JsonObject {
     return {
-      permission: this.permission
+      targetId: this.targetId
     };
   }
 }

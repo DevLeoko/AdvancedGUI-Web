@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { ItemCheck } from "@/utils/actions/ItemCheck";
+import { ItemCheck } from "@/utils/checks/ItemCheck";
 
 export default Vue.extend({
   data() {
