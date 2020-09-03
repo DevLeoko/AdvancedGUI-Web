@@ -11,7 +11,8 @@ import {
   ComponentType
 } from "../manager/ComponentManager";
 
-export class GroupComponent extends Component implements ListItemGroup {
+export class GroupComponent extends Component
+  implements ListItemGroup<Component> {
   public static displayName: ComponentType = "Group";
   public static icon = "folder";
   public displayName = GroupComponent.displayName;

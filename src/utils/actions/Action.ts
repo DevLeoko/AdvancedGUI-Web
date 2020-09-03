@@ -26,7 +26,7 @@ export abstract class Action implements ListItem {
     return JSON.stringify(this.toJsonObj());
   }
 
-  isGroup(): this is ListItemGroup {
+  isGroup(): this is ListItemGroup<this> {
     return false;
   }
 

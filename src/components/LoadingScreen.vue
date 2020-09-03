@@ -1,10 +1,15 @@
 <template>
   <div
     class="loadingPrompt"
-    :style="{ display: loading.loading ? 'flex' : 'none' }"
+    :style="{
+      display:
+        loading.loading || loading.error || loading.info ? 'flex' : 'none'
+    }"
   >
-    <span v-if="!loading.error" class="material-icons spin">autorenew</span>
-    <div v-else class="errorScreen">
+    <span v-if="loading.loading" class="material-icons spin">
+      autorenew
+    </span>
+    <div v-else-if="loading.error" class="errorScreen">
       <h1>
         <span class="material-icons">warning</span> Something went wrong :(
       </h1>
@@ -12,13 +17,18 @@
         {{ loading.error }}
       </p>
       <div class="action-row">
-        <div
-          class="btn close"
-          @click="
-            loading.loading = false;
-            loading.error = null;
-          "
-        >
+        <div class="btn close" @click="loading.error = null">
+          <span class="text">Close</span>
+        </div>
+      </div>
+    </div>
+    <div v-else class="infoScreen">
+      <p>
+        <span class="material-icons">info</span>
+        <span v-html="loading.info"> </span>
+      </p>
+      <div class="action-row">
+        <div class="btn close" @click="loading.info = null">
           <span class="text">Close</span>
         </div>
       </div>
@@ -29,13 +39,23 @@
 <script lang="ts">
 import Vue from "vue";
 
-const loadingContainer = { loading: false, error: null as string | null };
+const loadingContainer = {
+  loading: false,
+  error: null as string | null,
+  info: null as string | null
+};
 
 export function loading(val: boolean) {
   loadingContainer.loading = val;
 }
 
+export function info(val: string, keepLoadingState = false) {
+  if (!keepLoadingState) loadingContainer.loading = false;
+  loadingContainer.info = val;
+}
+
 export function error(val: string) {
+  loadingContainer.loading = false;
   loadingContainer.error = val;
 }
 
@@ -59,7 +79,8 @@ export default Vue.extend({
   justify-content: center;
   align-items: center;
 
-  .errorScreen {
+  .errorScreen,
+  .infoScreen {
     padding: 30px;
     box-shadow: $shadow;
     background-color: $dark1;
@@ -86,7 +107,7 @@ export default Vue.extend({
     .action-row {
       padding-top: 5px;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
 
       .export {
         background-color: $green;
@@ -103,6 +124,21 @@ export default Vue.extend({
           color: $light2;
         }
       }
+    }
+  }
+
+  .infoScreen {
+    min-width: 20vw;
+
+    p {
+      display: flex;
+      align-items: center;
+      margin: 0 0 20px;
+    }
+
+    .material-icons {
+      color: $blue;
+      margin-right: 10px;
     }
   }
 

@@ -5,7 +5,7 @@ import { JsonObject } from "../manager/ComponentManager";
 import { actionsFromJson } from "../manager/ActionManager";
 import { checkFromJson } from "../manager/CheckManager";
 
-export class CheckAction extends Action implements ListItemGroup {
+export class CheckAction extends Action implements ListItemGroup<Action> {
   public itemLimit = 2;
   public static icon = "fact_check";
   public icon = CheckAction.icon;

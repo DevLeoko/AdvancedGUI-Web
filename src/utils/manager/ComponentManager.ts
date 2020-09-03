@@ -25,7 +25,7 @@ export type ComponentType =
 
 export interface ExportData {
   type: "savepoint" | "usage";
-  // version: string;
+  version: string;
   invisible: string[];
   fonts: Font[];
   width: number;

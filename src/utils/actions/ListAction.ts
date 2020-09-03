@@ -3,7 +3,7 @@ import { JsonObject } from "../manager/ComponentManager";
 import { ListItemGroup } from "../ListItem";
 import { actionsFromJson } from "../manager/ActionManager";
 
-export class ListAction extends Action implements ListItemGroup {
+export class ListAction extends Action implements ListItemGroup<Action> {
   public static id = "List";
   public static icon = "receipt_long";
   public id = ListAction.id;

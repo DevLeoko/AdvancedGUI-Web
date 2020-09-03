@@ -46,7 +46,7 @@ export abstract class Component implements ListItem {
     return this;
   }
 
-  isGroup(): this is ListItemGroup {
+  isGroup(): this is ListItemGroup<this> {
     return false;
   }
 

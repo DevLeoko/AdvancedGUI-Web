@@ -212,7 +212,11 @@
 </template>
 
 <script lang="ts">
-import LoadingScreen, { loading, error } from "./components/LoadingScreen.vue";
+import LoadingScreen, {
+  loading,
+  error,
+  info
+} from "./components/LoadingScreen.vue";
 import ExportPrompt from "./components/ExportPrompt.vue";
 import ComponentList from "./components/ComponentList.vue";
 import MyCanvas from "./components/Canvas.vue";
@@ -236,6 +240,7 @@ import {
 import { Action } from "./utils/actions/Action";
 import { fonts, registerFontBase64 } from "./utils/manager/FontManager";
 import { GroupComponent } from "./utils/components/GroupComponent";
+import { VERSION, migrate } from "./utils/manager/UpdateManager";
 
 export default Vue.extend({
   name: "App",
@@ -395,6 +400,7 @@ export default Vue.extend({
       );
       const exportJsonObj: ExportData = {
         type: "savepoint",
+        version: VERSION,
         invisible: invisible,
         fonts: Object.values(fonts),
         width: this.width,
@@ -413,6 +419,15 @@ export default Vue.extend({
       this.pauseRendering = true;
       if (jsonObj.type != "savepoint")
         throw Error("This .json file is not an AdvancedGUI savepoint!");
+
+      if (jsonObj.version != VERSION) {
+        const oldVersion = jsonObj.version;
+        jsonObj = migrate(jsonObj);
+        info(
+          `Your savepoint was still on format-version <b>${oldVersion}</b> and got migrated to the new format-version <b>${VERSION}</b>`,
+          true
+        );
+      }
 
       this.selected = null;
       this.copiedAction = null;
@@ -477,7 +492,10 @@ export default Vue.extend({
           .then(() => loading(false))
           .catch((err: Error) => {
             console.log(err);
-            error(err.message);
+            error(
+              err.message ||
+                "Failed to import! There seems to be something wrong with the savepoint"
+            );
           });
         selector.value = "";
       }
