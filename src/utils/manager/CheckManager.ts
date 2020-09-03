@@ -6,6 +6,7 @@ import { PermissionCheck } from "../checks/PermissionCheck";
 import { VisibilityCheck } from "../checks/VisibilityCheck";
 import { Check } from "../checks/Check";
 import { JsonObject } from "./ComponentManager";
+import { PlaceholderCheck } from "../checks/PlaceholderCheck";
 
 interface CheckMeta {
   generator: () => Check;
@@ -21,6 +22,7 @@ export function setup() {
   checks[MoneyCheck.id] = MoneyCheck;
   checks[PermissionCheck.id] = PermissionCheck;
   checks[VisibilityCheck.id] = VisibilityCheck;
+  checks[PlaceholderCheck.id] = PlaceholderCheck;
 }
 
 export function checkFromJson(jsonObj: JsonObject, type: string): Check {
