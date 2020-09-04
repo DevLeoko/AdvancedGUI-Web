@@ -74,20 +74,17 @@
       </div>
 
       <div id="canvasContainer" @click.self="selected = null">
-        <div id="canvasPadding" @click.self="selected = null">
-          <my-canvas
-            :width="width * 128"
-            :height="height * 128"
-            :selected="selected ? selected.component : null"
-            :elements="elements"
-            :zoom="zoom"
-            :pauseRendering="pauseRendering"
-            @select="
-              comp =>
-                (selected = comp ? { component: comp, action: null } : null)
-            "
-          ></my-canvas>
-        </div>
+        <my-canvas
+          :width="width * 128"
+          :height="height * 128"
+          :selected="selected ? selected.component : null"
+          :elements="elements"
+          :zoom="zoom"
+          :pauseRendering="pauseRendering"
+          @select="
+            comp => (selected = comp ? { component: comp, action: null } : null)
+          "
+        ></my-canvas>
       </div>
       <div class="sidebar" id="settings">
         <div id="generalSettings" v-if="selected">

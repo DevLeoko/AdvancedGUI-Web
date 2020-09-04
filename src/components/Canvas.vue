@@ -1,14 +1,13 @@
 <template>
-  <canvas
-    ref="canvas"
-    id="canvas"
+  <div
+    id="canvasPadding"
     @mousedown.prevent="onClickDown"
     @mouseup="onClickUp"
     @mousemove="onMove"
     @mouseleave="onClickUp"
-    :width="width"
-    :height="height"
-  ></canvas>
+  >
+    <canvas ref="canvas" id="canvas" :width="width" :height="height"></canvas>
+  </div>
 </template>
 
 <script lang="ts">
