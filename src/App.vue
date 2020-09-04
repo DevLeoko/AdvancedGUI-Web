@@ -229,7 +229,8 @@ import {
   invisible,
   toggleVis,
   ExportData,
-  unregisterComponent
+  unregisterComponent,
+  JsonObject
 } from "./utils/manager/ComponentManager";
 import { actions, actionFromJson } from "./utils/manager/ActionManager";
 import {
@@ -508,6 +509,11 @@ export default Vue.extend({
     externalExport() {
       this.exportModal = false;
       loading(true);
+
+      const savepoint = this.bundleToJson();
+      const { fonts, images } = savepoint;
+      delete (savepoint as JsonObject).images;
+      delete (savepoint as JsonObject).fonts;
       fetch(
         "https://advancedgui-convert.netlify.app/.netlify/functions/convert",
         {
@@ -515,12 +521,17 @@ export default Vue.extend({
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(this.bundleToJson())
+          body: JSON.stringify(savepoint)
         }
       )
         .then(resp => resp.text())
         .then(data => {
-          this.exportData(data);
+          const processed = {
+            images,
+            fonts,
+            ...JSON.parse(data)
+          };
+          this.exportData(JSON.stringify(processed));
           loading(false);
         })
         .catch((err: Error) => error(`Error durring export: ${err.message}`));
