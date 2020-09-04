@@ -26,6 +26,7 @@
         <select v-model="component.font">
           <option
             v-for="font in Object.keys(fonts)"
+            :style="{ fontFamily: font }"
             :key="font"
             :value="font"
             >{{ font }}</option
