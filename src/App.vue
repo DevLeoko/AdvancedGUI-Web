@@ -19,6 +19,25 @@
         </select>
       </div>
 
+      <div class="historyControls row">
+        <div
+          class="btn"
+          :class="history.length <= hisotryIndex + 2 ? 'inactive' : ''"
+          @click.prevent="undo()"
+        >
+          <span class="material-icons">undo</span>
+          <span class="text">Undo</span>
+        </div>
+        <div
+          class="btn"
+          :class="hisotryIndex ? '' : 'inactive'"
+          @click.prevent="redo()"
+        >
+          <span class="material-icons">redo</span>
+          <span class="text">Redo</span>
+        </div>
+      </div>
+
       <div class="btn import" @click="triggerImportSelector()">
         <span class="material-icons">cloud_upload</span>
         <span class="text">Import</span>
@@ -32,7 +51,7 @@
         <span class="text">Export for usage</span>
       </div>
     </div>
-    <div class="row mainSpace">
+    <div class="row mainSpace" @click.capture="updateHistory">
       <div id="compTree">
         <component-list
           class="actualTree"
@@ -81,6 +100,7 @@
           :elements="elements"
           :zoom="zoom"
           :pauseRendering="pauseRendering"
+          @changeIndication="updateHistory"
           @select="
             comp => (selected = comp ? { component: comp, action: null } : null)
           "
@@ -262,6 +282,10 @@ export default Vue.extend({
       copiedComponent: null as null | string,
       copiedAction: null as null | string,
 
+      history: [] as ExportData[],
+      hisotryIndex: 0,
+      pauseHistoryTracking: false,
+
       elements: [] as Component[],
 
       pauseRendering: false,
@@ -274,6 +298,7 @@ export default Vue.extend({
   mounted() {
     document.addEventListener("click", this.checkClose, { capture: true });
     this.setupImageManager(this.$refs.imageContainer as HTMLElement);
+    this.updateHistory();
   },
 
   destroyed() {
@@ -288,6 +313,16 @@ export default Vue.extend({
         menu.style.top = ev.y + 10 + "px";
         menu.style.left = ev.x - menu.offsetWidth / 2 + "px";
       }, 10);
+    },
+
+    updateHistory() {
+      const state = JSON.stringify(this.bundleToJson(true));
+      if (this.history.length && JSON.stringify(this.history[0]) == state)
+        return;
+
+      this.history.splice(0, 0, JSON.parse(state));
+      this.hisotryIndex = 0;
+      if (this.history.length >= 50) this.history.pop();
     },
 
     addNewAction(key: string) {
@@ -388,7 +423,7 @@ export default Vue.extend({
       dlAnchorElem.click();
     },
 
-    bundleToJson() {
+    bundleToJson(skipResrouces = false) {
       const compTree = new GroupComponent(
         "component_tree",
         "-",
@@ -400,20 +435,50 @@ export default Vue.extend({
         type: "savepoint",
         version: VERSION,
         invisible: invisible,
-        fonts: Object.values(fonts),
+        fonts: skipResrouces ? undefined : Object.values(fonts),
         width: this.width,
         height: this.height,
-        images: Object.values(images).map(image => ({
-          name: image.name,
-          data: image.data.src
-        })),
+        images: skipResrouces
+          ? undefined
+          : Object.values(images).map(image => ({
+              name: image.name,
+              data: image.data.src
+            })),
         componentTree: JSON.parse(compTree.toJson())
       };
 
       return exportJsonObj;
     },
 
-    async loadFromJsonObj(jsonObj: ExportData, resetOld: boolean) {
+    async redo() {
+      if (this.hisotryIndex == 0) return;
+
+      this.hisotryIndex--;
+      const exportData = this.history[this.hisotryIndex];
+      loading(true);
+      this.pauseHistoryTracking = true;
+      await this.loadFromJsonObj(exportData, true, true);
+      this.pauseHistoryTracking = false;
+      loading(false);
+    },
+
+    async undo() {
+      if (this.history.length <= this.hisotryIndex + 2) return;
+
+      this.hisotryIndex++;
+      const exportData = this.history[this.hisotryIndex];
+      loading(true);
+      this.pauseHistoryTracking = true;
+      await this.loadFromJsonObj(exportData, true, true);
+      this.pauseHistoryTracking = false;
+      loading(false);
+    },
+
+    async loadFromJsonObj(
+      jsonObj: ExportData,
+      resetOld: boolean,
+      keepResrouces = false
+    ) {
       this.pauseRendering = true;
       if (jsonObj.type != "savepoint")
         throw Error("This .json file is not an AdvancedGUI savepoint!");
@@ -431,8 +496,10 @@ export default Vue.extend({
       this.copiedAction = null;
       this.copiedComponent = null;
 
-      Object.keys(images).forEach(key => delete images[key]);
-      Object.keys(fonts).forEach(key => delete fonts[key]);
+      if (!keepResrouces) {
+        Object.keys(images).forEach(key => delete images[key]);
+        Object.keys(fonts).forEach(key => delete fonts[key]);
+      }
 
       if (resetOld) {
         this.elements.forEach(elem => unregisterComponent(elem));
@@ -463,17 +530,19 @@ export default Vue.extend({
         }
       });
 
-      try {
-        await Promise.all([
-          ...jsonObj.fonts.map(font =>
-            registerFontBase64(font.data, font.name)
-          ),
-          ...jsonObj.images.map(image =>
-            registerImageBase64(image.data, image.name)
-          )
-        ]);
-      } catch (exc) {
-        console.error(exc);
+      if (!keepResrouces) {
+        try {
+          await Promise.all([
+            ...jsonObj.fonts!.map(font =>
+              registerFontBase64(font.data, font.name)
+            ),
+            ...jsonObj.images!.map(image =>
+              registerImageBase64(image.data, image.name)
+            )
+          ]);
+        } catch (exc) {
+          console.error(exc);
+        }
       }
 
       this.pauseRendering = false;

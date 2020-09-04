@@ -210,6 +210,8 @@ export default Vue.extend({
         this.redraw();
       }
 
+      this.$emit("changeIndication");
+
       this.modifying = null;
     },
 

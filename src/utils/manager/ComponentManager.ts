@@ -29,10 +29,10 @@ export interface ExportData {
   type: "savepoint" | "usage";
   version: string;
   invisible: string[];
-  fonts: Font[];
+  fonts?: Font[];
   width: number;
   height: number;
-  images: {
+  images?: {
     name: string;
     data: string;
   }[];

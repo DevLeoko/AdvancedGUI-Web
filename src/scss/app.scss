@@ -32,6 +32,7 @@ a {
   height: fit-content;
   width: fit-content;
   cursor: pointer;
+  user-select: none;
 
   
   background-color: $dark3;
@@ -170,9 +171,23 @@ a {
       }
     }
 
+    .historyControls{
+      margin: 0 auto;
+
+      .btn{
+        border: 1px solid $light3;
+        color: $light3;
+        margin: 0 5px;
+
+        &.inactive{
+          border: 1px solid $light4;
+          color: $light4;
+          cursor: not-allowed;
+        }
+      }
+    }
+
     .import{
-      margin-left: auto;
-      // background-color: $blue;
       border: 1px solid $light3;
       color: $light3;
     }
