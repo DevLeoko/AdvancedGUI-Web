@@ -209,6 +209,7 @@ export default Vue.extend({
     openMenu(elem: ListItem, ev: MouseEvent) {
       const moreMenu = this.$refs.moreMenu as HTMLElement;
       moreMenu.style.display = "block";
+      moreMenu.style.opacity = "0";
 
       setTimeout(() => {
         let x = ev.x;
@@ -221,6 +222,7 @@ export default Vue.extend({
 
         moreMenu.style.top = y + "px";
         moreMenu.style.left = x + "px";
+        moreMenu.style.opacity = "1";
       }, 10);
 
       this.optElem = elem;

@@ -60,7 +60,6 @@ a {
 }
 
 .absoluteMenu {
-  top: 50%;
   position: absolute;
   background-color: $dark3;
   color: $light2;
@@ -69,7 +68,7 @@ a {
   box-shadow: $shadow;
   overflow: hidden;
   transition-duration: 150ms;
-  transition-property: all;
+  transition-property: opacity;
 
   .divider {
     width: 100%;
@@ -214,6 +213,10 @@ a {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+
+    .compAddMenu{ 
+      top: 50%;
+    }
 
     .actualTree{
       margin-top: 0;

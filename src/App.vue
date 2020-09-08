@@ -69,7 +69,7 @@
           <span class="material-icons">add</span>
           <span class="text">Add component</span>
 
-          <div class="absoluteMenu" ref="compAddMenu">
+          <div class="absoluteMenu compAddMenu" ref="compAddMenu">
             <template v-if="copiedComponent">
               <div class="entry" @click.stop="pasteComponent()">
                 <span class="material-icons">content_paste</span>
