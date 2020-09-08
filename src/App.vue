@@ -62,6 +62,7 @@
             comp => (selected = comp ? { component: comp, action: null } : null)
           "
           @copy="val => (copiedComponent = val)"
+          @add-child="addChildToTreeElem"
         ></component-list>
 
         <div class="btn" @click="ev => showCompAddMenu(ev)">
@@ -290,6 +291,8 @@ export default Vue.extend({
 
       pauseRendering: false,
 
+      addComponentAnchor: null as null | Component[],
+
       invisible,
       toggleVis
     };
@@ -337,7 +340,7 @@ export default Vue.extend({
       const nComp = componentInfo[key].generator();
       registerComponent(nComp);
 
-      this.elements.splice(0, 0, nComp);
+      this.addComponentAnchor!.splice(0, 0, nComp);
       this.selected = {
         component: nComp,
         action: null
@@ -348,6 +351,7 @@ export default Vue.extend({
 
     checkClose(ev: MouseEvent) {
       const menuComp = this.$refs.compAddMenu as HTMLElement;
+
       if (ev.target != menuComp) menuComp.style.display = "none";
 
       const menuAction = this.$refs.actionAddMenu as HTMLElement;
@@ -355,9 +359,18 @@ export default Vue.extend({
         menuAction.style.display = "none";
     },
 
-    showCompAddMenu(ev: MouseEvent) {
+    addChildToTreeElem(data: { event: MouseEvent; anchor: Component[] }) {
+      this.showCompAddMenu(data.event, data.anchor);
+    },
+
+    showCompAddMenu(
+      ev: MouseEvent,
+      anchor = undefined as undefined | Component[]
+    ) {
       const menu = this.$refs.compAddMenu as HTMLElement;
       menu.style.display = "block";
+      menu.style.opacity = "0";
+      this.addComponentAnchor = anchor || this.elements;
 
       setTimeout(() => {
         let y = ev.y;
@@ -365,6 +378,7 @@ export default Vue.extend({
         if (y + menu.offsetHeight > window.innerHeight)
           y = ev.y - menu.offsetHeight - 5;
 
+        menu.style.opacity = "1";
         menu.style.top = y + "px";
         menu.style.left = ev.x + "px";
       }, 3);

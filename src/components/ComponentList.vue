@@ -2,6 +2,19 @@
   <div>
     <div class="moreMenu absoluteMenu" ref="moreMenu">
       <template v-if="optElem">
+        <template
+          v-if="
+            optElem.isGroup() &&
+              (optElem.itemLimit === undefined ||
+                optElem.itemLimit > optElem.getItems().length)
+          "
+        >
+          <div class="entry" @click.stop="addChildOpt">
+            <span class="material-icons">+</span>
+            Add child
+          </div>
+          <div class="divider"></div>
+        </template>
         <div class="entry" @click.stop="deleteOpt()">
           <span class="material-icons">delete</span> Delete
         </div>
@@ -82,6 +95,7 @@
               :itemClasses="elem.itemClasses"
               @input="val => $emit('input', val)"
               @copy="val => $emit('copy', val)"
+              @add-child="val => $emit('add-child', val)"
             ></component-list>
           </div>
         </div>
@@ -98,7 +112,7 @@
 <script lang="ts">
 import DragZone from "./DragZone.vue";
 import Vue from "vue";
-import { ListItem } from "@/utils/ListItem";
+import { ListItem, ListItemGroup } from "@/utils/ListItem";
 import { toggleVis, invisible } from "@/utils/manager/ComponentManager";
 
 export default Vue.extend({
@@ -242,6 +256,13 @@ export default Vue.extend({
 
     copyOpt() {
       this.$emit("copy", this.optElem?.toJson());
+    },
+
+    addChildOpt(ev: MouseEvent) {
+      this.$emit("add-child", {
+        event: ev,
+        anchor: (this.optElem as ListItemGroup<ListItem>).getItems()
+      });
     }
   }
 });

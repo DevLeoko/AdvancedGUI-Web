@@ -60,6 +60,7 @@ a {
 }
 
 .absoluteMenu {
+  top: 50%;
   position: absolute;
   background-color: $dark3;
   color: $light2;
@@ -67,7 +68,8 @@ a {
   display: none;
   box-shadow: $shadow;
   overflow: hidden;
-  transition-duration: 50ms;
+  transition-duration: 150ms;
+  transition-property: all;
 
   .divider {
     width: 100%;
