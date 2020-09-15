@@ -1,4 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 # Exclude generated java docs from language stats
-public/apidocs/* linguist-vendored
+public/apidocs/* linguist-documentation
