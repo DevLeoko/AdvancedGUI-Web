@@ -41,7 +41,7 @@ export class Rect extends Rectangular {
     this.height = newBoundingBox.height;
   }
 
-  toJsonObj() {
+  toDataObj() {
     return {
       type: Rect.displayName,
       x: this.x,

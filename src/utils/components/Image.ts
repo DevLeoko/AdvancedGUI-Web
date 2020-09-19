@@ -82,7 +82,7 @@ export class Image extends Rectangular {
     this.image = nImage;
   }
 
-  toJsonObj() {
+  toDataObj() {
     return {
       type: Image.displayName,
       x: this.x,

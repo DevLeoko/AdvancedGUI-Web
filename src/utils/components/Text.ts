@@ -51,7 +51,7 @@ export class Text extends Component {
     );
   }
 
-  toJsonObj() {
+  toDataObj() {
     return {
       type: Text.displayName,
       x: this.x,

@@ -89,10 +89,12 @@ export class GroupComponent extends Component
     return this.components;
   }
 
-  toJsonObj() {
+  toDataObj(forExport?: boolean) {
     return {
       type: this.displayName,
-      components: this.components.map(comp => JSON.parse(comp.toJson())),
+      components: this.components.map(comp =>
+        JSON.parse(comp.toJson(forExport))
+      ),
       expanded: this.expanded
     };
   }

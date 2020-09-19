@@ -60,15 +60,19 @@ export class Template extends GroupComponent {
     this.transpileToGroup().draw(context);
   }
 
-  toJsonObj() {
-    return {
-      defaultData: this.defaultData,
-      ...super.toJsonObj()
-    };
+  toDataObj(forUsage: boolean) {
+    if (!forUsage) {
+      return {
+        defaultData: this.defaultData,
+        ...super.toDataObj()
+      };
+    } else {
+      return this.transpileToGroup().toDataObj(forUsage);
+    }
   }
 
   toExportJson() {
-    return this.transpileToGroup().toExportJson();
+    return this.transpileToGroup().toJson(true);
   }
 
   static fromJson(jsonObj: JsonObject, clickAction: Action[]) {

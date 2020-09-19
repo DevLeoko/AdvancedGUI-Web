@@ -31,19 +31,15 @@ export abstract class Component implements ListItem {
   abstract get vueComponent(): VueConstructor<Vue>;
   abstract get icon(): string;
   abstract get displayName(): ComponentType;
-  abstract toJsonObj(): JsonObject;
+  abstract toDataObj(forUsage: boolean): JsonObject;
 
-  toJson() {
+  toJson(forUsage?: boolean) {
     return JSON.stringify({
       id: this.id,
       name: this.name,
       action: this.clickAction.map(action => action.toJsonObj()),
-      ...this.toJsonObj()
+      ...this.toDataObj(forUsage || false)
     });
-  }
-
-  toExportJson() {
-    return this.toJson();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

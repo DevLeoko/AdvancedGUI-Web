@@ -441,7 +441,7 @@ export default Vue.extend({
       dlAnchorElem.click();
     },
 
-    bundleToJson(skipResrouces = false) {
+    bundleToJson(skipResources = false, forUsage = false) {
       const compTree = new GroupComponent(
         "component_tree",
         "-",
@@ -453,16 +453,16 @@ export default Vue.extend({
         type: "savepoint",
         version: VERSION,
         invisible: invisible,
-        fonts: skipResrouces ? undefined : Object.values(fonts),
+        fonts: skipResources ? undefined : Object.values(fonts),
         width: this.width,
         height: this.height,
-        images: skipResrouces
+        images: skipResources
           ? undefined
           : Object.values(images).map(image => ({
               name: image.name,
               data: image.data.src
             })),
-        componentTree: JSON.parse(compTree.toJson())
+        componentTree: JSON.parse(compTree.toJson(forUsage))
       };
 
       return exportJsonObj;
@@ -594,7 +594,7 @@ export default Vue.extend({
       this.exportModal = false;
       loading(true);
 
-      const savepoint = this.bundleToJson();
+      const savepoint = this.bundleToJson(false, true);
       const { fonts, images } = savepoint;
       delete (savepoint as JsonObject).images;
       delete (savepoint as JsonObject).fonts;
