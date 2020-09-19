@@ -23,16 +23,18 @@ export class Text extends Component {
     public font: string,
     public size: number,
     public color: string,
-    public placeholder: boolean
+    public placeholder: boolean,
+    public previewText: string
   ) {
     super(id, name, clickAction);
   }
 
   draw(context: CanvasRenderingContext2D): void {
+    const renderText = this.placeholder ? this.previewText : this.text;
     context.font = `${this.size}px ${this.font}`;
     context.fillStyle = this.color;
-    context.fillText(this.text, this.x, this.y);
-    this.lastWidth = context.measureText(this.text).width;
+    context.fillText(renderText, this.x, this.y);
+    this.lastWidth = context.measureText(renderText).width;
   }
 
   modify(newBoundingBox: BoundingBox): void {
@@ -58,7 +60,8 @@ export class Text extends Component {
       font: this.font,
       size: this.size,
       color: this.color,
-      placeholder: this.placeholder
+      placeholder: this.placeholder,
+      previewText: this.previewText
     };
   }
 
@@ -73,7 +76,8 @@ export class Text extends Component {
       jsonObj.font,
       jsonObj.size,
       jsonObj.color,
-      jsonObj.placeholder
+      jsonObj.placeholder,
+      jsonObj.previewText
     );
   }
 
@@ -88,7 +92,8 @@ export class Text extends Component {
       "VT323",
       20,
       "#67809f",
-      false
+      false,
+      "123"
     );
   }
 }

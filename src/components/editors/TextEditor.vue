@@ -13,6 +13,10 @@
       <span class="label">Contains placeholders</span>
       <input type="checkbox" v-model="component.placeholder" />
     </div>
+    <div class="settings-row" v-if="component.placeholder">
+      <span class="label">Preview Text</span>
+      <input type="text" style="width: 90px" v-model="component.previewText" />
+    </div>
     <br />
     <span class="label">Style</span>
     <div class="settings-row">

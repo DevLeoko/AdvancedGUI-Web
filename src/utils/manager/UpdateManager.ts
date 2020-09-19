@@ -2,8 +2,9 @@
 import { ExportData } from "./ComponentManager";
 import { Component } from "../components/Component";
 import { Action } from "../actions/Action";
+import { Text } from "../components/Text";
 
-export const VERSION = "1.0.1";
+export const VERSION = "1.0.2";
 
 function traverseComponent(
   component: Component,
@@ -58,6 +59,15 @@ export function migrate(data: ExportData): ExportData {
       });
     });
     oldVersion = "1.0.1";
+  }
+
+  if (oldVersion == "1.0.1") {
+    traverseComponent(data.componentTree, comp => {
+      if ((comp as any).type == Text.displayName) {
+        (comp as any).previewText = "123";
+      }
+    });
+    oldVersion = "1.0.2";
   }
 
   return data;
