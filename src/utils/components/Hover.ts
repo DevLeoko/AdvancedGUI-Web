@@ -45,14 +45,9 @@ export class Hover extends GroupComponent {
     return current?.getBoundingBox().isInside(point) ? current : this;
   }
 
-  static fromJson(
-    jsonObj: JsonObject,
-    clickAction: Action[],
-    reassignIDs: boolean
-  ) {
+  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     const comps: Component[] = GroupComponent.componentsFromJson(
-      jsonObj.components,
-      reassignIDs
+      jsonObj.components
     );
     return new Hover(
       jsonObj.id,

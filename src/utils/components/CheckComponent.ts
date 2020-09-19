@@ -59,14 +59,9 @@ export class CheckComponent extends GroupComponent {
     };
   }
 
-  static fromJson(
-    jsonObj: JsonObject,
-    clickAction: Action[],
-    reassignIDs: boolean
-  ) {
+  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     const comps: Component[] = GroupComponent.componentsFromJson(
-      jsonObj.components,
-      reassignIDs
+      jsonObj.components
     );
     return new CheckComponent(
       jsonObj.id,

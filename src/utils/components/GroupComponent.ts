@@ -15,6 +15,7 @@ export class GroupComponent extends Component
   implements ListItemGroup<Component> {
   public static displayName: ComponentType = "Group";
   public static icon = "folder";
+  public static childComponentProps = ["components"];
   public displayName = GroupComponent.displayName;
   public icon = GroupComponent.icon;
   public vueComponent = EmptyEditor;
@@ -96,11 +97,11 @@ export class GroupComponent extends Component
     };
   }
 
-  static componentsFromJson(jsonObj: JsonObject[], reassignIDs: boolean) {
+  static componentsFromJson(jsonObj: JsonObject[]) {
     const comps: Component[] = [];
 
     jsonObj.forEach(comp => {
-      const converted = componentFromJson(comp, reassignIDs);
+      const converted = componentFromJson(comp);
       if (converted) comps.push(converted);
       else console.error("Invalid component: ", comp);
     });
@@ -108,14 +109,9 @@ export class GroupComponent extends Component
     return comps;
   }
 
-  static fromJson(
-    jsonObj: JsonObject,
-    clickAction: Action[],
-    reassignIDs: boolean
-  ) {
+  static fromJson(jsonObj: JsonObject, clickAction: Action[]) {
     const comps: Component[] = GroupComponent.componentsFromJson(
-      jsonObj.components,
-      reassignIDs
+      jsonObj.components
     );
     return new GroupComponent(
       jsonObj.id,

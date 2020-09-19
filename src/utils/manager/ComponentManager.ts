@@ -41,13 +41,13 @@ export interface ExportData {
 
 export type JsonConverter = (
   jsonObj: JsonObject,
-  clickAction: Action[],
-  reassignIDs: boolean
+  clickAction: Action[]
 ) => Component;
 
 export interface ComponentMeta {
   generator: () => Component;
   fromJson: JsonConverter;
+  childComponentProps?: string[];
   displayName: string;
   icon: string;
 }
@@ -72,7 +72,7 @@ function randomString(length: number) {
   return result;
 }
 
-function getUniqueID() {
+export function generateUniqueID() {
   let id = randomString(8);
   while (components[id]) id = randomString(8);
 
@@ -90,18 +90,63 @@ export function toggleVis(id: string) {
   else invisible.push(id);
 }
 
+function _reassignIDs(
+  jsonObj: JsonObject,
+  idGernerator = generateUniqueID,
+  idMap: { [key: string]: string }
+) {
+  if (jsonObj.type) {
+    idMap[jsonObj.id] = generateUniqueID();
+    jsonObj.id = idMap[jsonObj.id];
+
+    const childs = componentInfo[jsonObj.type].childComponentProps;
+    if (childs) {
+      for (const childPorp of childs) {
+        if (jsonObj[childPorp]) {
+          console.log("From rec", jsonObj);
+
+          if (Array.isArray(jsonObj[childPorp])) {
+            for (const childPorpElem of jsonObj[childPorp]) {
+              _reassignIDs(childPorpElem, idGernerator, idMap);
+            }
+          } else {
+            _reassignIDs(jsonObj[childPorp], idGernerator, idMap);
+          }
+        }
+      }
+    }
+  }
+}
+
+export function reassignIDs(
+  jsonObj: JsonObject,
+  idGernerator = generateUniqueID
+): JsonObject {
+  const idMap: { [key: string]: string } = {};
+  console.log("From init");
+  _reassignIDs(jsonObj, idGernerator, idMap);
+
+  let json = JSON.stringify(jsonObj);
+  Object.keys(idMap).forEach(
+    orgId =>
+      (json = json.replace(
+        new RegExp(`%${orgId.toUpperCase()}%`, "g"),
+        idMap[orgId]
+      ))
+  );
+
+  return JSON.parse(json);
+}
+
 export function componentFromJson(
   jsonObj: JsonObject,
-  reassignIDs = false
+  reassignIDsFirst = false
 ): Component | null {
+  if (reassignIDsFirst) jsonObj = reassignIDs(jsonObj);
+
   if (jsonObj.type) {
     const actions = actionsFromJson(jsonObj.action);
-    if (reassignIDs) jsonObj.id = getUniqueID();
-    const component = componentInfo[jsonObj.type].fromJson(
-      jsonObj,
-      actions,
-      reassignIDs
-    );
+    const component = componentInfo[jsonObj.type].fromJson(jsonObj, actions);
     Vue.set(components, component.id, component);
     return component;
   } else {
@@ -119,7 +164,7 @@ export function getRandomColor() {
 }
 
 export function registerComponent(component: Component) {
-  if (component.id == "-") component.id = getUniqueID();
+  if (component.id == "-") component.id = generateUniqueID();
   Vue.set(components, component.id, component);
 }
 
