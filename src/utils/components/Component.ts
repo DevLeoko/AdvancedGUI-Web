@@ -14,6 +14,7 @@ import {
 export abstract class Component implements ListItem {
   public hideable = true;
   public resizeable = false;
+  public actionable = true;
 
   constructor(
     public id: string,
@@ -39,6 +40,10 @@ export abstract class Component implements ListItem {
       action: this.clickAction.map(action => action.toJsonObj()),
       ...this.toJsonObj()
     });
+  }
+
+  toExportJson() {
+    return this.toJson();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -136,60 +136,64 @@
               />
             </div>
           </div>
-          <div class="divider"></div>
-          <div class="settings-box clickActions">
-            <h1><span class="material-icons">touch_app</span> Click Action</h1>
-            <component-list
-              class="sidebar"
-              root
-              :components="selected.component.clickAction"
-              v-model="selected.action"
-              @copy="val => (copiedAction = val)"
-            ></component-list>
-            <div class="settings-row">
-              <div class="btn addAction" @click="ev => showActionAddMenu(ev)">
-                <span class="material-icons">add</span>
-                <span class="text">Add action</span>
+          <template v-if="selected.component.actionable">
+            <div class="divider"></div>
+            <div class="settings-box clickActions">
+              <h1>
+                <span class="material-icons">touch_app</span> Click Action
+              </h1>
+              <component-list
+                class="sidebar"
+                root
+                :components="selected.component.clickAction"
+                v-model="selected.action"
+                @copy="val => (copiedAction = val)"
+              ></component-list>
+              <div class="settings-row">
+                <div class="btn addAction" @click="ev => showActionAddMenu(ev)">
+                  <span class="material-icons">add</span>
+                  <span class="text">Add action</span>
 
-                <div class="absoluteMenu" ref="actionAddMenu">
-                  <template v-if="copiedAction">
-                    <div class="entry" @click.stop="pasteAction()">
-                      <span class="material-icons">content_paste</span>
-                      Paste
-                    </div>
-                    <div class="divider"></div>
-                  </template>
-                  <div
-                    v-for="(key, index) in Object.keys(actions)"
-                    :key="index"
-                  >
-                    <div class="divider" v-if="index != 0"></div>
-                    <div class="entry" @click.stop="addNewAction(key)">
-                      <span class="material-icons">{{
-                        actions[key].icon
-                      }}</span>
-                      {{ key }}
+                  <div class="absoluteMenu" ref="actionAddMenu">
+                    <template v-if="copiedAction">
+                      <div class="entry" @click.stop="pasteAction()">
+                        <span class="material-icons">content_paste</span>
+                        Paste
+                      </div>
+                      <div class="divider"></div>
+                    </template>
+                    <div
+                      v-for="(key, index) in Object.keys(actions)"
+                      :key="index"
+                    >
+                      <div class="divider" v-if="index != 0"></div>
+                      <div class="entry" @click.stop="addNewAction(key)">
+                        <span class="material-icons">{{
+                          actions[key].icon
+                        }}</span>
+                        {{ key }}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div v-if="selected && selected.action" id="actionEditor">
-              <h2>
-                <span class="material-icons">edit</span> Edit
-                {{ selected.action.id.toLowerCase() }}
-              </h2>
-              <component
-                v-bind:is="actions[selected.action.id].component"
-                :action="
-                  selected.action.isCheck()
-                    ? selected.action.check
-                    : selected.action
-                "
-              ></component>
+              <div v-if="selected && selected.action" id="actionEditor">
+                <h2>
+                  <span class="material-icons">edit</span> Edit
+                  {{ selected.action.id.toLowerCase() }}
+                </h2>
+                <component
+                  v-bind:is="actions[selected.action.id].component"
+                  :action="
+                    selected.action.isCheck()
+                      ? selected.action.check
+                      : selected.action
+                  "
+                ></component>
+              </div>
             </div>
-          </div>
+          </template>
           <div class="divider"></div>
           <div class="settings-box">
             <h1>

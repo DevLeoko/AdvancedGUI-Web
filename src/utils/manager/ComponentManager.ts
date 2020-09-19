@@ -10,6 +10,12 @@ import Vue from "vue";
 import { actionsFromJson } from "./ActionManager";
 import { Font } from "./FontManager";
 import { CheckComponent } from "../components/CheckComponent";
+import { Template } from "../components/Template";
+
+export type TemplateVariable = string;
+export interface TemplateData {
+  [key: string]: number | string;
+}
 
 export interface JsonObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +29,8 @@ export type ComponentType =
   | "Text"
   | "Image"
   | "View"
+  | "Template"
+  | "Replica"
   | "Check";
 
 export interface ExportData {
@@ -84,6 +92,12 @@ export function isInvisible(id: string) {
 }
 
 export function toggleVis(id: string) {
+  if (!id.includes("#")) {
+    Object.keys(components)
+      .filter(comp => comp.startsWith(`${id}#`))
+      .forEach(toggleVis);
+  }
+
   const index = invisible.indexOf(id);
 
   if (index != -1) invisible.splice(index, 1);
@@ -92,19 +106,17 @@ export function toggleVis(id: string) {
 
 function _reassignIDs(
   jsonObj: JsonObject,
-  idGernerator = generateUniqueID,
+  idGernerator = generateUniqueID as (oldId: string) => string,
   idMap: { [key: string]: string }
 ) {
   if (jsonObj.type) {
-    idMap[jsonObj.id] = generateUniqueID();
+    idMap[jsonObj.id] = idGernerator(jsonObj.id);
     jsonObj.id = idMap[jsonObj.id];
 
     const childs = componentInfo[jsonObj.type].childComponentProps;
     if (childs) {
       for (const childPorp of childs) {
         if (jsonObj[childPorp]) {
-          console.log("From rec", jsonObj);
-
           if (Array.isArray(jsonObj[childPorp])) {
             for (const childPorpElem of jsonObj[childPorp]) {
               _reassignIDs(childPorpElem, idGernerator, idMap);
@@ -120,19 +132,14 @@ function _reassignIDs(
 
 export function reassignIDs(
   jsonObj: JsonObject,
-  idGernerator = generateUniqueID
+  idGernerator = generateUniqueID as (oldId: string) => string
 ): JsonObject {
   const idMap: { [key: string]: string } = {};
-  console.log("From init");
   _reassignIDs(jsonObj, idGernerator, idMap);
 
   let json = JSON.stringify(jsonObj);
   Object.keys(idMap).forEach(
-    orgId =>
-      (json = json.replace(
-        new RegExp(`%${orgId.toUpperCase()}%`, "g"),
-        idMap[orgId]
-      ))
+    orgId => (json = json.replace(new RegExp(`%${orgId}%`, "g"), idMap[orgId]))
   );
 
   return JSON.parse(json);
@@ -166,6 +173,13 @@ export function getRandomColor() {
 export function registerComponent(component: Component) {
   if (component.id == "-") component.id = generateUniqueID();
   Vue.set(components, component.id, component);
+
+  if (
+    component.id.includes("#") &&
+    invisible.indexOf(component.id.split("#")[0]) != -1
+  ) {
+    invisible.push(component.id);
+  }
 }
 
 export function unregisterComponent(component: Component) {
@@ -179,5 +193,6 @@ export function setup() {
   componentInfo[GroupComponent.displayName] = GroupComponent;
   componentInfo[Hover.displayName] = Hover;
   componentInfo[CheckComponent.displayName] = CheckComponent;
+  componentInfo[Template.displayName] = Template;
   componentInfo[View.displayName] = View;
 }
