@@ -31,7 +31,7 @@ export class Template extends GroupComponent {
 
   transpileToGroup(
     data = this.defaultData,
-    offset = null as { x: number; y: number } | null,
+    position = null as { x: number; y: number } | null,
     id = this.id
   ): GroupComponent {
     const idGenerator = (compId: string) => `${compId}#${id}`;
@@ -53,7 +53,17 @@ export class Template extends GroupComponent {
         json => componentFromJson(reassignIDs(JSON.parse(json), idGenerator))!
       );
 
-    return new GroupComponent(id, "-", [], newComps, true);
+    const group = new GroupComponent(id, "-", [], newComps, true);
+    if (position) {
+      const boundingBox = group.getBoundingBox();
+
+      boundingBox.x = position.x;
+      boundingBox.y = position.y;
+
+      group.modify(boundingBox);
+    }
+
+    return group;
   }
 
   draw(context: CanvasRenderingContext2D): void {

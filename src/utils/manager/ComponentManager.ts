@@ -11,6 +11,7 @@ import { actionsFromJson } from "./ActionManager";
 import { Font } from "./FontManager";
 import { CheckComponent } from "../components/CheckComponent";
 import { Template } from "../components/Template";
+import { Replica } from "../components/Replica";
 
 export type TemplateVariable = string;
 export interface TemplateData {
@@ -194,5 +195,6 @@ export function setup() {
   componentInfo[Hover.displayName] = Hover;
   componentInfo[CheckComponent.displayName] = CheckComponent;
   componentInfo[Template.displayName] = Template;
+  componentInfo[Replica.displayName] = Replica;
   componentInfo[View.displayName] = View;
 }
