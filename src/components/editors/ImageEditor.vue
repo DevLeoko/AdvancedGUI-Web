@@ -1,6 +1,14 @@
 <template>
   <div id="imageEditor">
-    <div class="label heading">Image</div>
+    <div class="label heading">
+      Image
+      <input
+        type="text"
+        class="imageNameInput"
+        @input="val => component.setImage(val.target.value)"
+        :value="component.image"
+      />
+    </div>
     <div class="settings-row imageList">
       <div
         class="imageBox"
@@ -9,7 +17,12 @@
         :style="{ backgroundImage: `url(${img.data.src})` }"
         @click="component.setImage(img.name)"
         :class="component.image == img.name ? 'active' : ''"
-      ></div>
+      >
+        <div class="delImage" @click.stop="unregisterImage(img.name)">
+          <span class="material-icons">close</span>
+        </div>
+        <div class="imageName">{{ img.name }}</div>
+      </div>
     </div>
     <div class="btn" @click="triggerFileSelector()">
       <span class="material-icons">add</span>
@@ -51,12 +64,17 @@
 <script lang="ts">
 import Vue from "vue";
 import { Image } from "@/utils/components/Image";
-import { images, registerImage } from "@/utils/manager/ImageManager";
+import {
+  images,
+  registerImage,
+  unregisterImage
+} from "@/utils/manager/ImageManager";
 
 export default Vue.extend({
   data() {
     return {
-      images
+      images,
+      unregisterImage
     };
   },
 
@@ -117,12 +135,16 @@ export default Vue.extend({
     .imageBox {
       width: 80px;
       height: 80px;
+      overflow: hidden;
       background-size: contain;
       background-position: center;
       background-repeat: no-repeat;
       image-rendering: pixelated;
       margin: 10px;
       cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
 
       &.active {
         border: 2px solid $blue;
@@ -132,6 +154,31 @@ export default Vue.extend({
 
       &:hover {
         transform: scale(1.1);
+
+        .imageName {
+          white-space: normal;
+        }
+      }
+
+      .imageName {
+        background-color: rgba(0, 0, 0, 0.6);
+        width: fit-content;
+        white-space: nowrap;
+        font-size: 12px;
+        padding: 2px 10px;
+      }
+
+      .delImage {
+        align-self: flex-end;
+        padding-top: 3px;
+        height: 17px;
+        background-color: rgba(0, 0, 0, 0.6);
+
+        .material-icons {
+          color: $red;
+          font-size: 20px !important;
+          line-height: 0.4;
+        }
       }
     }
   }

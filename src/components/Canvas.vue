@@ -22,6 +22,7 @@ import {
 } from "@/utils/manager/ComponentManager";
 import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
+import { images } from "@/utils/manager/ImageManager";
 
 export default Vue.extend({
   props: {
@@ -63,7 +64,8 @@ export default Vue.extend({
       },
 
       invisible,
-      registeredComponents
+      registeredComponents,
+      images
     };
   },
 
@@ -88,6 +90,13 @@ export default Vue.extend({
     },
 
     elements: {
+      deep: true,
+      handler() {
+        this.redraw();
+      }
+    },
+
+    images: {
       deep: true,
       handler() {
         this.redraw();

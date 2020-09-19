@@ -28,13 +28,14 @@ export class Image extends Rectangular {
   }
 
   draw(context: CanvasRenderingContext2D): void {
-    context.drawImage(
-      images[this.image].data,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
+    if (images[this.image])
+      context.drawImage(
+        images[this.image].data,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
   }
 
   modify(newBoundingBox: BoundingBox): void {
@@ -66,6 +67,8 @@ export class Image extends Rectangular {
   }
 
   setImage(nImage: string) {
+    console.log(nImage);
+
     if (this.keepImageRatio) {
       const oldRatio = images[this.image].ratio;
       const ratio = images[nImage].ratio;

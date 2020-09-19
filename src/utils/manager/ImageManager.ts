@@ -29,6 +29,13 @@ export async function registerImage(file: File | Blob, imageName: string) {
   await registerImageBase64(url, imageName);
 }
 
+export async function unregisterImage(imageName: string) {
+  const elem = images[imageName].data;
+
+  Vue.delete(images, imageName);
+  elem.remove();
+}
+
 export function setupImageManager(hiddenImageContainer: HTMLElement) {
   imageContainer = hiddenImageContainer;
   for (const font of [
