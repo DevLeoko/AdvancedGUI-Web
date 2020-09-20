@@ -17,6 +17,7 @@ export class Replica extends Component {
   public displayName = Replica.displayName;
   public icon = Replica.icon;
   public vueComponent = Editor;
+  public actionable = false;
 
   constructor(
     public id: string,

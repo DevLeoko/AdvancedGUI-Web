@@ -37,6 +37,12 @@
       <span class="material-icons">add</span>
       <span class="text">Add variable</span>
     </div>
+    <p>
+      Use <i>#variableName</i> in any text-input within this template to use the
+      corresponding variable. You can also use them in actions. Make sure that
+      each variable is actually assined a value. In number-inputs you can press
+      '#' to activate text-input (only avalable for some inputs).
+    </p>
   </div>
 </template>
 
@@ -80,6 +86,11 @@ export default Vue.extend({
     color: $red;
     font-size: 18px;
     cursor: pointer;
+  }
+
+  p {
+    color: $light3 !important;
+    margin-top: 15px !important;
   }
 }
 </style>
