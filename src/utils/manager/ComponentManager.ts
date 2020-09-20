@@ -14,9 +14,7 @@ import { Template } from "../components/Template";
 import { Replica } from "../components/Replica";
 
 export type TemplateVariable = string;
-export interface TemplateData {
-  [key: string]: number | string;
-}
+export type TemplateData = { name: string; value: string | number }[];
 
 export interface JsonObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -185,6 +183,16 @@ export function registerComponent(component: Component) {
 
 export function unregisterComponent(component: Component) {
   Vue.delete(components, component.id);
+
+  if (!component.id.includes("#")) {
+    Object.values(components)
+      .filter(
+        comp =>
+          comp.id.startsWith(`${component.id}#`) ||
+          comp.id.endsWith(`#${component.id}`)
+      )
+      .forEach(unregisterComponent);
+  }
 }
 
 export function setup() {

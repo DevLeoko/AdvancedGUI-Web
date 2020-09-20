@@ -152,7 +152,8 @@ export default Vue.extend({
         if (!isInvisible(element.id)) element.draw(canvas);
       }
 
-      if (this.selected) drawSelection(canvas, this.selected);
+      if (this.selected && this.registeredComponents[this.selected.id])
+        drawSelection(canvas, this.selected);
     },
 
     onClickDown(event: MouseEvent) {

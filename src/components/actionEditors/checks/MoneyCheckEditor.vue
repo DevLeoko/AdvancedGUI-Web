@@ -2,7 +2,11 @@
   <div>
     <div class="settings-row">
       <div class="input-box">
-        <input type="number" v-model.number="action.amount" />
+        <input
+          type="number"
+          @keypress="inputTransformer($event, action.amount)"
+          v-model.number="action.amount"
+        />
         <span class="label">Amount</span>
       </div>
     </div>
@@ -16,10 +20,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { MoneyCheck } from "@/utils/checks/MoneyCheck";
+import { Template } from "@/utils/components/Template";
 
 export default Vue.extend({
   data() {
-    return {};
+    return {
+      inputTransformer: Template.inputTransformer
+    };
   },
 
   watch: {

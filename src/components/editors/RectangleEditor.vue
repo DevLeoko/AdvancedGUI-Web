@@ -17,18 +17,38 @@
     <span class="label">Dimensions</span>
     <div class="settings-row">
       <div class="input-box">
-        <input type="number" v-model.number="component.x" /> <span>X</span>
+        <input
+          type="number"
+          @keypress="inputTransformer($event, component.x)"
+          v-model.number="component.x"
+        />
+        <span>X</span>
       </div>
       <div class="input-box">
-        <input type="number" v-model.number="component.width" /> <span>W</span>
+        <input
+          type="number"
+          @keypress="inputTransformer($event, component.width)"
+          v-model.number="component.width"
+        />
+        <span>W</span>
       </div>
     </div>
     <div class="settings-row">
       <div class="input-box">
-        <input type="number" v-model.number="component.y" /> <span>Y</span>
+        <input
+          type="number"
+          @keypress="inputTransformer($event, component.y)"
+          v-model.number="component.y"
+        />
+        <span>Y</span>
       </div>
       <div class="input-box">
-        <input type="number" v-model.number="component.height" /> <span>H</span>
+        <input
+          type="number"
+          @keypress="inputTransformer($event, component.height)"
+          v-model.number="component.height"
+        />
+        <span>H</span>
       </div>
     </div>
   </div>
@@ -37,10 +57,13 @@
 <script lang="ts">
 import Vue from "vue";
 import { Rect } from "@/utils/components/Rect";
+import { Template } from "@/utils/components/Template";
 
 export default Vue.extend({
   data() {
-    return {};
+    return {
+      inputTransformer: Template.inputTransformer
+    };
   },
 
   props: {

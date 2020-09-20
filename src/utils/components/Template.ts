@@ -1,4 +1,4 @@
-import ViewEditor from "@/components/editors/EmptyEditor.vue";
+import Editor from "@/components/editors/TemplateEditor.vue";
 import { Component } from "./Component";
 import { Action } from "../actions/Action";
 import {
@@ -11,11 +11,25 @@ import {
 import { GroupComponent } from "./GroupComponent";
 
 export class Template extends GroupComponent {
+  public static inputTransformer = (
+    ev: KeyboardEvent,
+    val: string | number
+  ) => {
+    if (ev.key == "#") {
+      const input = ev.target as HTMLInputElement;
+      if (input.type != "text") {
+        input.type = "text";
+        input.value = val.toString();
+        ev.preventDefault();
+      }
+    }
+  };
+
   public static displayName: ComponentType = "Template";
   public static icon = "book";
   public displayName = Template.displayName;
   public icon = Template.icon;
-  public vueComponent = ViewEditor;
+  public vueComponent = Editor;
   public actionable = false;
 
   constructor(
@@ -30,6 +44,7 @@ export class Template extends GroupComponent {
   }
 
   transpileToGroup(
+    forUsage = false,
     data = this.defaultData,
     position = null as { x: number; y: number } | null,
     id = this.id
@@ -38,13 +53,16 @@ export class Template extends GroupComponent {
 
     const newComps = this.components
       .map(comp => {
-        const json = comp.toJson();
-        for (const key of Object.keys(data)) {
-          const value = data[key];
+        let json = comp.toJson(forUsage);
+        for (const entry of data) {
+          const value = entry.value;
           if (typeof value == "number") {
-            json.replace(new RegExp(`"#${key}"`, "g"), value.toString());
+            json = json.replace(
+              new RegExp(`"#${entry.name}"`, "g"),
+              value.toString()
+            );
           } else {
-            json.replace(new RegExp(`#${key}`, "g"), value);
+            json = json.replace(new RegExp(`#${entry.name}`, "g"), value);
           }
         }
         return json;
@@ -67,7 +85,7 @@ export class Template extends GroupComponent {
   }
 
   draw(context: CanvasRenderingContext2D): void {
-    this.transpileToGroup().draw(context);
+    this.transpileToGroup(true).draw(context);
   }
 
   toDataObj(forUsage: boolean) {
@@ -100,9 +118,9 @@ export class Template extends GroupComponent {
   }
 
   static generator() {
-    return new Template("-", Template.displayName, [], [], true, {
-      mainColor: "#26e686",
-      price: 12
-    });
+    return new Template("-", Template.displayName, [], [], true, [
+      { name: "mainColor", value: "#26e686" },
+      { name: "price", value: 12 }
+    ]);
   }
 }

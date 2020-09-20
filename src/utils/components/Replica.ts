@@ -3,7 +3,6 @@ import Editor from "@/components/editors/ReplicaEditor.vue";
 import { Action } from "../actions/Action";
 import {
   JsonObject,
-  getRandomColor,
   ComponentType,
   TemplateData,
   components
@@ -33,15 +32,21 @@ export class Replica extends Component {
   private getTemplate(): Template | undefined {
     const comp = components[this.targetId];
     if (comp?.displayName != Template.displayName) return undefined;
+
     return comp as Template;
   }
 
-  private getGroup(): GroupComponent | undefined {
+  private getGroup(forUsage = false): GroupComponent | undefined {
     return this.getTemplate()?.transpileToGroup(
+      forUsage,
       this.templateData,
       this.position,
       this.id
     );
+  }
+
+  getTemplateDefaultData() {
+    return this.getTemplate()?.defaultData;
   }
 
   draw(context: CanvasRenderingContext2D): void {
@@ -59,7 +64,7 @@ export class Replica extends Component {
 
   toDataObj(forExport: boolean) {
     if (forExport) {
-      return this.getGroup()?.toDataObj(true) || {};
+      return this.getGroup(true)?.toDataObj(true) || {};
     } else {
       return {
         type: Replica.displayName,
@@ -82,6 +87,6 @@ export class Replica extends Component {
   }
 
   static generator() {
-    return new Replica("-", Replica.displayName, [], { x: 10, y: 10 }, "", {});
+    return new Replica("-", Replica.displayName, [], { x: 10, y: 10 }, "", []);
   }
 }
