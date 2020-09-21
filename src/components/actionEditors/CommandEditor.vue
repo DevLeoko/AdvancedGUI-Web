@@ -4,6 +4,10 @@
       <span class="label">Command</span>
       <input type="text" v-model="action.command" />
     </div>
+    <div class="settings-row">
+      <span class="label">Run as console</span>
+      <input type="checkbox" v-model="action.asConsole" />
+    </div>
   </div>
 </template>
 
