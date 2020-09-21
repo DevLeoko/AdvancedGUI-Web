@@ -129,6 +129,33 @@ function _reassignIDs(
   }
 }
 
+export function registerComponent(component: Component) {
+  if (component.id == "-") component.id = generateUniqueID();
+  Vue.set(components, component.id, component);
+
+  if (
+    component.id.includes("#") &&
+    invisible.indexOf(component.id.split("#")[0]) != -1 &&
+    invisible.indexOf(component.id) == -1
+  ) {
+    invisible.push(component.id);
+  }
+}
+
+export function unregisterComponent(component: Component) {
+  Vue.delete(components, component.id);
+
+  if (!component.id.includes("#")) {
+    Object.values(components)
+      .filter(
+        comp =>
+          comp.id.startsWith(`${component.id}#`) ||
+          comp.id.endsWith(`#${component.id}`)
+      )
+      .forEach(unregisterComponent);
+  }
+}
+
 export function reassignIDs(
   jsonObj: JsonObject,
   idGernerator = generateUniqueID as (oldId: string) => string
@@ -153,7 +180,7 @@ export function componentFromJson(
   if (jsonObj.type) {
     const actions = actionsFromJson(jsonObj.action);
     const component = componentInfo[jsonObj.type].fromJson(jsonObj, actions);
-    Vue.set(components, component.id, component);
+    registerComponent(component);
     return component;
   } else {
     return null;
@@ -167,32 +194,6 @@ export function getRandomColor() {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
-}
-
-export function registerComponent(component: Component) {
-  if (component.id == "-") component.id = generateUniqueID();
-  Vue.set(components, component.id, component);
-
-  if (
-    component.id.includes("#") &&
-    invisible.indexOf(component.id.split("#")[0]) != -1
-  ) {
-    invisible.push(component.id);
-  }
-}
-
-export function unregisterComponent(component: Component) {
-  Vue.delete(components, component.id);
-
-  if (!component.id.includes("#")) {
-    Object.values(components)
-      .filter(
-        comp =>
-          comp.id.startsWith(`${component.id}#`) ||
-          comp.id.endsWith(`#${component.id}`)
-      )
-      .forEach(unregisterComponent);
-  }
 }
 
 export function setup() {
