@@ -165,7 +165,7 @@ export function reassignIDs(
 
   let json = JSON.stringify(jsonObj);
   Object.keys(idMap).forEach(
-    orgId => (json = json.replace(new RegExp(`%${orgId}%`, "g"), idMap[orgId]))
+    orgId => (json = json.replace(new RegExp(`${orgId}`, "g"), idMap[orgId]))
   );
 
   return JSON.parse(json);
