@@ -110,7 +110,6 @@ function _reassignIDs(
 ) {
   if (jsonObj.type) {
     idMap[jsonObj.id] = idGernerator(jsonObj.id);
-    jsonObj.id = idMap[jsonObj.id];
 
     const childs = componentInfo[jsonObj.type].childComponentProps;
     if (childs) {
