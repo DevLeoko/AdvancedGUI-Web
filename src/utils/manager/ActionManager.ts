@@ -8,12 +8,14 @@ import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
 import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
 import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
 import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
+import DelayEditor from "@/components/actionEditors/DelayEditor.vue";
 import { MessageAction } from "../actions/MessageAction";
 import { VisibilityAction } from "../actions/VisibilityAction";
 import { Component } from "../components/Component";
 import { ViewAction } from "../actions/ViewAction";
 import { checks } from "./CheckManager";
 import { CheckAction } from "../actions/CheckAction";
+import { DelayAction } from "../actions/DelayAction";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;
@@ -49,7 +51,12 @@ export function setup() {
     icon: ViewAction.icon,
     component: ViewEditor
   };
-
+  actions[DelayAction.id] = {
+    generator: () => new DelayAction(20, [], true),
+    fromJson: DelayAction.fromJson,
+    icon: DelayAction.icon,
+    component: DelayEditor
+  };
   actions[ListAction.id] = {
     generator: () => new ListAction([], true),
     fromJson: ListAction.fromJson,
