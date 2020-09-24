@@ -57,10 +57,10 @@ export class View extends GroupComponent {
     );
   }
 
-  toDataObj() {
+  toDataObj(forUsage: boolean) {
     return {
       drawIndex: this.drawIndex,
-      ...super.toDataObj()
+      ...super.toDataObj(forUsage)
     };
   }
 

@@ -49,13 +49,13 @@ export class CheckComponent extends GroupComponent {
     return current?.getBoundingBox().isInside(point) ? current : this;
   }
 
-  toDataObj() {
+  toDataObj(forUsage: boolean) {
     return {
       check: {
         type: this.check.name,
         ...this.check.toCheckDataObj()
       },
-      ...super.toDataObj()
+      ...super.toDataObj(forUsage)
     };
   }
 

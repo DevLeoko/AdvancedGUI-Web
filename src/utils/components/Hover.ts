@@ -58,10 +58,10 @@ export class Hover extends GroupComponent {
     );
   }
 
-  toDataObj() {
+  toDataObj(forUsage: boolean) {
     return {
       drawHovered: this.drawHovered,
-      ...super.toDataObj()
+      ...super.toDataObj(forUsage)
     };
   }
 

@@ -63,8 +63,8 @@ export class Replica extends Component {
     return this.getGroup()?.getBoundingBox() || new BoundingBox(0, 0, 0, 0);
   }
 
-  toDataObj(forExport: boolean) {
-    if (forExport) {
+  toDataObj(forUsage: boolean) {
+    if (forUsage) {
       return this.getGroup(true)?.toDataObj(true) || {};
     } else {
       return {
