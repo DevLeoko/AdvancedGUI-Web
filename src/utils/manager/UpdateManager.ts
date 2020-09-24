@@ -3,8 +3,10 @@ import { ExportData } from "./ComponentManager";
 import { Component } from "../components/Component";
 import { Action } from "../actions/Action";
 import { Text } from "../components/Text";
+import { Hover } from "../components/Hover";
+import { View } from "../components/View";
 
-export const VERSION = "1.0.2";
+export const VERSION = "1.0.3";
 
 function traverseComponent(
   component: Component,
@@ -68,6 +70,18 @@ export function migrate(data: ExportData): ExportData {
       }
     });
     oldVersion = "1.0.2";
+  }
+
+  if (oldVersion == "1.0.2") {
+    traverseComponent(data.componentTree, comp => {
+      if ((comp as any).type == Hover.displayName) {
+        (comp as any).drawHovered = false;
+      }
+      if ((comp as any).type == View.displayName) {
+        (comp as any).drawIndex = 0;
+      }
+    });
+    oldVersion = "1.0.3";
   }
 
   return data;

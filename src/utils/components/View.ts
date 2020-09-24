@@ -16,8 +16,6 @@ export class View extends GroupComponent {
   public icon = View.icon;
   public vueComponent = ViewEditor;
 
-  public drawIndex = 0;
-
   public itemClasses = ["primary"];
 
   constructor(
@@ -25,7 +23,8 @@ export class View extends GroupComponent {
     public name: string,
     public clickAction: Action[],
     public components: Component[],
-    public expanded: boolean
+    public expanded: boolean,
+    public drawIndex: number
   ) {
     super(id, name, clickAction, components, expanded);
   }
@@ -53,11 +52,19 @@ export class View extends GroupComponent {
       jsonObj.name,
       clickAction,
       comps,
-      jsonObj.expanded
+      jsonObj.expanded,
+      jsonObj.drawIndex
     );
   }
 
+  toDataObj() {
+    return {
+      drawIndex: this.drawIndex,
+      ...super.toDataObj()
+    };
+  }
+
   static generator() {
-    return new View("-", View.displayName, [], [], true);
+    return new View("-", View.displayName, [], [], true, 0);
   }
 }

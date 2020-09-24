@@ -16,8 +16,6 @@ export class Hover extends GroupComponent {
   public icon = Hover.icon;
   public vueComponent = HoverEditor;
 
-  public drawHovered = false;
-
   public itemLimit = 2;
   public itemClasses = ["not-hovered", "hovered"];
 
@@ -26,7 +24,8 @@ export class Hover extends GroupComponent {
     public name: string,
     public clickAction: Action[],
     public components: Component[],
-    public expanded: boolean
+    public expanded: boolean,
+    public drawHovered: boolean
   ) {
     super(id, name, clickAction, components, expanded);
   }
@@ -54,11 +53,19 @@ export class Hover extends GroupComponent {
       jsonObj.name,
       clickAction,
       comps,
-      jsonObj.expanded
+      jsonObj.expanded,
+      jsonObj.drawHovered
     );
   }
 
+  toDataObj() {
+    return {
+      drawHovered: this.drawHovered,
+      ...super.toDataObj()
+    };
+  }
+
   static generator() {
-    return new Hover("-", Hover.displayName, [], [], true);
+    return new Hover("-", Hover.displayName, [], [], true, false);
   }
 }
