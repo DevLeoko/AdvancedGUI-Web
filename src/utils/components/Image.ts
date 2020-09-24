@@ -67,9 +67,7 @@ export class Image extends Rectangular {
   }
 
   setImage(nImage: string) {
-    console.log(nImage);
-
-    if (this.keepImageRatio) {
+    if (this.keepImageRatio && images[this.image]) {
       const oldRatio = images[this.image].ratio;
       const ratio = images[nImage].ratio;
 
