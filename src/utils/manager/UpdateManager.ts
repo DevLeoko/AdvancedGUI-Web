@@ -5,8 +5,9 @@ import { Action } from "../actions/Action";
 import { Text } from "../components/Text";
 import { Hover } from "../components/Hover";
 import { View } from "../components/View";
+import { CommandAction } from "../actions/CommandAction";
 
-export const VERSION = "1.0.3";
+export const VERSION = "1.0.4";
 
 function traverseComponent(
   component: Component,
@@ -82,6 +83,22 @@ export function migrate(data: ExportData): ExportData {
       }
     });
     oldVersion = "1.0.3";
+  }
+
+  if (oldVersion == "1.0.3") {
+    data.gifs = [];
+
+    traverseComponent(data.componentTree, comp => {
+      (comp as any).action.forEach((act: any) => {
+        traverseAction(act, action => {
+          if (action.id == CommandAction.id) {
+            (action as any).asOperator = false;
+          }
+        });
+      });
+    });
+
+    oldVersion = "1.0.4";
   }
 
   return data;

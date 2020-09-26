@@ -12,6 +12,7 @@ import { Font } from "./FontManager";
 import { CheckComponent } from "../components/CheckComponent";
 import { Template } from "../components/Template";
 import { Replica } from "../components/Replica";
+import { GIF } from "../components/GIF";
 
 export type TemplateVariable = string;
 export type TemplateData = { name: string; value: string | number }[];
@@ -29,6 +30,7 @@ export type ComponentType =
   | "Image"
   | "View"
   | "Template"
+  | "GIF"
   | "Replica"
   | "Check";
 
@@ -40,6 +42,10 @@ export interface ExportData {
   width: number;
   height: number;
   images?: {
+    name: string;
+    data: string;
+  }[];
+  gifs?: {
     name: string;
     data: string;
   }[];
@@ -199,6 +205,7 @@ export function setup() {
   componentInfo[Rect.displayName] = Rect;
   componentInfo[Text.displayName] = Text;
   componentInfo[Image.displayName] = Image;
+  componentInfo[GIF.displayName] = GIF;
   componentInfo[GroupComponent.displayName] = GroupComponent;
   componentInfo[Hover.displayName] = Hover;
   componentInfo[CheckComponent.displayName] = CheckComponent;

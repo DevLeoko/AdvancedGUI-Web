@@ -1,7 +1,7 @@
 <template>
   <div id="imageEditor">
     <div class="label heading">
-      Image
+      {{ gifMode ? "GIF" : "Image" }}
       <input
         type="text"
         class="imageNameInput"
@@ -12,7 +12,9 @@
     <div class="settings-row imageList">
       <div
         class="imageBox"
-        v-for="img in images"
+        v-for="img in Object.values(images).filter(
+          image => image.isGif == gifMode
+        )"
         :key="img.name"
         :style="{ backgroundImage: `url(${img.data.src})` }"
         @click="component.setImage(img.name)"
@@ -26,11 +28,11 @@
     </div>
     <div class="btn" @click="triggerFileSelector()">
       <span class="material-icons">add</span>
-      Upload image
+      Upload {{ gifMode ? "GIF" : "image" }}
       <input
         type="file"
         ref="fileDownload"
-        accept=".png,.jpg"
+        :accept="gifMode ? '.gif' : '.png,.jpg'"
         style="display: none"
         multiple
         @change="checkForUpload()"
@@ -68,8 +70,8 @@
       <div class="input-box">
         <input
           type="number"
-          @keypress="inputTransformer($event, component.width)"
-          v-model.number="component.width"
+          @keypress="inputTransformer($event, component.height)"
+          v-model.number="component.height"
         />
         <span>H</span>
       </div>
@@ -77,6 +79,10 @@
     <div class="settings-row">
       <span class="label">Keep ratio</span>
       <input type="checkbox" v-model="component.keepImageRatio" />
+    </div>
+    <div class="settings-row">
+      <span class="label">Pause by default</span>
+      <input type="checkbox" v-model="component.pausedByDefault" />
     </div>
   </div>
 </template>
@@ -90,6 +96,7 @@ import {
   unregisterImage
 } from "@/utils/manager/ImageManager";
 import { Template } from "@/utils/components/Template";
+import { GIF } from "@/utils/components/GIF";
 
 export default Vue.extend({
   data() {
@@ -102,7 +109,7 @@ export default Vue.extend({
 
   props: {
     component: {
-      type: Object as () => Image
+      type: Object as () => Image | GIF
     },
     maxHeight: {
       type: Number
@@ -118,6 +125,12 @@ export default Vue.extend({
       handler() {
         this.ensureBounds();
       }
+    }
+  },
+
+  computed: {
+    gifMode(): boolean {
+      return this.component.displayName == "GIF";
     }
   },
 
@@ -137,7 +150,11 @@ export default Vue.extend({
 
       if (selector.files?.length) {
         for (const file of selector.files) {
-          registerImage(file, file.name.substr(0, file.name.length - 4));
+          registerImage(
+            file,
+            file.name.substr(0, file.name.length - 4),
+            this.gifMode
+          );
         }
       }
     }

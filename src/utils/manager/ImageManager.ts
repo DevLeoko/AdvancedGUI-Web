@@ -5,28 +5,39 @@ export interface Image {
   name: string;
   data: HTMLImageElement;
   ratio: number;
+  isGif: boolean;
 }
 
 export const images: { [key: string]: Image } = {};
 let imageContainer: HTMLElement;
 
-export async function registerImageBase64(dataUrl: string, imageName: string) {
+export async function registerImageBase64(
+  dataUrl: string,
+  imageName: string,
+  isGif: boolean
+) {
   const imageElement = document.createElement("img") as HTMLImageElement;
   imageElement.onload = () => {
-    Vue.set(images, imageName, {
+    const image: Image = {
       name: imageName,
       data: imageElement,
-      ratio: imageElement.naturalWidth / imageElement.naturalHeight
-    });
+      ratio: imageElement.naturalWidth / imageElement.naturalHeight,
+      isGif
+    };
+    Vue.set(images, imageName, image);
   };
 
   imageElement.src = dataUrl;
   imageContainer.appendChild(imageElement);
 }
 
-export async function registerImage(file: File | Blob, imageName: string) {
+export async function registerImage(
+  file: File | Blob,
+  imageName: string,
+  isGif: boolean
+) {
   const url = await getBase64(file);
-  await registerImageBase64(url, imageName);
+  await registerImageBase64(url, imageName, isGif);
 }
 
 export async function unregisterImage(imageName: string) {
@@ -57,6 +68,8 @@ export function setupImageManager(hiddenImageContainer: HTMLElement) {
   ]) {
     fetch(`images/${font}`)
       .then(resp => resp.blob())
-      .then(blob => registerImage(blob, font.substr(0, font.length - 4)));
+      .then(blob =>
+        registerImage(blob, font.substr(0, font.length - 4), false)
+      );
   }
 }

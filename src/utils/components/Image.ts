@@ -48,16 +48,6 @@ export class Image extends Rectangular {
       const w1 = newBoundingBox.height * ratio;
       const h1 = newBoundingBox.width / ratio;
 
-      // if (singleAxisAction) {
-      //   if (this.width != newBoundingBox.width) {
-      //     this.width = newBoundingBox.width;
-      //     this.height = h1;
-      //     console.log("uff");
-      //   } else {
-      //     this.width = w1;
-      //     this.height = newBoundingBox.height;
-      //   }
-      // } else {
       this.width = Math.min(newBoundingBox.width, w1);
       this.height = Math.min(newBoundingBox.height, h1);
     } else {
@@ -82,7 +72,7 @@ export class Image extends Rectangular {
 
   toDataObj() {
     return {
-      type: Image.displayName,
+      type: this.displayName,
       x: this.x,
       y: this.y,
       width: this.width,

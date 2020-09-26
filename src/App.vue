@@ -458,10 +458,20 @@ export default Vue.extend({
         height: this.height,
         images: skipResources
           ? undefined
-          : Object.values(images).map(image => ({
-              name: image.name,
-              data: image.data.src
-            })),
+          : Object.values(images)
+              .filter(image => !image.isGif)
+              .map(image => ({
+                name: image.name,
+                data: image.data.src
+              })),
+        gifs: skipResources
+          ? undefined
+          : Object.values(images)
+              .filter(image => image.isGif)
+              .map(image => ({
+                name: image.name,
+                data: image.data.src
+              })),
         componentTree: JSON.parse(compTree.toJson(forUsage))
       };
 
@@ -555,7 +565,10 @@ export default Vue.extend({
               registerFontBase64(font.data, font.name)
             ),
             ...jsonObj.images!.map(image =>
-              registerImageBase64(image.data, image.name)
+              registerImageBase64(image.data, image.name, false)
+            ),
+            ...jsonObj.gifs!.map(image =>
+              registerImageBase64(image.data, image.name, true)
             )
           ]);
         } catch (exc) {

@@ -9,6 +9,7 @@ import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
 import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
 import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
 import DelayEditor from "@/components/actionEditors/DelayEditor.vue";
+import GifControlEditor from "@/components/actionEditors/GifControlEditor.vue";
 import { MessageAction } from "../actions/MessageAction";
 import { VisibilityAction } from "../actions/VisibilityAction";
 import { Component } from "../components/Component";
@@ -16,6 +17,7 @@ import { ViewAction } from "../actions/ViewAction";
 import { checks } from "./CheckManager";
 import { CheckAction } from "../actions/CheckAction";
 import { DelayAction } from "../actions/DelayAction";
+import { GifControlAction } from "../actions/GifControlAction";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;
@@ -28,7 +30,7 @@ export const actions: { [key: string]: ActionMeta } = {};
 
 export function setup() {
   actions[CommandAction.id] = {
-    generator: () => new CommandAction("heal %player%", true),
+    generator: () => new CommandAction("heal %player%", true, false),
     fromJson: CommandAction.fromJson,
     icon: CommandAction.icon,
     component: CommandEditor
@@ -44,6 +46,12 @@ export function setup() {
     fromJson: VisibilityAction.fromJson,
     icon: VisibilityAction.icon,
     component: VisibilityEditor
+  };
+  actions[GifControlAction.id] = {
+    generator: () => new GifControlAction("", true, false),
+    fromJson: GifControlAction.fromJson,
+    icon: GifControlAction.icon,
+    component: GifControlEditor
   };
   actions[ViewAction.id] = {
     generator: () => new ViewAction("", ""),
