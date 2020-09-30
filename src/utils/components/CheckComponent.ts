@@ -19,8 +19,6 @@ export class CheckComponent extends GroupComponent {
   public icon = CheckComponent.icon;
   public vueComponent = CheckComponentEditor;
 
-  public drawNegative = false;
-
   public itemLimit = 2;
   public itemClasses = ["posAction", "negAction"];
 
@@ -30,6 +28,7 @@ export class CheckComponent extends GroupComponent {
     public clickAction: Action[],
     public components: Component[],
     public expanded: boolean,
+    public drawNegative: boolean,
     public check: Check
   ) {
     super(id, name, clickAction, components, expanded);
@@ -55,6 +54,7 @@ export class CheckComponent extends GroupComponent {
         type: this.check.name,
         ...this.check.toCheckDataObj()
       },
+      drawNegative: this.drawNegative,
       ...super.toDataObj(forUsage)
     };
   }
@@ -69,6 +69,7 @@ export class CheckComponent extends GroupComponent {
       clickAction,
       comps,
       jsonObj.expanded,
+      jsonObj.drawNegative,
       checkFromJson(jsonObj.check, jsonObj.check.type)
     );
   }
@@ -80,6 +81,7 @@ export class CheckComponent extends GroupComponent {
       [],
       [],
       true,
+      false,
       PermissionCheck.generator()
     );
   }
