@@ -6,8 +6,11 @@ import { Text } from "../components/Text";
 import { Hover } from "../components/Hover";
 import { View } from "../components/View";
 import { CommandAction } from "../actions/CommandAction";
+import { Image } from "../components/Image";
+import { GIF } from "../components/GIF";
+import { CheckComponent } from "../components/CheckComponent";
 
-export const VERSION = "1.0.4";
+export const VERSION = "1.0.5";
 
 function traverseComponent(
   component: Component,
@@ -99,6 +102,22 @@ export function migrate(data: ExportData): ExportData {
     });
 
     oldVersion = "1.0.4";
+  }
+
+  if (oldVersion == "1.0.4") {
+    traverseComponent(data.componentTree, comp => {
+      if (
+        (comp as any).type == Image.displayName ||
+        (comp as any).type == GIF.displayName
+      ) {
+        (comp as Image).dithering = false;
+      }
+
+      if ((comp as any).type == CheckComponent.displayName) {
+        (comp as CheckComponent).drawNegative = false;
+      }
+    });
+    oldVersion = "1.0.5";
   }
 
   return data;

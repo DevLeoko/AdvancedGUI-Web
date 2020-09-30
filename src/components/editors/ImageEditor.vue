@@ -81,6 +81,10 @@
       <input type="checkbox" v-model="component.keepImageRatio" />
     </div>
     <div class="settings-row">
+      <span class="label">Dithering</span>
+      <input type="checkbox" v-model="component.dithering" />
+    </div>
+    <div class="settings-row" v-if="gifMode">
       <span class="label">Pause by default</span>
       <input type="checkbox" v-model="component.pausedByDefault" />
     </div>

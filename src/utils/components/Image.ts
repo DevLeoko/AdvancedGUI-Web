@@ -22,7 +22,8 @@ export class Image extends Rectangular {
     public width: number,
     public height: number,
     public image: string,
-    public keepImageRatio: boolean
+    public keepImageRatio: boolean,
+    public dithering: boolean
   ) {
     super(id, name, clickAction, x, y, width, height);
   }
@@ -78,7 +79,8 @@ export class Image extends Rectangular {
       width: this.width,
       height: this.height,
       image: this.image,
-      keepImageRatio: this.keepImageRatio
+      keepImageRatio: this.keepImageRatio,
+      dithering: this.dithering
     };
   }
 
@@ -92,11 +94,23 @@ export class Image extends Rectangular {
       jsonObj.width,
       jsonObj.height,
       jsonObj.image,
-      jsonObj.keepImageRatio
+      jsonObj.keepImageRatio,
+      jsonObj.dithering
     );
   }
 
   static generator() {
-    return new Image("-", Image.displayName, [], 10, 10, 50, 50, "Play", true);
+    return new Image(
+      "-",
+      Image.displayName,
+      [],
+      10,
+      10,
+      50,
+      50,
+      "Play",
+      true,
+      false
+    );
   }
 }

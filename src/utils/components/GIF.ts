@@ -19,9 +19,21 @@ export class GIF extends Image {
     public height: number,
     public image: string,
     public keepImageRatio: boolean,
+    public dithering: boolean,
     public pausedByDefault: boolean
   ) {
-    super(id, name, clickAction, x, y, width, height, image, keepImageRatio);
+    super(
+      id,
+      name,
+      clickAction,
+      x,
+      y,
+      width,
+      height,
+      image,
+      keepImageRatio,
+      dithering
+    );
   }
 
   toDataObj() {
@@ -42,11 +54,24 @@ export class GIF extends Image {
       jsonObj.height,
       jsonObj.image,
       jsonObj.keepImageRatio,
+      jsonObj.dithering,
       jsonObj.pausedByDefault
     );
   }
 
   static generator() {
-    return new GIF("-", GIF.displayName, [], 10, 10, 50, 50, "", true, false);
+    return new GIF(
+      "-",
+      GIF.displayName,
+      [],
+      10,
+      10,
+      50,
+      50,
+      "",
+      true,
+      false,
+      false
+    );
   }
 }
