@@ -33,6 +33,10 @@ export abstract class Component implements ListItem {
   abstract get displayName(): ComponentType;
   abstract toDataObj(forUsage: boolean): JsonObject;
 
+  setId(id: string) {
+    this.id = id;
+  }
+
   toJson(forUsage?: boolean) {
     return JSON.stringify({
       id: this.id,

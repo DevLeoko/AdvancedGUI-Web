@@ -1,5 +1,6 @@
 import { getBase64 } from "./FontManager";
 import Vue from "vue";
+import { RemoteImage } from "../components/RemoteImage";
 
 export interface Image {
   name: string;
@@ -29,6 +30,35 @@ export async function registerImageBase64(
 
   imageElement.src = dataUrl;
   imageContainer.appendChild(imageElement);
+}
+
+export function placeRemoteImage(
+  imageUrl: string,
+  id: string,
+  comp: RemoteImage
+) {
+  imageUrl = imageUrl
+    .replace(/%UUID_U%/g, "3feef46e6eac4dfd8da4493bd46c52ae")
+    .replace(/%UUID%/g, "3feef46e-6eac-4dfd-8da4-493bd46c52ae")
+    .replace(/%NAME%/g, "Leoko");
+
+  let resImage = imageContainer.querySelector(`#${id}`) as HTMLImageElement;
+
+  if (!resImage) {
+    resImage = document.createElement("img") as HTMLImageElement;
+    resImage.id = id;
+    imageContainer.appendChild(resImage);
+  }
+
+  resImage.onload = () => {
+    comp.ratio = resImage.naturalWidth / resImage.naturalHeight;
+  };
+
+  resImage.src = imageUrl;
+}
+
+export function getRemoteImage(id: string): HTMLImageElement | null {
+  return imageContainer.querySelector(`#${id}`) as HTMLImageElement;
 }
 
 export async function registerImage(

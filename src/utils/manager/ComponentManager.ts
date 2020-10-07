@@ -13,6 +13,8 @@ import { CheckComponent } from "../components/CheckComponent";
 import { Template } from "../components/Template";
 import { Replica } from "../components/Replica";
 import { GIF } from "../components/GIF";
+import { RemoteImage } from "../components/RemoteImage";
+import { Dummy } from "../components/Dummy";
 
 export type TemplateVariable = string;
 export type TemplateData = { name: string; value: string | number }[];
@@ -30,12 +32,15 @@ export type ComponentType =
   | "Image"
   | "View"
   | "Template"
+  | "Remote Image"
+  | "Dummy"
   | "GIF"
   | "Replica"
   | "Check";
 
 export interface ExportData {
   type: "savepoint" | "usage";
+  name: string;
   version: string;
   invisible: string[];
   fonts?: Font[];
@@ -135,7 +140,7 @@ function _reassignIDs(
 }
 
 export function registerComponent(component: Component) {
-  if (component.id == "-") component.id = generateUniqueID();
+  if (component.id == "-") component.setId(generateUniqueID());
   Vue.set(components, component.id, component);
 
   if (
@@ -205,6 +210,7 @@ export function setup() {
   componentInfo[Rect.displayName] = Rect;
   componentInfo[Text.displayName] = Text;
   componentInfo[Image.displayName] = Image;
+  componentInfo[RemoteImage.displayName] = RemoteImage;
   componentInfo[GIF.displayName] = GIF;
   componentInfo[GroupComponent.displayName] = GroupComponent;
   componentInfo[Hover.displayName] = Hover;
@@ -212,4 +218,5 @@ export function setup() {
   componentInfo[Template.displayName] = Template;
   componentInfo[Replica.displayName] = Replica;
   componentInfo[View.displayName] = View;
+  componentInfo[Dummy.displayName] = Dummy;
 }
