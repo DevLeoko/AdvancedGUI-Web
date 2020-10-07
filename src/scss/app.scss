@@ -133,6 +133,25 @@ a {
       color: $light4;
       font-weight: 700;
     }
+
+    .inputProjectName{
+      background-color: unset;
+      // background-color: $dark1;
+      padding: 5px 10px;
+      border-radius: 0;
+      width: 100px;
+      color: $light3;
+      font-weight: 400;
+      font-size: 20px;
+      // align-self: flex-end;
+      margin-right: 10px;
+      border: none;
+      // border-bottom: 1px solid $light4;
+
+      &:focus {
+        outline: none;
+      }
+    }
   
     .input {
       margin-right: 20px;

@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <div class="head">
+      <b class="label">Project</b>
+      <input class="inputProjectName" type="text" v-model="projectName" />
       <div class="input">
         <b class="label">Width</b>
         <span><input type="number" v-model="width" /> frames</span>
@@ -127,7 +129,7 @@
                 >content_copy</span
               >
             </div>
-            <div class="settings-row">
+            <div class="settings-row" v-if="selected.component.hideable">
               <span class="label">Visibility</span>
               <input
                 type="checkbox"
@@ -274,6 +276,8 @@ export default Vue.extend({
       width: 3,
       height: 2,
       zoom: 2,
+
+      projectName: "Starter",
 
       selected: null as null | { component: Component; action: Action | null },
 
@@ -427,17 +431,22 @@ export default Vue.extend({
     exportSavepoint() {
       loading(true);
       setTimeout(() => {
-        this.exportData(JSON.stringify(this.bundleToJson()));
+        this.exportData(JSON.stringify(this.bundleToJson()), true);
         loading(false);
       });
     },
 
-    exportData(data: string) {
+    exportData(data: string, asSavepoint: boolean) {
       const dataStr =
         "data:text/json;charset=utf-8," + encodeURIComponent(data);
       const dlAnchorElem = this.$refs.downloadAnchor as HTMLElement;
       dlAnchorElem.setAttribute("href", dataStr);
-      dlAnchorElem.setAttribute("download", "AdvancedGUI.json");
+      dlAnchorElem.setAttribute(
+        "download",
+        this.projectName.replaceAll(" ", "_") +
+          (asSavepoint ? "_savepoint" : "") +
+          ".json"
+      );
       dlAnchorElem.click();
     },
 
@@ -451,6 +460,7 @@ export default Vue.extend({
       );
       const exportJsonObj: ExportData = {
         type: "savepoint",
+        name: this.projectName,
         version: VERSION,
         invisible: invisible,
         fonts: skipResources ? undefined : Object.values(fonts),
@@ -532,6 +542,8 @@ export default Vue.extend({
       if (resetOld) {
         this.elements.forEach(elem => unregisterComponent(elem));
         this.elements = [];
+
+        this.projectName = jsonObj.name;
 
         this.width = jsonObj.width;
         this.height = jsonObj.height;
@@ -628,7 +640,7 @@ export default Vue.extend({
             fonts,
             ...JSON.parse(data)
           };
-          this.exportData(JSON.stringify(processed));
+          this.exportData(JSON.stringify(processed), false);
           loading(false);
         })
         .catch((err: Error) => error(`Error durring export: ${err.message}`));
