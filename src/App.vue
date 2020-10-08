@@ -543,7 +543,7 @@ export default Vue.extend({
         this.elements.forEach(elem => unregisterComponent(elem));
         this.elements = [];
 
-        this.projectName = jsonObj.name;
+        this.projectName = jsonObj.name || "Starter";
 
         this.width = jsonObj.width;
         this.height = jsonObj.height;
@@ -620,9 +620,10 @@ export default Vue.extend({
       loading(true);
 
       const savepoint = this.bundleToJson(false, true);
-      const { fonts, images } = savepoint;
+      const { fonts, images, gifs } = savepoint;
       delete (savepoint as JsonObject).images;
       delete (savepoint as JsonObject).fonts;
+      delete (savepoint as JsonObject).gifs;
       fetch(
         "https://advancedgui-convert.netlify.app/.netlify/functions/convert",
         {
@@ -638,6 +639,7 @@ export default Vue.extend({
           const processed = {
             images,
             fonts,
+            gifs,
             ...JSON.parse(data)
           };
           this.exportData(JSON.stringify(processed), false);
