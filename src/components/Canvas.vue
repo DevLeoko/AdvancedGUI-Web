@@ -118,7 +118,7 @@ export default Vue.extend({
 
     registeredComponents() {
       if (this.selected && !this.registeredComponents[this.selected.id])
-        this.$emit("select", null);
+        this.$emit("select", { value: null });
 
       this.redraw();
     },
@@ -170,10 +170,10 @@ export default Vue.extend({
           hovered &&
           (!this.selected || !this.selected.getBoundingBox().isInside(point))
         ) {
-          this.$emit("select", hovered);
+          this.$emit("select", { value: hovered });
         }
 
-        if (!hovered) this.$emit("select", null);
+        if (!hovered) this.$emit("select", { value: null });
       }
 
       if (this.selected) {
@@ -213,8 +213,10 @@ export default Vue.extend({
             hovered &&
             this.containsComponentAtPoint(hovered, this.selected, point)
           )
-            this.$emit("select", this.selected.refineSelection(point));
-          else this.$emit("select", hovered);
+            this.$emit("select", {
+              value: this.selected.refineSelection(point)
+            });
+          else this.$emit("select", { value: hovered });
         }
 
         this.redraw();

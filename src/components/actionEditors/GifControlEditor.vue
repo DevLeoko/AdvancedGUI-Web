@@ -2,7 +2,12 @@
   <div id="gifContrSettings">
     <div class="settings-row">
       <span class="label">GIF Component ID</span>
-      <input type="text" v-model="action.targetId" />
+      <input
+        type="text"
+        class="componentIdInput"
+        @focus="setWatcher(val => (action.targetId = val))"
+        v-model="action.targetId"
+      />
     </div>
     <p
       class="label"
@@ -40,11 +45,13 @@
 import Vue from "vue";
 import { components } from "@/utils/manager/ComponentManager";
 import { GifControlAction } from "@/utils/actions/GifControlAction";
+import { setWatcher } from "@/App.vue";
 
 export default Vue.extend({
   data() {
     return {
-      components
+      components,
+      setWatcher
     };
   },
 

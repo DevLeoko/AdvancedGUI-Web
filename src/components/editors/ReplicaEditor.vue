@@ -2,7 +2,12 @@
   <div id="replicaSettings">
     <div class="settings-row">
       <span class="label">Template ID</span>
-      <input type="text" v-model="component.targetId" />
+      <input
+        type="text"
+        class="componentIdInput"
+        @focus="setWatcher(val => (component.targetId = val))"
+        v-model="component.targetId"
+      />
     </div>
     <p
       class="label"
@@ -53,10 +58,15 @@
 import Vue from "vue";
 import { Replica } from "@/utils/components/Replica";
 import { components, TemplateData } from "@/utils/manager/ComponentManager";
+import { setWatcher } from "@/App.vue";
 
 export default Vue.extend({
   data() {
-    return { components, defaultData: undefined as undefined | TemplateData };
+    return {
+      components,
+      defaultData: undefined as undefined | TemplateData,
+      setWatcher
+    };
   },
 
   props: {

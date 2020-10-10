@@ -42,7 +42,15 @@
 
       <div class="btn import" @click="triggerImportSelector()">
         <span class="material-icons">cloud_upload</span>
-        <span class="text">Import</span>
+        <span class="text">Import project</span>
+
+        <div
+          class="btn import secondary"
+          @click.stop="triggerImportSelector(true)"
+        >
+          <span class="material-icons">extension</span>
+          <span class="text">Import component</span>
+        </div>
       </div>
       <div class="btn export" @click="exportSavepoint()">
         <span class="material-icons">get_app</span>
@@ -60,9 +68,7 @@
           root
           :components="elements"
           :value="selected ? selected.component : null"
-          @input="
-            comp => (selected = comp ? { component: comp, action: null } : null)
-          "
+          @input="updateSelection"
           @copy="val => (copiedComponent = val)"
           @add-child="addChildToTreeElem"
         ></component-list>
@@ -104,15 +110,20 @@
           :zoom="zoom"
           :pauseRendering="pauseRendering"
           @changeIndication="updateHistory"
-          @select="
-            comp => (selected = comp ? { component: comp, action: null } : null)
-          "
+          @select="updateSelection"
         ></my-canvas>
       </div>
       <div class="sidebar" id="settings">
         <div id="generalSettings" v-if="selected">
           <div class="settings-box gen-box">
-            <h1><span class="material-icons">tune</span> General settings</h1>
+            <h1>
+              <span
+                class="material-icons"
+                @click="devMode.value = !devMode.value"
+                >{{ devMode.value ? "code" : "tune" }}</span
+              >
+              General settings
+            </h1>
             <div class="settings-row">
               <span class="label">Name</span>
               <input type="text" v-model="selected.component.name" />
@@ -148,7 +159,8 @@
                 class="sidebar"
                 root
                 :components="selected.component.clickAction"
-                v-model="selected.action"
+                :value="selected.action"
+                @input="val => (selected.action = val.value)"
                 @copy="val => (copiedAction = val)"
               ></component-list>
               <div class="settings-row">
@@ -266,6 +278,19 @@ import { Action } from "./utils/actions/Action";
 import { fonts, registerFontBase64 } from "./utils/manager/FontManager";
 import { GroupComponent } from "./utils/components/GroupComponent";
 import { VERSION, migrate } from "./utils/manager/UpdateManager";
+import { Template } from "./utils/components/Template";
+
+const idWatcher: { lastHandler: (val: string) => void } = {
+  lastHandler: () => {
+    //do nothing
+  }
+};
+
+export const devMode = { value: false };
+
+export function setWatcher(func: (val: string) => void): void {
+  idWatcher.lastHandler = func;
+}
 
 export default Vue.extend({
   name: "App",
@@ -284,6 +309,8 @@ export default Vue.extend({
       componentInfo,
       actions,
 
+      devMode,
+
       exportModal: false,
 
       setupImageManager,
@@ -301,6 +328,8 @@ export default Vue.extend({
 
       addComponentAnchor: null as null | Component[],
 
+      importComponent: false,
+
       invisible,
       toggleVis
     };
@@ -317,6 +346,24 @@ export default Vue.extend({
   },
 
   methods: {
+    updateSelection(data: { value: Component; event: Event }) {
+      console.log(document.activeElement);
+
+      if (
+        data.value &&
+        data.event &&
+        document.activeElement?.classList?.contains("componentIdInput")
+      ) {
+        // (document.activeElement as HTMLInputElement).value = data.value.id;
+        idWatcher.lastHandler(data.value.id);
+        data.event.preventDefault();
+      } else {
+        this.selected = data.value
+          ? { component: data.value, action: null }
+          : null;
+      }
+    },
+
     showActionAddMenu(ev: MouseEvent) {
       const menu = this.$refs.actionAddMenu as HTMLElement;
       menu.style.display = "block";
@@ -521,6 +568,18 @@ export default Vue.extend({
       if (jsonObj.type != "savepoint")
         throw Error("This .json file is not an AdvancedGUI savepoint!");
 
+      if (!resetOld) {
+        const type = (jsonObj.componentTree.components[0] as JsonObject)?.type;
+        if (
+          jsonObj.componentTree.components.length != 1 ||
+          !(type == GroupComponent.displayName || type == Template.displayName)
+        ) {
+          throw Error(
+            "You can only import layout files as a component if they contain exactly one group or template component."
+          );
+        }
+      }
+
       if (jsonObj.version != VERSION) {
         const oldVersion = jsonObj.version;
         jsonObj = migrate(jsonObj);
@@ -530,16 +589,16 @@ export default Vue.extend({
         );
       }
 
-      this.selected = null;
-      this.copiedAction = null;
-      this.copiedComponent = null;
-
       if (!keepResrouces) {
         Object.keys(images).forEach(key => delete images[key]);
         Object.keys(fonts).forEach(key => delete fonts[key]);
       }
 
       if (resetOld) {
+        this.selected = null;
+        this.copiedAction = null;
+        this.copiedComponent = null;
+
         this.elements.forEach(elem => unregisterComponent(elem));
         this.elements = [];
 
@@ -553,12 +612,12 @@ export default Vue.extend({
 
       invisible.push(...jsonObj.invisible);
       jsonObj.componentTree.components.forEach(componentData => {
-        if (!resetOld) componentData.id = "-";
-
-        const component = componentFromJson(componentData);
+        const component = componentFromJson(componentData, !resetOld);
 
         if (component) {
-          this.elements.push(component);
+          if (jsonObj.componentTree.components.length == 1)
+            this.elements.splice(0, 0, component);
+          else this.elements.push(component);
           registerComponent(component);
         } else {
           throw Error(
@@ -570,7 +629,8 @@ export default Vue.extend({
         }
       });
 
-      if (!keepResrouces) {
+      // i.e. if this is not an exact replacement action
+      if (!(keepResrouces && resetOld)) {
         try {
           await Promise.all([
             ...jsonObj.fonts!.map(font =>
@@ -598,7 +658,11 @@ export default Vue.extend({
         loading(true);
         const file = selector.files[0];
         const json = await file.text();
-        this.loadFromJsonObj(JSON.parse(json), true)
+        this.loadFromJsonObj(
+          JSON.parse(json),
+          !this.importComponent,
+          this.importComponent
+        )
           .then(() => loading(false))
           .catch((err: Error) => {
             console.log(err);
@@ -611,7 +675,8 @@ export default Vue.extend({
       }
     },
 
-    triggerImportSelector() {
+    triggerImportSelector(componentMode = false) {
+      this.importComponent = componentMode;
       (this.$refs.importFileSelect as HTMLElement).click();
     },
 

@@ -1,3 +1,4 @@
+import { devMode } from "../App.vue";
 import { Point } from "./Point";
 
 export class BoundingBox {
@@ -18,6 +19,8 @@ export class BoundingBox {
   }
 
   ensureBounds(width: number, height: number) {
+    if (devMode.value) return;
+
     if (this.x == undefined) this.x = 0;
     if (this.y == undefined) this.y = 0;
     if (this.width == undefined) this.width = 0;

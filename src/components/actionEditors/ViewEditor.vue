@@ -2,7 +2,12 @@
   <div id="viewSettings">
     <div class="settings-row">
       <span class="label">View ID</span>
-      <input type="text" v-model="action.targetId" />
+      <input
+        type="text"
+        class="componentIdInput"
+        @focus="setWatcher(val => (action.targetId = val))"
+        v-model="action.targetId"
+      />
     </div>
     <p
       class="label"
@@ -23,7 +28,12 @@
     </p>
     <div class="settings-row">
       <span class="label">Target ID</span>
-      <input type="text" v-model="action.activate" />
+      <input
+        type="text"
+        class="componentIdInput"
+        @focus="setWatcher(val => (action.activate = val))"
+        v-model="action.activate"
+      />
     </div>
     <p
       class="label"
@@ -49,11 +59,13 @@ import Vue from "vue";
 import { components } from "@/utils/manager/ComponentManager";
 import { ViewAction } from "@/utils/actions/ViewAction";
 import { View } from "@/utils/components/View";
+import { setWatcher } from "@/App.vue";
 
 export default Vue.extend({
   data() {
     return {
-      components
+      components,
+      setWatcher
     };
   },
 

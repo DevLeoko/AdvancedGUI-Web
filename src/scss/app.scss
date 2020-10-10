@@ -210,6 +210,29 @@ a {
     .import{
       border: 1px solid $light3;
       color: $light3;
+      position: relative;
+
+      &.secondary{
+        display: none;
+        z-index: 2;
+        position: absolute;
+        opacity: 0.5;
+        left: 0px;
+        top: 100%;
+        // margin-top: 1px;
+
+        &:hover{
+          opacity: 1;
+        }
+      }
+
+      &:hover {
+        color: $blue;
+        border-color: $blue;
+        .secondary{
+          display: flex;
+        }
+      }
     }
 
     .export{

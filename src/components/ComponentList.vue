@@ -61,7 +61,12 @@
                 : '') +
               (itemClasses[index] || '')
           "
-          @click.stop="$emit('input', value == elem ? null : elem)"
+          @mousedown.stop="
+            $emit('input', {
+              value: value == elem ? null : elem,
+              event: $event
+            })
+          "
           draggable="true"
           ondragstart="event.dataTransfer.setData('text/plain',null)"
           @dragstart.self="ev => dragStart(ev.target, elem, index)"
@@ -82,6 +87,7 @@
             <span class="material-icons dragIndicator">drag_indicator</span>
             <span
               class="material-icons moreMenuBtn"
+              @mousedown.stop
               @click.stop="ev => openMenu(elem, ev)"
               >more_vert</span
             >

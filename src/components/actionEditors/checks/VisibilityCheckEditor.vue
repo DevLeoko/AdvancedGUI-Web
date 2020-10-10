@@ -2,7 +2,13 @@
   <div id="visCheckSettings">
     <div class="settings-row">
       <span class="label">Component ID</span>
-      <input type="text" v-model="action.targetId" />
+      <input
+        type="text"
+        ref="test"
+        class="componentIdInput"
+        @focus="setWatcher(val => (action.targetId = val))"
+        v-model="action.targetId"
+      />
     </div>
     <p class="label" :class="components[action.targetId] ? '' : 'red-text'">
       TARGET{{
@@ -21,11 +27,13 @@
 import Vue from "vue";
 import { components } from "@/utils/manager/ComponentManager";
 import { VisibilityCheck } from "@/utils/checks/VisibilityCheck";
+import { setWatcher } from "@/App.vue";
 
 export default Vue.extend({
   data() {
     return {
-      components
+      components,
+      setWatcher
     };
   },
 
