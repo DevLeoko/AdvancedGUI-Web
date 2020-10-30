@@ -2,8 +2,11 @@ import { Component } from "./components/Component";
 import { resizers } from "./Modifier";
 import { BoundingBox } from "./BoundingBox";
 import { Point } from "./Point";
+import { Action } from "./actions/Action";
 
 const HANDLE_SIZE = 4;
+
+export type Selection = null | { component: Component; action: Action | null };
 
 export function drawSelection(
   canvas: CanvasRenderingContext2D,

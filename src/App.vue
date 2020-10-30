@@ -1,249 +1,44 @@
 <template>
   <div id="app">
-    <div class="head">
-      <b class="label">Project</b>
-      <input class="inputProjectName" type="text" v-model="projectName" />
-      <div class="input">
-        <b class="label">Width</b>
-        <span><input type="number" v-model="width" /> frames</span>
-      </div>
-      <div class="input">
-        <b class="label">Height</b>
-        <span><input type="number" v-model="height" /> frames</span>
-      </div>
-      <div>
-        <b class="label">ZOOM</b>
-        <select v-model.number="zoom">
-          <option value="0.5">x0.5</option>
-          <option value="1">x1</option>
-          <option value="2">x2</option>
-          <option value="4">x4</option>
-        </select>
-      </div>
-
-      <div class="historyControls row">
-        <div
-          class="btn"
-          :class="history.length <= hisotryIndex + 2 ? 'inactive' : ''"
-          @click.prevent="undo()"
-        >
-          <span class="material-icons">undo</span>
-          <span class="text">Undo</span>
-        </div>
-        <div
-          class="btn"
-          :class="hisotryIndex ? '' : 'inactive'"
-          @click.prevent="redo()"
-        >
-          <span class="material-icons">redo</span>
-          <span class="text">Redo</span>
-        </div>
-      </div>
-
-      <div class="btn import" @click="triggerImportSelector()">
-        <span class="material-icons">cloud_upload</span>
-        <span class="text">Import project</span>
-
-        <div
-          class="btn import secondary"
-          @click.stop="triggerImportSelector(true)"
-        >
-          <span class="material-icons">extension</span>
-          <span class="text">Import component</span>
-        </div>
-      </div>
-      <div class="btn export" @click="exportSavepoint()">
-        <span class="material-icons">get_app</span>
-        <span class="text">Export savepoint</span>
-      </div>
-      <div class="btn export" @click="exportModal = true">
-        <span class="material-icons">get_app</span>
-        <span class="text">Export for usage</span>
-      </div>
-    </div>
+    <app-header
+      :settings="settings"
+      :can-undo="history.length <= hisotryIndex + 2"
+      :can-redo="hisotryIndex != 0"
+      @undo="undo"
+      @redo="redo"
+      @load-project="loadProject"
+      @export="
+        savepoint => {
+          if (savepoint) this.exportSavepoint();
+          else this.externalExport();
+        }
+      "
+    />
     <div class="row mainSpace" @click.capture="updateHistory">
-      <div id="compTree">
-        <component-list
-          class="actualTree"
-          root
-          :components="elements"
-          :value="selected ? selected.component : null"
-          @input="updateSelection"
-          @copy="val => (copiedComponent = val)"
-          @add-child="addChildToTreeElem"
-        ></component-list>
-
-        <div class="btn" @click="ev => showCompAddMenu(ev)">
-          <span class="material-icons">add</span>
-          <span class="text">Add component</span>
-
-          <div class="absoluteMenu compAddMenu" ref="compAddMenu">
-            <template v-if="copiedComponent">
-              <div class="entry" @click.stop="pasteComponent()">
-                <span class="material-icons">content_paste</span>
-                Paste
-              </div>
-              <div class="divider"></div>
-            </template>
-            <div
-              v-for="(key, index) in Object.keys(componentInfo)"
-              :key="index"
-            >
-              <div class="divider" v-if="index != 0"></div>
-              <div class="entry" @click.stop="addNewCompoenent(key)">
-                <span class="material-icons">{{
-                  componentInfo[key].icon
-                }}</span>
-                {{ key }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <component-tree
+        :components="elements"
+        :selected="selected ? selected.component : null"
+        @select="updateSelection"
+      />
 
       <div id="canvasContainer" @click.self="selected = null">
         <my-canvas
-          :width="width * 128"
-          :height="height * 128"
+          :width="settings.width * 128"
+          :height="settings.height * 128"
           :selected="selected ? selected.component : null"
           :elements="elements"
-          :zoom="zoom"
+          :zoom="settings.zoom"
           :pauseRendering="pauseRendering"
           @changeIndication="updateHistory"
           @select="updateSelection"
         ></my-canvas>
       </div>
-      <div class="sidebar" id="settings">
-        <div id="generalSettings" v-if="selected">
-          <div class="settings-box gen-box">
-            <h1>
-              <span
-                class="material-icons"
-                @click="devMode.value = !devMode.value"
-                >{{ devMode.value ? "code" : "tune" }}</span
-              >
-              General settings
-            </h1>
-            <div class="settings-row">
-              <span class="label">Name</span>
-              <input type="text" v-model="selected.component.name" />
-            </div>
-            <div class="settings-row id-box">
-              <span class="label">ID</span>
-              <input
-                type="text"
-                :value="selected.component.id"
-                @input="$refs.idInput.value = selected.component.id"
-                ref="idInput"
-              />
-              <span class="material-icons" @click="copyID()" ref="copyIcon"
-                >content_copy</span
-              >
-            </div>
-            <div class="settings-row" v-if="selected.component.hideable">
-              <span class="label">Visibility</span>
-              <input
-                type="checkbox"
-                :checked="invisible.indexOf(selected.component.id) == -1"
-                @change="toggleVis(selected.component.id)"
-              />
-            </div>
-          </div>
-          <template v-if="selected.component.actionable">
-            <div class="divider"></div>
-            <div class="settings-box clickActions">
-              <h1>
-                <span class="material-icons">touch_app</span> Click Action
-              </h1>
-              <component-list
-                class="sidebar"
-                root
-                :components="selected.component.clickAction"
-                :value="selected.action"
-                @input="val => (selected.action = val.value)"
-                @copy="val => (copiedAction = val)"
-              ></component-list>
-              <div class="settings-row">
-                <div class="btn addAction" @click="ev => showActionAddMenu(ev)">
-                  <span class="material-icons">add</span>
-                  <span class="text">Add action</span>
-
-                  <div class="absoluteMenu" ref="actionAddMenu">
-                    <template v-if="copiedAction">
-                      <div class="entry" @click.stop="pasteAction()">
-                        <span class="material-icons">content_paste</span>
-                        Paste
-                      </div>
-                      <div class="divider"></div>
-                    </template>
-                    <div
-                      v-for="(key, index) in Object.keys(actions)"
-                      :key="index"
-                    >
-                      <div class="divider" v-if="index != 0"></div>
-                      <div class="entry" @click.stop="addNewAction(key)">
-                        <span class="material-icons">{{
-                          actions[key].icon
-                        }}</span>
-                        {{ key }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="selected && selected.action" id="actionEditor">
-                <h2>
-                  <span class="material-icons">edit</span> Edit
-                  {{ selected.action.id.toLowerCase() }}
-                </h2>
-                <component
-                  v-bind:is="actions[selected.action.id].component"
-                  :action="
-                    selected.action.isCheck()
-                      ? selected.action.check
-                      : selected.action
-                  "
-                ></component>
-              </div>
-            </div>
-          </template>
-          <div class="divider"></div>
-          <div class="settings-box">
-            <h1>
-              <span class="material-icons">{{ selected.component.icon }}</span>
-              {{ selected.component.displayName }}
-            </h1>
-            <component
-              v-bind:is="selected.component.vueComponent"
-              :component="selected.component"
-              :maxWidth="width * 128"
-              :maxHeight="height * 128"
-            ></component>
-          </div>
-        </div>
-        <div v-else class="settings-box">
-          <h1>
-            <b class="label">no component selected</b>
-          </h1>
-        </div>
-      </div>
+      <side-bar :selected="selected" :settings="settings" :dev-mode="devMode" />
     </div>
 
-    <export-prompt
-      v-model="exportModal"
-      @export="externalExport()"
-    ></export-prompt>
     <loading-screen></loading-screen>
     <div ref="imageContainer" style="display:none"></div>
     <a ref="downloadAnchor" style="display:none"></a>
-    <input
-      type="file"
-      ref="importFileSelect"
-      accept=".json"
-      style="display: none"
-      @change="checkForUpload()"
-    />
   </div>
 </template>
 
@@ -253,32 +48,30 @@ import LoadingScreen, {
   error,
   info
 } from "./components/LoadingScreen.vue";
-import ExportPrompt from "./components/ExportPrompt.vue";
-import ComponentList from "./components/ComponentList.vue";
+import SideBar from "./components/SideBar.vue";
+import ComponentTree from "./components/ComponentTree.vue";
+import Header from "./components/Header.vue";
 import MyCanvas from "./components/Canvas.vue";
 import Vue from "vue";
 import { Component } from "@/utils/components/Component";
 import {
-  componentInfo,
   componentFromJson,
   registerComponent,
   invisible,
-  toggleVis,
   ExportData,
   unregisterComponent,
   JsonObject
 } from "./utils/manager/ComponentManager";
-import { actions, actionFromJson } from "./utils/manager/ActionManager";
 import {
   setupImageManager,
   images,
   registerImageBase64
 } from "./utils/manager/ImageManager";
-import { Action } from "./utils/actions/Action";
 import { fonts, registerFontBase64 } from "./utils/manager/FontManager";
 import { GroupComponent } from "./utils/components/GroupComponent";
 import { VERSION, migrate } from "./utils/manager/UpdateManager";
 import { Template } from "./utils/components/Template";
+import { Selection } from "./utils/Selection";
 
 const idWatcher: { lastHandler: (val: string) => void } = {
   lastHandler: () => {
@@ -292,31 +85,33 @@ export function setWatcher(func: (val: string) => void): void {
   idWatcher.lastHandler = func;
 }
 
+export interface GeneralSettings {
+  width: number;
+  height: number;
+  zoom: number;
+  projectName: string;
+}
+
 export default Vue.extend({
   name: "App",
-  components: { ComponentList, MyCanvas, ExportPrompt, LoadingScreen },
+  components: {
+    MyCanvas,
+    ComponentTree,
+    SideBar,
+    LoadingScreen,
+    AppHeader: Header
+  },
 
   data: () => {
     return {
-      width: 3,
-      height: 2,
-      zoom: 2,
+      settings: {
+        width: 3,
+        height: 2,
+        zoom: 2,
+        projectName: "Starter"
+      } as GeneralSettings,
 
-      projectName: "Starter",
-
-      selected: null as null | { component: Component; action: Action | null },
-
-      componentInfo,
-      actions,
-
-      devMode,
-
-      exportModal: false,
-
-      setupImageManager,
-
-      copiedComponent: null as null | string,
-      copiedAction: null as null | string,
+      selected: null as Selection,
 
       history: [] as ExportData[],
       hisotryIndex: 0,
@@ -326,29 +121,18 @@ export default Vue.extend({
 
       pauseRendering: false,
 
-      addComponentAnchor: null as null | Component[],
-
-      importComponent: false,
-
-      invisible,
-      toggleVis
+      devMode,
+      invisible
     };
   },
 
   mounted() {
-    document.addEventListener("click", this.checkClose, { capture: true });
-    this.setupImageManager(this.$refs.imageContainer as HTMLElement);
+    setupImageManager(this.$refs.imageContainer as HTMLElement);
     this.updateHistory();
-  },
-
-  destroyed() {
-    document.removeEventListener("click", this.checkClose, { capture: true });
   },
 
   methods: {
     updateSelection(data: { value: Component; event: Event }) {
-      console.log(document.activeElement);
-
       if (
         data.value &&
         data.event &&
@@ -364,13 +148,16 @@ export default Vue.extend({
       }
     },
 
-    showActionAddMenu(ev: MouseEvent) {
-      const menu = this.$refs.actionAddMenu as HTMLElement;
-      menu.style.display = "block";
-      setTimeout(() => {
-        menu.style.top = ev.y + 10 + "px";
-        menu.style.left = ev.x - menu.offsetWidth / 2 + "px";
-      }, 10);
+    loadProject(json: JsonObject, compImport: boolean) {
+      this.loadFromJsonObj(json as ExportData, !compImport, compImport)
+        .then(() => loading(false))
+        .catch((err: Error) => {
+          console.log(err);
+          error(
+            err.message ||
+              "Failed to import! There seems to be something wrong with the savepoint"
+          );
+        });
     },
 
     updateHistory() {
@@ -381,98 +168,6 @@ export default Vue.extend({
       this.history.splice(0, 0, JSON.parse(state));
       this.hisotryIndex = 0;
       if (this.history.length >= 50) this.history.pop();
-    },
-
-    addNewAction(key: string) {
-      if (this.selected) {
-        const nAction = actions[key].generator(this.selected.component);
-        this.selected.component.clickAction.push(nAction);
-        this.selected.action = nAction;
-      }
-    },
-
-    addNewCompoenent(key: string) {
-      const nComp = componentInfo[key].generator();
-      registerComponent(nComp);
-
-      this.addComponentAnchor!.splice(0, 0, nComp);
-      this.selected = {
-        component: nComp,
-        action: null
-      };
-      const menu = this.$refs.compAddMenu as HTMLElement;
-      menu.style.display = "none";
-    },
-
-    checkClose(ev: MouseEvent) {
-      const menuComp = this.$refs.compAddMenu as HTMLElement;
-
-      if (ev.target != menuComp) menuComp.style.display = "none";
-
-      const menuAction = this.$refs.actionAddMenu as HTMLElement;
-      if (menuAction && ev.target != menuAction)
-        menuAction.style.display = "none";
-    },
-
-    addChildToTreeElem(data: { event: MouseEvent; anchor: Component[] }) {
-      this.showCompAddMenu(data.event, data.anchor);
-    },
-
-    showCompAddMenu(
-      ev: MouseEvent,
-      anchor = undefined as undefined | Component[]
-    ) {
-      const menu = this.$refs.compAddMenu as HTMLElement;
-      menu.style.display = "block";
-      menu.style.opacity = "0";
-      this.addComponentAnchor = anchor || this.elements;
-
-      setTimeout(() => {
-        let y = ev.y;
-
-        if (y + menu.offsetHeight > window.innerHeight)
-          y = ev.y - menu.offsetHeight - 5;
-
-        menu.style.opacity = "1";
-        menu.style.top = y + "px";
-        menu.style.left = ev.x + "px";
-      }, 3);
-    },
-
-    pasteAction() {
-      if (this.selected && this.copiedAction) {
-        const nAction = actionFromJson(JSON.parse(this.copiedAction));
-        this.selected.component.clickAction.push(nAction);
-        this.selected.action = nAction;
-      }
-    },
-
-    pasteComponent() {
-      if (this.copiedComponent) {
-        const nComp = componentFromJson(
-          JSON.parse(this.copiedComponent),
-          true
-        )!;
-        this.elements.splice(0, 0, nComp);
-        this.selected = {
-          component: nComp,
-          action: null
-        };
-      }
-    },
-
-    copyID() {
-      const input = this.$refs.idInput as HTMLInputElement;
-      const icon = this.$refs.copyIcon as HTMLElement;
-
-      input.select();
-      input.setSelectionRange(0, 99999);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      document.execCommand("copy");
-
-      icon.innerText = "assignment_turned_in";
-
-      setTimeout(() => (icon.innerText = "content_copy"), 1000);
     },
 
     exportSavepoint() {
@@ -490,7 +185,7 @@ export default Vue.extend({
       dlAnchorElem.setAttribute("href", dataStr);
       dlAnchorElem.setAttribute(
         "download",
-        this.projectName.replaceAll(" ", "_") +
+        this.settings.projectName.replaceAll(" ", "_") +
           (asSavepoint ? "_savepoint" : "") +
           ".json"
       );
@@ -507,12 +202,12 @@ export default Vue.extend({
       );
       const exportJsonObj: ExportData = {
         type: "savepoint",
-        name: this.projectName,
+        name: this.settings.projectName,
         version: VERSION,
         invisible: invisible,
         fonts: skipResources ? undefined : Object.values(fonts),
-        width: this.width,
-        height: this.height,
+        width: this.settings.width,
+        height: this.settings.height,
         images: skipResources
           ? undefined
           : Object.values(images)
@@ -596,16 +291,14 @@ export default Vue.extend({
 
       if (resetOld) {
         this.selected = null;
-        this.copiedAction = null;
-        this.copiedComponent = null;
 
         this.elements.forEach(elem => unregisterComponent(elem));
         this.elements = [];
 
-        this.projectName = jsonObj.name || "Starter";
+        this.settings.projectName = jsonObj.name || "Starter";
 
-        this.width = jsonObj.width;
-        this.height = jsonObj.height;
+        this.settings.width = jsonObj.width;
+        this.settings.height = jsonObj.height;
 
         invisible.splice(0, invisible.length);
       }
@@ -651,37 +344,7 @@ export default Vue.extend({
       this.pauseRendering = false;
     },
 
-    async checkForUpload() {
-      const selector = this.$refs.importFileSelect as HTMLInputElement;
-
-      if (selector.files?.length) {
-        loading(true);
-        const file = selector.files[0];
-        const json = await file.text();
-        this.loadFromJsonObj(
-          JSON.parse(json),
-          !this.importComponent,
-          this.importComponent
-        )
-          .then(() => loading(false))
-          .catch((err: Error) => {
-            console.log(err);
-            error(
-              err.message ||
-                "Failed to import! There seems to be something wrong with the savepoint"
-            );
-          });
-        selector.value = "";
-      }
-    },
-
-    triggerImportSelector(componentMode = false) {
-      this.importComponent = componentMode;
-      (this.$refs.importFileSelect as HTMLElement).click();
-    },
-
     externalExport() {
-      this.exportModal = false;
       loading(true);
 
       const savepoint = this.bundleToJson(false, true);
