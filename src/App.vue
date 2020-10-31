@@ -121,8 +121,7 @@ export default Vue.extend({
 
       pauseRendering: false,
 
-      devMode,
-      invisible
+      devMode
     };
   },
 
