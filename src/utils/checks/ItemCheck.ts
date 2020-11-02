@@ -2,10 +2,11 @@ import { JsonObject } from "../manager/ComponentManager";
 import { Check } from "./Check";
 
 import ItemCheckEditor from "@/components/actionEditors/checks/ItemCheckEditor.vue";
+import { markRaw } from "vue";
 
 export class ItemCheck implements Check {
   public static id = "Item Check";
-  public static component = ItemCheckEditor;
+  public static component = markRaw(ItemCheckEditor);
   public name = ItemCheck.id;
 
   constructor(public amount: number, public itemName: string) {}

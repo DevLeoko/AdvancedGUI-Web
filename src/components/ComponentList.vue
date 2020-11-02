@@ -116,12 +116,12 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import DragZone from "./DragZone.vue";
-import Vue from "vue";
 import { ListItem, ListItemGroup } from "@/utils/ListItem";
 import { toggleVis, invisible } from "@/utils/manager/ComponentManager";
 
-export default Vue.extend({
+export default defineComponent({
   name: "ComponentList",
 
   components: { DragZone },
@@ -137,7 +137,8 @@ export default Vue.extend({
 
   props: {
     components: {
-      type: Array as () => ListItem[]
+      type: Array as () => ListItem[],
+      required: true
     },
     value: {
       type: Object as () => ListItem
@@ -169,12 +170,12 @@ export default Vue.extend({
     document.addEventListener("click", this.checkClose, { capture: true });
   },
 
-  destroyed() {
+  unmounted() {
     document.removeEventListener("click", this.checkClose, { capture: true });
   },
 
   computed: {
-    hasCapacity() {
+    hasCapacity(): boolean {
       if (this.itemLimit === undefined) return true;
 
       let current = this.components.length;

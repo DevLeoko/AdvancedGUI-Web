@@ -37,8 +37,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-
+import { defineComponent } from "vue";
 const loadingContainer = {
   loading: false,
   error: null as string | null,
@@ -59,7 +58,7 @@ export function error(val: string) {
   loadingContainer.error = val;
 }
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       loading: loadingContainer

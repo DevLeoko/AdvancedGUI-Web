@@ -2,7 +2,7 @@ import { Action } from "../actions/Action";
 import { JsonObject } from "./ComponentManager";
 import { CommandAction } from "../actions/CommandAction";
 import { ListAction } from "../actions/ListAction";
-import { VueConstructor } from "vue";
+import { Component as VueComponent, markRaw } from "vue"; // computed also work?
 
 import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
 import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
@@ -23,7 +23,7 @@ interface ActionMeta {
   generator: (comonent: Component) => Action;
   fromJson: (jsonObj: JsonObject) => Action;
   icon: string;
-  component?: VueConstructor;
+  component?: VueComponent;
 }
 
 export const actions: { [key: string]: ActionMeta } = {};
@@ -33,37 +33,37 @@ export function setup() {
     generator: () => new CommandAction("heal %player%", true, false),
     fromJson: CommandAction.fromJson,
     icon: CommandAction.icon,
-    component: CommandEditor
+    component: markRaw(CommandEditor)
   };
   actions[MessageAction.id] = {
     generator: () => new MessageAction("&a&lHey there!"),
     fromJson: MessageAction.fromJson,
     icon: MessageAction.icon,
-    component: MessageEditor
+    component: markRaw(MessageEditor)
   };
   actions[VisibilityAction.id] = {
     generator: comp => new VisibilityAction(comp.id, true),
     fromJson: VisibilityAction.fromJson,
     icon: VisibilityAction.icon,
-    component: VisibilityEditor
+    component: markRaw(VisibilityEditor)
   };
   actions[GifControlAction.id] = {
     generator: () => new GifControlAction("", true, false),
     fromJson: GifControlAction.fromJson,
     icon: GifControlAction.icon,
-    component: GifControlEditor
+    component: markRaw(GifControlEditor)
   };
   actions[ViewAction.id] = {
     generator: () => new ViewAction("", ""),
     fromJson: ViewAction.fromJson,
     icon: ViewAction.icon,
-    component: ViewEditor
+    component: markRaw(ViewEditor)
   };
   actions[DelayAction.id] = {
     generator: () => new DelayAction(20, [], true),
     fromJson: DelayAction.fromJson,
     icon: DelayAction.icon,
-    component: DelayEditor
+    component: markRaw(DelayEditor)
   };
   actions[ListAction.id] = {
     generator: () => new ListAction([], true),
@@ -79,7 +79,7 @@ export function setup() {
       },
       fromJson: CheckAction.fromJson,
       icon: CheckAction.icon,
-      component: check.component
+      component: markRaw(check.component)
     };
   }
 }

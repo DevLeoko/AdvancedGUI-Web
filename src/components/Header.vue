@@ -77,13 +77,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { GeneralSettings } from "@/App.vue";
-import Vue from "vue";
 
 import { loading } from "@/components/LoadingScreen.vue";
 import ExportPrompt from "@/components/ExportPrompt.vue";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     settings: {
       type: Object as () => GeneralSettings,

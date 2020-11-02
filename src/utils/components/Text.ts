@@ -3,13 +3,14 @@ import TextEditor from "@/components/editors/TextEditor.vue";
 import { Action } from "../actions/Action";
 import { JsonObject, ComponentType } from "../manager/ComponentManager";
 import { Component } from "./Component";
+import { markRaw } from "vue";
 
 export class Text extends Component {
   public static displayName: ComponentType = "Text";
   public static icon = "text_fields";
   public displayName = Text.displayName;
   public icon = Text.icon;
-  public vueComponent = TextEditor;
+  public vueComponent = markRaw(TextEditor);
 
   private lastWidth = 50;
 

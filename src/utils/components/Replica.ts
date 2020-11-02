@@ -10,13 +10,14 @@ import {
 import { Component } from "./Component";
 import { Template } from "./Template";
 import { GroupComponent } from "./GroupComponent";
+import { markRaw } from "vue";
 
 export class Replica extends Component {
   public static displayName: ComponentType = "Replica";
   public static icon = "collections_bookmark";
   public displayName = Replica.displayName;
   public icon = Replica.icon;
-  public vueComponent = Editor;
+  public vueComponent = markRaw(Editor);
   public actionable = false;
 
   constructor(

@@ -9,13 +9,14 @@ import {
 import { GroupComponent } from "./GroupComponent";
 import { BoundingBox } from "../BoundingBox";
 import { getRemoteImage, placeRemoteImage } from "../manager/ImageManager";
+import { markRaw } from "vue";
 
 export class RemoteImage extends GroupComponent {
   public static displayName: ComponentType = "Remote Image";
   public static icon = "satellite";
   public displayName = RemoteImage.displayName;
   public icon = RemoteImage.icon;
-  public vueComponent = Editor;
+  public vueComponent = markRaw(Editor);
   public resizeable = true;
 
   public itemLimit = 1;

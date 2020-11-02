@@ -11,13 +11,14 @@ import { Point } from "../Point";
 import { Check } from "../checks/Check";
 import { checkFromJson } from "../manager/CheckManager";
 import { PermissionCheck } from "../checks/PermissionCheck";
+import { markRaw } from "vue";
 
 export class CheckComponent extends GroupComponent {
   public static displayName: ComponentType = "Check";
   public static icon = "fact_check";
   public displayName = CheckComponent.displayName;
   public icon = CheckComponent.icon;
-  public vueComponent = CheckComponentEditor;
+  public vueComponent = markRaw(CheckComponentEditor);
 
   public itemLimit = 2;
   public itemClasses = ["posAction", "negAction"];

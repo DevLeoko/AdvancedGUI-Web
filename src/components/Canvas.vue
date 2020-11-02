@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { Point } from "@/utils/Point";
 import { ResizeIcon, Modifier, moveModifier } from "@/utils/Modifier";
 import { Component } from "@/utils/components/Component";
@@ -24,7 +24,7 @@ import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
 import { images } from "@/utils/manager/ImageManager";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     width: {
       type: Number,

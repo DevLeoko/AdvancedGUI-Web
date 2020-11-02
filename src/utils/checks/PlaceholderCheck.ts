@@ -2,10 +2,11 @@ import { JsonObject } from "../manager/ComponentManager";
 import { Check } from "./Check";
 
 import PlaceholderCheckEditor from "@/components/actionEditors/checks/PlaceholderCheckEditor.vue";
+import { markRaw } from "vue";
 
 export class PlaceholderCheck implements Check {
   public static id = "Placeholder Check";
-  public static component = PlaceholderCheckEditor;
+  public static component = markRaw(PlaceholderCheckEditor);
   public name = PlaceholderCheck.id;
 
   constructor(public placeholder: string, public value: string) {}

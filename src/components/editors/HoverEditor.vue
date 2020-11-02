@@ -15,17 +15,18 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { Hover } from "@/utils/components/Hover";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {};
   },
 
   props: {
     component: {
-      type: Object as () => Hover
+      type: Object as () => Hover,
+      required: true
     }
   }
 });

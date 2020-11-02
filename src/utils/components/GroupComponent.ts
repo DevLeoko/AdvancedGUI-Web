@@ -4,6 +4,7 @@ import EmptyEditor from "@/components/editors/EmptyEditor.vue";
 import { Component } from "./Component";
 import { Action } from "../actions/Action";
 import { ListItemGroup } from "../ListItem";
+import { Component as VueComponent, markRaw } from "vue";
 import {
   componentFromJson,
   JsonObject,
@@ -18,7 +19,7 @@ export class GroupComponent extends Component
   public static childComponentProps = ["components"];
   public displayName = GroupComponent.displayName;
   public icon = GroupComponent.icon;
-  public vueComponent = EmptyEditor;
+  public vueComponent: VueComponent = markRaw(EmptyEditor);
 
   constructor(
     public id: string,

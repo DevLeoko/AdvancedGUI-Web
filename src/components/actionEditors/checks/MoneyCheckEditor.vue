@@ -18,11 +18,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { MoneyCheck } from "@/utils/checks/MoneyCheck";
 import { Template } from "@/utils/components/Template";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       inputTransformer: Template.inputTransformer

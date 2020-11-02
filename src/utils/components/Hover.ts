@@ -8,13 +8,14 @@ import {
 } from "../manager/ComponentManager";
 import { GroupComponent } from "./GroupComponent";
 import { Point } from "../Point";
+import { markRaw } from "vue";
 
 export class Hover extends GroupComponent {
   public static displayName: ComponentType = "Hover";
   public static icon = "layers";
   public displayName = Hover.displayName;
   public icon = Hover.icon;
-  public vueComponent = HoverEditor;
+  public vueComponent = markRaw(HoverEditor);
 
   public itemLimit = 2;
   public itemClasses = ["not-hovered", "hovered"];

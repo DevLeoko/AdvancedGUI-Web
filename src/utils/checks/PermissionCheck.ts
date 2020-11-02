@@ -2,10 +2,11 @@ import { JsonObject } from "../manager/ComponentManager";
 import { Check } from "./Check";
 
 import PermissionCheckEditor from "@/components/actionEditors/checks/PermissionCheckEditor.vue";
+import { markRaw } from "vue";
 
 export class PermissionCheck implements Check {
   public static id = "Permission Check";
-  public static component = PermissionCheckEditor;
+  public static component = markRaw(PermissionCheckEditor);
   public name = PermissionCheck.id;
 
   constructor(public permission: string) {}

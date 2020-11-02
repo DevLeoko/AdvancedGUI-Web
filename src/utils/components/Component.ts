@@ -1,7 +1,7 @@
 import { BoundingBox } from "../BoundingBox";
 import { Point } from "../Point";
 
-import { VueConstructor } from "vue/types/umd";
+import { Component as VueComponent } from "vue";
 import { Action } from "../actions/Action";
 import { ListItem, ListItemGroup } from "../ListItem";
 import {
@@ -28,7 +28,7 @@ export abstract class Component implements ListItem {
     newBoundingBox: BoundingBox,
     singleAxisAction?: boolean
   ): void;
-  abstract get vueComponent(): VueConstructor<Vue>;
+  abstract get vueComponent(): VueComponent;
   abstract get icon(): string;
   abstract get displayName(): ComponentType;
   abstract toDataObj(forUsage: boolean): JsonObject;

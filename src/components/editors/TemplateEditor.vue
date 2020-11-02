@@ -47,17 +47,18 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { Template } from "@/utils/components/Template";
-import Vue from "vue";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {};
   },
 
   props: {
     component: {
-      type: Object as () => Template
+      type: Object as () => Template,
+      required: true
     }
   }
 });

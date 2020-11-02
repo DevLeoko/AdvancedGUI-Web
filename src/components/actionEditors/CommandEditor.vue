@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { CommandAction } from "@/utils/actions/CommandAction";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {};
   },

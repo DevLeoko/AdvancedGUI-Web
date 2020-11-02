@@ -4,13 +4,14 @@ import { Rectangular } from "./Rectangular";
 import { Action } from "../actions/Action";
 import { JsonObject, ComponentType } from "../manager/ComponentManager";
 import { images } from "../manager/ImageManager";
+import { markRaw } from "vue";
 
 export class Image extends Rectangular {
   public static displayName: ComponentType = "Image";
   public static icon = "image";
   public displayName = Image.displayName;
   public icon = Image.icon;
-  public vueComponent = ImageEditor;
+  public vueComponent = markRaw(ImageEditor);
   public resizeable = true;
 
   constructor(

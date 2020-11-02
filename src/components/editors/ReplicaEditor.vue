@@ -55,12 +55,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { Replica } from "@/utils/components/Replica";
 import { components, TemplateData } from "@/utils/manager/ComponentManager";
 import { setWatcher } from "@/App.vue";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       components,
@@ -71,7 +71,8 @@ export default Vue.extend({
 
   props: {
     component: {
-      type: Object as () => Replica
+      type: Object as () => Replica,
+      required: true
     }
   },
 

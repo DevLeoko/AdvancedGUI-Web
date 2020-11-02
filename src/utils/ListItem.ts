@@ -1,6 +1,7 @@
 export interface ListItem {
   id: string;
   icon: string;
+  name: string;
   hideable: boolean;
   delete: () => void;
   isGroup: () => this is ListItemGroup<this>;

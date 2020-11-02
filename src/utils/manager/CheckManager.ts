@@ -1,4 +1,4 @@
-import { VueConstructor } from "vue";
+import { Component as VueComponent } from "vue";
 
 import { ItemCheck } from "../checks/ItemCheck";
 import { MoneyCheck } from "../checks/MoneyCheck";
@@ -13,7 +13,7 @@ interface CheckMeta {
   generator: () => Check;
   fromJson: (jsonObj: JsonObject) => Check;
   id: string;
-  component: VueConstructor;
+  component: VueComponent;
 }
 
 export const checks: { [key: string]: CheckMeta } = {};

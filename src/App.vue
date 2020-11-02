@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import LoadingScreen, {
   loading,
   error,
@@ -52,7 +53,6 @@ import SideBar from "./components/SideBar.vue";
 import ComponentTree from "./components/ComponentTree.vue";
 import Header from "./components/Header.vue";
 import MyCanvas from "./components/Canvas.vue";
-import Vue from "vue";
 import { Component } from "@/utils/components/Component";
 import {
   componentFromJson,
@@ -92,7 +92,7 @@ export interface GeneralSettings {
   projectName: string;
 }
 
-export default Vue.extend({
+export default defineComponent({
   name: "App",
   components: {
     MyCanvas,

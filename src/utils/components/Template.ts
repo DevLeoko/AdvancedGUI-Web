@@ -9,6 +9,7 @@ import {
   reassignIDs
 } from "../manager/ComponentManager";
 import { GroupComponent } from "./GroupComponent";
+import { markRaw } from "vue";
 
 export class Template extends GroupComponent {
   public static inputTransformer = (
@@ -29,7 +30,7 @@ export class Template extends GroupComponent {
   public static icon = "book";
   public displayName = Template.displayName;
   public icon = Template.icon;
-  public vueComponent = Editor;
+  public vueComponent = markRaw(Editor);
   public actionable = false;
 
   constructor(

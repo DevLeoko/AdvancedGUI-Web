@@ -55,13 +55,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { components } from "@/utils/manager/ComponentManager";
 import { ViewAction } from "@/utils/actions/ViewAction";
 import { View } from "@/utils/components/View";
 import { setWatcher } from "@/App.vue";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       components,

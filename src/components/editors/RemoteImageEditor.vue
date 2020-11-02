@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import {
   images,
   registerImage,
@@ -72,7 +72,7 @@ import {
 import { Template } from "@/utils/components/Template";
 import { RemoteImage } from "@/utils/components/RemoteImage";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       images,
@@ -83,13 +83,16 @@ export default Vue.extend({
 
   props: {
     component: {
-      type: Object as () => RemoteImage
+      type: Object as () => RemoteImage,
+      required: true
     },
     maxHeight: {
-      type: Number
+      type: Number,
+      required: true
     },
     maxWidth: {
-      type: Number
+      type: Number,
+      required: true
     }
   },
 

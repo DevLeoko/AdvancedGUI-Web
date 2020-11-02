@@ -25,10 +25,10 @@ export async function registerFontBase64(dataUrl: string, fontName: string) {
   // add font to document
   document.fonts.add(font);
 
-  Vue.set(fonts, fontName, {
+  fonts[fontName] = {
     name: fontName,
     data: dataUrl
-  });
+  };
 }
 
 export async function registerFont(file: File | Blob, fontName: string) {

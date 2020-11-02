@@ -55,11 +55,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { Rect } from "@/utils/components/Rect";
 import { Template } from "@/utils/components/Template";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       inputTransformer: Template.inputTransformer
@@ -68,13 +68,16 @@ export default Vue.extend({
 
   props: {
     component: {
-      type: Object as () => Rect
+      type: Object as () => Rect,
+      required: true
     },
     maxHeight: {
-      type: Number
+      type: Number,
+      required: true
     },
     maxWidth: {
-      type: Number
+      type: Number,
+      required: true
     }
   },
 

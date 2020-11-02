@@ -37,12 +37,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { CheckComponent } from "@/utils/components/CheckComponent";
 import { checks } from "../../utils/manager/CheckManager";
 import { error } from "../LoadingScreen.vue";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       checks,
@@ -52,7 +52,8 @@ export default Vue.extend({
 
   props: {
     component: {
-      type: Object as () => CheckComponent
+      type: Object as () => CheckComponent,
+      required: true
     }
   }
 });

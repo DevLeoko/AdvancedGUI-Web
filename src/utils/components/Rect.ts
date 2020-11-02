@@ -7,13 +7,14 @@ import {
   getRandomColor,
   ComponentType
 } from "../manager/ComponentManager";
+import { markRaw } from "vue";
 
 export class Rect extends Rectangular {
   public static displayName: ComponentType = "Rect";
   public static icon = "crop_free";
   public displayName = Rect.displayName;
   public icon = Rect.icon;
-  public vueComponent = RectangelEditor;
+  public vueComponent = markRaw(RectangelEditor);
   public resizeable = true;
 
   constructor(

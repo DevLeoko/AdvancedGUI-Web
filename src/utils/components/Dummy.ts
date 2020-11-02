@@ -3,13 +3,14 @@ import Editor from "@/components/editors/EmptyEditor.vue";
 import { Action } from "../actions/Action";
 import { JsonObject, ComponentType } from "../manager/ComponentManager";
 import { Component } from "./Component";
+import { markRaw } from "vue";
 
 export class Dummy extends Component {
   public static displayName: ComponentType = "Dummy";
   public static icon = "code";
   public displayName = Dummy.displayName;
   public icon = Dummy.icon;
-  public vueComponent = Editor;
+  public vueComponent = markRaw(Editor);
   public actionable = false;
   public hideable = false;
 

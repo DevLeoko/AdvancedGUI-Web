@@ -25,17 +25,18 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { View } from "@/utils/components/View";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {};
   },
 
   props: {
     component: {
-      type: Object as () => View
+      type: Object as () => View,
+      required: true
     }
   }
 });

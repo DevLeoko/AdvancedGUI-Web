@@ -8,13 +8,14 @@ import {
 } from "../manager/ComponentManager";
 import { GroupComponent } from "./GroupComponent";
 import { Point } from "../Point";
+import { markRaw } from "vue";
 
 export class View extends GroupComponent {
   public static displayName: ComponentType = "View";
   public static icon = "view_carousel";
   public displayName = View.displayName;
   public icon = View.icon;
-  public vueComponent = ViewEditor;
+  public vueComponent = markRaw(ViewEditor);
 
   public itemClasses = ["primary"];
 

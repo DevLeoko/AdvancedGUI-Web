@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from "vue";
 import { Component } from "@/utils/components/Component";
 import ComponentList from "@/components/ComponentList.vue";
-import Vue from "vue";
 
 import {
   componentInfo,
@@ -45,7 +45,7 @@ import {
   registerComponent
 } from "@/utils/manager/ComponentManager";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     components: {
       type: Array as () => Component[],
@@ -70,7 +70,7 @@ export default Vue.extend({
     document.addEventListener("click", this.checkClose, { capture: true });
   },
 
-  destroyed() {
+  unmounted() {
     document.removeEventListener("click", this.checkClose, { capture: true });
   },
 

@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { Image } from "@/utils/components/Image";
 import {
   images,
@@ -102,7 +102,7 @@ import {
 import { Template } from "@/utils/components/Template";
 import { GIF } from "@/utils/components/GIF";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       images,
@@ -113,13 +113,16 @@ export default Vue.extend({
 
   props: {
     component: {
-      type: Object as () => Image | GIF
+      type: Object as () => Image | GIF,
+      required: true
     },
     maxHeight: {
-      type: Number
+      type: Number,
+      required: true
     },
     maxWidth: {
-      type: Number
+      type: Number,
+      required: true
     }
   },
 

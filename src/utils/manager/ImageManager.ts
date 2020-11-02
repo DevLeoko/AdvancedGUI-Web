@@ -1,5 +1,4 @@
 import { getBase64 } from "./FontManager";
-import Vue from "vue";
 import { RemoteImage } from "../components/RemoteImage";
 
 export interface Image {
@@ -25,7 +24,8 @@ export async function registerImageBase64(
       ratio: imageElement.naturalWidth / imageElement.naturalHeight,
       isGif
     };
-    Vue.set(images, imageName, image);
+
+    images[imageName] = image; // TODO ref?
   };
 
   imageElement.src = dataUrl;
@@ -73,7 +73,7 @@ export async function registerImage(
 export async function unregisterImage(imageName: string) {
   const elem = images[imageName].data;
 
-  Vue.delete(images, imageName);
+  delete images[imageName];
   elem.remove();
 }
 

@@ -62,11 +62,11 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { Text } from "@/utils/components/Text";
 import { registerFont, fonts } from "@/utils/manager/FontManager";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       fonts
@@ -75,7 +75,8 @@ export default Vue.extend({
 
   props: {
     component: {
-      type: Object as () => Text
+      type: Object as () => Text,
+      required: true
     }
   },
 

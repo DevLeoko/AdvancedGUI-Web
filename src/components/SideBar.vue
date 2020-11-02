@@ -113,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { GeneralSettings } from "@/App.vue";
 import { Selection } from "@/utils/Selection";
 import { actions, actionFromJson } from "@/utils/manager/ActionManager";
@@ -121,7 +121,7 @@ import ComponentList from "@/components/ComponentList.vue";
 
 import { toggleVis, invisible } from "@/utils/manager/ComponentManager";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     selected: {
       type: Object as () => Selection,
@@ -152,7 +152,7 @@ export default Vue.extend({
     document.addEventListener("click", this.checkClose, { capture: true });
   },
 
-  destroyed() {
+  unmounted() {
     document.removeEventListener("click", this.checkClose, { capture: true });
   },
 

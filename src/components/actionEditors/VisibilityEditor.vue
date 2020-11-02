@@ -28,12 +28,12 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { VisibilityAction } from "@/utils/actions/VisibilityAction";
 import { components } from "@/utils/manager/ComponentManager";
 import { setWatcher } from "@/App.vue";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {
       components,

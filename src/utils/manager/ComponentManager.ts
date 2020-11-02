@@ -6,7 +6,7 @@ import { Text } from "../components/Text";
 import { Image } from "../components/Image";
 import { Hover } from "../components/Hover";
 import { View } from "../components/View";
-import Vue from "vue";
+// import { ref} from "vue"; TODO
 import { actionsFromJson } from "./ActionManager";
 import { Font } from "./FontManager";
 import { CheckComponent } from "../components/CheckComponent";
@@ -141,7 +141,7 @@ function _reassignIDs(
 
 export function registerComponent(component: Component) {
   if (component.id == "-") component.setId(generateUniqueID());
-  Vue.set(components, component.id, component);
+  components[component.id] = component;
 
   if (
     component.id.includes("#") &&
@@ -153,7 +153,7 @@ export function registerComponent(component: Component) {
 }
 
 export function unregisterComponent(component: Component) {
-  Vue.delete(components, component.id);
+  delete components[component.id];
 
   if (!component.id.includes("#")) {
     Object.values(components)

@@ -15,10 +15,10 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import { defineComponent } from "vue";
 import { PlaceholderCheck } from "@/utils/checks/PlaceholderCheck";
 
-export default Vue.extend({
+export default defineComponent({
   data() {
     return {};
   },
