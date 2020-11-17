@@ -1,5 +1,5 @@
 <template>
-  <div class="exportPrompt" :style="{ display: value ? 'flex' : 'none' }">
+  <div class="exportPrompt" :style="{ display: modelValue ? 'flex' : 'none' }">
     <div class="exportPromptContainer">
       <h1><span class="material-icons">get_app</span> Export for usage</h1>
       <p>
@@ -16,7 +16,7 @@
           <span class="text">Export</span>
         </div>
 
-        <div class="btn close" @click="$emit('input', false)">
+        <div class="btn close" @click="$emit('update:modelValue', false)">
           <span class="text">Close</span>
         </div>
       </div>
@@ -32,7 +32,7 @@ export default defineComponent({
   },
 
   props: {
-    value: {
+    modelValue: {
       type: Boolean
     }
   }

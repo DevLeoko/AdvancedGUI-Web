@@ -15,6 +15,7 @@ import { Replica } from "../components/Replica";
 import { GIF } from "../components/GIF";
 import { RemoteImage } from "../components/RemoteImage";
 import { Dummy } from "../components/Dummy";
+import { reactive } from "vue";
 
 export type TemplateVariable = string;
 export type TemplateData = { name: string; value: string | number }[];
@@ -70,7 +71,7 @@ export interface ComponentMeta {
   icon: string;
 }
 
-export const invisible: string[] = [];
+export const invisible: string[] = reactive([]);
 export const components: {
   [key: string]: Component;
 } = {};

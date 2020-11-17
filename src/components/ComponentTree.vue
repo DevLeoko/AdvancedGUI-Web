@@ -4,8 +4,8 @@
       class="actualTree"
       root
       :components="components"
-      :value="selected"
-      @input="val => $emit('select', val)"
+      :modelValue="selected"
+      @update:modelValue="val => $emit('select', val)"
       @copy="val => (copiedComponent = val)"
       @add-child="addChildToTreeElem"
     ></component-list>

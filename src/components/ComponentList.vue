@@ -55,15 +55,15 @@
         <div
           class="item"
           :class="
-            (value == elem ? 'active ' : '') +
+            (modelValue == elem ? 'active ' : '') +
               (elem.id && invisible.indexOf(elem.id) != -1
                 ? 'invisible '
                 : '') +
               (itemClasses[index] || '')
           "
           @mousedown.stop="
-            $emit('input', {
-              value: value == elem ? null : elem,
+            $emit('update:modelValue', {
+              value: modelValue == elem ? null : elem,
               event: $event
             })
           "
@@ -95,11 +95,11 @@
           <div class="subFolder" v-if="elem.isGroup() && elem.expanded">
             <component-list
               :components="elem.getItems()"
-              :value="value"
+              :modelValue="modelValue"
               :treeState="treeState"
               :itemLimit="elem.itemLimit"
               :itemClasses="elem.itemClasses"
-              @input="val => $emit('input', val)"
+              @update:modelValue="val => $emit('update:modelValue', val)"
               @copy="val => $emit('copy', val)"
               @add-child="val => $emit('add-child', val)"
             ></component-list>
@@ -140,7 +140,7 @@ export default defineComponent({
       type: Array as () => ListItem[],
       required: true
     },
-    value: {
+    modelValue: {
       type: Object as () => ListItem
     },
     root: {
@@ -246,7 +246,7 @@ export default defineComponent({
         const nComp = this.optElem.duplicate();
         if (nComp) {
           this.components.splice(index, 0, nComp);
-          this.$emit("input", nComp);
+          this.$emit("update:modelValue", nComp);
         }
       }
     },

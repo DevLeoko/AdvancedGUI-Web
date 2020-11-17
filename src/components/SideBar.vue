@@ -46,8 +46,8 @@
           <component-list
             root
             :components="selected.component.clickAction"
-            :value="selected.action"
-            @input="val => (selected.action = val.value)"
+            :modelValue="selected.action"
+            @update:modelValue="val => (selected.action = val.value)"
             @copy="val => (copiedAction = val)"
           ></component-list>
           <div class="settings-row">
