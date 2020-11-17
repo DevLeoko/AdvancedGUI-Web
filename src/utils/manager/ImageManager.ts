@@ -1,3 +1,4 @@
+import { reactive } from "vue";
 import { getBase64 } from "./FontManager";
 import { RemoteImage } from "../components/RemoteImage";
 
@@ -8,14 +9,25 @@ export interface Image {
   isGif: boolean;
 }
 
+export const regImages: string[] = reactive([]);
 export const images: { [key: string]: Image } = {};
 let imageContainer: HTMLElement;
+
+export async function unregisterImage(imageName: string) {
+  const elem = images[imageName].data;
+
+  delete images[imageName];
+  regImages.splice(regImages.indexOf(imageName), 1);
+  elem.remove();
+}
 
 export async function registerImageBase64(
   dataUrl: string,
   imageName: string,
   isGif: boolean
 ) {
+  if (regImages.indexOf(imageName) !== -1) unregisterImage(imageName);
+
   const imageElement = document.createElement("img") as HTMLImageElement;
   imageElement.onload = () => {
     const image: Image = {
@@ -26,6 +38,7 @@ export async function registerImageBase64(
     };
 
     images[imageName] = image; // TODO ref?
+    regImages.push(imageName);
   };
 
   imageElement.src = dataUrl;
@@ -68,13 +81,6 @@ export async function registerImage(
 ) {
   const url = await getBase64(file);
   await registerImageBase64(url, imageName, isGif);
-}
-
-export async function unregisterImage(imageName: string) {
-  const elem = images[imageName].data;
-
-  delete images[imageName];
-  elem.remove();
 }
 
 export function setupImageManager(hiddenImageContainer: HTMLElement) {

@@ -29,7 +29,7 @@
       <div class="input-box">
         <select v-model="component.font">
           <option
-            v-for="font in Object.keys(fonts)"
+            v-for="font in regFonts"
             :style="{ fontFamily: font }"
             :key="font"
             :value="font"
@@ -64,12 +64,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Text } from "@/utils/components/Text";
-import { registerFont, fonts } from "@/utils/manager/FontManager";
+import { registerFont, fonts, regFonts } from "@/utils/manager/FontManager";
 
 export default defineComponent({
   data() {
     return {
-      fonts
+      fonts,
+      regFonts
     };
   },
 

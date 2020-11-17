@@ -65,9 +65,16 @@ import {
 import {
   setupImageManager,
   images,
-  registerImageBase64
+  registerImageBase64,
+  regImages,
+  unregisterImage
 } from "./utils/manager/ImageManager";
-import { fonts, registerFontBase64 } from "./utils/manager/FontManager";
+import {
+  fonts,
+  regFonts,
+  registerFontBase64,
+  unregisterFont
+} from "./utils/manager/FontManager";
 import { GroupComponent } from "./utils/components/GroupComponent";
 import { VERSION, migrate } from "./utils/manager/UpdateManager";
 import { Template } from "./utils/components/Template";
@@ -284,8 +291,8 @@ export default defineComponent({
       }
 
       if (!keepResrouces) {
-        Object.keys(images).forEach(key => delete images[key]);
-        Object.keys(fonts).forEach(key => delete fonts[key]);
+        regImages.forEach(img => unregisterImage(img));
+        regFonts.forEach(font => unregisterFont(font));
       }
 
       if (resetOld) {

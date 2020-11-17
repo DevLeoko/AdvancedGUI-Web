@@ -1,4 +1,4 @@
-import Vue from "vue";
+import { reactive } from "vue";
 
 export function getBase64(file: File | Blob): Promise<string> {
   const reader = new FileReader();
@@ -17,8 +17,16 @@ export interface Font {
 }
 
 export const fonts: { [key: string]: Font } = {};
+export const regFonts: string[] = reactive([]);
+
+export async function unregisterFont(fontName: string) {
+  delete fonts[fontName];
+  regFonts.splice(regFonts.indexOf(fontName), 1);
+}
 
 export async function registerFontBase64(dataUrl: string, fontName: string) {
+  if (regFonts.indexOf(fontName) !== -1) unregisterFont(fontName);
+
   const font = new FontFace(fontName, `url(${dataUrl})`);
   // wait for font to be loaded
   await font.load();
@@ -29,6 +37,7 @@ export async function registerFontBase64(dataUrl: string, fontName: string) {
     name: fontName,
     data: dataUrl
   };
+  regFonts.push(fontName);
 }
 
 export async function registerFont(file: File | Blob, fontName: string) {

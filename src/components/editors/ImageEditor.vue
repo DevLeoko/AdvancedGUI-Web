@@ -12,9 +12,9 @@
     <div class="settings-row imageList">
       <div
         class="imageBox"
-        v-for="img in Object.values(images).filter(
-          image => image.isGif == gifMode
-        )"
+        v-for="img in regImages
+          .map(key => images[key])
+          .filter(image => image.isGif == gifMode)"
         :key="img.name"
         :style="{ backgroundImage: `url(${img.data.src})` }"
         @click="component.setImage(img.name)"
@@ -96,6 +96,7 @@ import { defineComponent } from "vue";
 import { Image } from "@/utils/components/Image";
 import {
   images,
+  regImages,
   registerImage,
   unregisterImage
 } from "@/utils/manager/ImageManager";
@@ -106,6 +107,7 @@ export default defineComponent({
   data() {
     return {
       images,
+      regImages,
       unregisterImage,
       inputTransformer: Template.inputTransformer
     };
