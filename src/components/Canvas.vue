@@ -123,8 +123,11 @@ export default defineComponent({
       this.redraw();
     },
 
-    invisible() {
-      this.redraw();
+    invisible: {
+      deep: true,
+      handler() {
+        this.redraw();
+      }
     },
 
     pauseRendering() {

@@ -63,7 +63,7 @@
                   </div>
                   <div class="divider"></div>
                 </template>
-                <div v-for="(key, index) in Object.keys(actions)" :key="index">
+                <div v-for="(key, index) in actionIDs" :key="index">
                   <div class="divider" v-if="index != 0"></div>
                   <div class="entry" @click.stop="addNewAction(key)">
                     <span class="material-icons">{{ actions[key].icon }}</span>
@@ -116,7 +116,11 @@
 import { defineComponent } from "vue";
 import { GeneralSettings } from "@/App.vue";
 import { Selection } from "@/utils/Selection";
-import { actions, actionFromJson } from "@/utils/manager/ActionManager";
+import {
+  actions,
+  actionIDs,
+  actionFromJson
+} from "@/utils/manager/ActionManager";
 import ComponentList from "@/components/ComponentList.vue";
 
 import { toggleVis, invisible } from "@/utils/manager/ComponentManager";
@@ -143,6 +147,7 @@ export default defineComponent({
     return {
       copiedAction: null as null | string,
       actions,
+      actionIDs,
       toggleVis,
       invisible
     };

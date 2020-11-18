@@ -37,12 +37,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-const loadingContainer = {
+import { defineComponent, reactive } from "vue";
+const loadingContainer = reactive({
   loading: false,
   error: null as string | null,
   info: null as string | null
-};
+});
 
 export function loading(val: boolean) {
   loadingContainer.loading = val;

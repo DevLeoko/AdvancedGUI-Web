@@ -22,7 +22,7 @@
           </div>
           <div class="divider"></div>
         </template>
-        <div v-for="(key, index) in Object.keys(componentInfo)" :key="index">
+        <div v-for="(key, index) in componentNames" :key="index">
           <div class="divider" v-if="index != 0"></div>
           <div class="entry" @click.stop="addNewCompoenent(key)">
             <span class="material-icons">{{ componentInfo[key].icon }}</span>
@@ -41,6 +41,7 @@ import ComponentList from "@/components/ComponentList.vue";
 
 import {
   componentInfo,
+  componentNames,
   componentFromJson,
   registerComponent
 } from "@/utils/manager/ComponentManager";
@@ -61,6 +62,7 @@ export default defineComponent({
   data() {
     return {
       componentInfo,
+      componentNames,
       copiedComponent: null as null | string,
       addComponentAnchor: null as null | Component[]
     };

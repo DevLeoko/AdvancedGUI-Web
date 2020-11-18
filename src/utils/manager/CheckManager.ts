@@ -16,16 +16,23 @@ interface CheckMeta {
   component: VueComponent;
 }
 
-export const checks: { [key: string]: CheckMeta } = {};
+export const checkIDs = [
+  ItemCheck.id,
+  MoneyCheck.id,
+  PermissionCheck.id,
+  VisibilityCheck.id,
+  PlaceholderCheck.id,
+  StandbyCheck.id
+];
 
-export function setup() {
-  checks[ItemCheck.id] = ItemCheck;
-  checks[MoneyCheck.id] = MoneyCheck;
-  checks[PermissionCheck.id] = PermissionCheck;
-  checks[VisibilityCheck.id] = VisibilityCheck;
-  checks[PlaceholderCheck.id] = PlaceholderCheck;
-  checks[StandbyCheck.id] = StandbyCheck;
-}
+export const checks: { [key: string]: CheckMeta } = {
+  [ItemCheck.id]: ItemCheck,
+  [MoneyCheck.id]: MoneyCheck,
+  [PermissionCheck.id]: PermissionCheck,
+  [VisibilityCheck.id]: VisibilityCheck,
+  [PlaceholderCheck.id]: PlaceholderCheck,
+  [StandbyCheck.id]: StandbyCheck
+};
 
 export function checkFromJson(jsonObj: JsonObject, type: string): Check {
   return checks[type].fromJson(jsonObj);

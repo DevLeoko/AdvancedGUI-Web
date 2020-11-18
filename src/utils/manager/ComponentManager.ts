@@ -76,9 +76,37 @@ export const components: {
   [key: string]: Component;
 } = {};
 
+export const componentNames = [
+  Rect.displayName,
+  Text.displayName,
+  Image.displayName,
+  RemoteImage.displayName,
+  GIF.displayName,
+  GroupComponent.displayName,
+  Hover.displayName,
+  CheckComponent.displayName,
+  Template.displayName,
+  Replica.displayName,
+  View.displayName,
+  Dummy.displayName
+];
+
 export const componentInfo: {
   [key: string]: ComponentMeta;
-} = {};
+} = {
+  [Rect.displayName]: Rect,
+  [Text.displayName]: Text,
+  [Image.displayName]: Image,
+  [RemoteImage.displayName]: RemoteImage,
+  [GIF.displayName]: GIF,
+  [GroupComponent.displayName]: GroupComponent,
+  [Hover.displayName]: Hover,
+  [CheckComponent.displayName]: CheckComponent,
+  [Template.displayName]: Template,
+  [Replica.displayName]: Replica,
+  [View.displayName]: View,
+  [Dummy.displayName]: Dummy
+};
 
 function randomString(length: number) {
   let result = "";
@@ -205,19 +233,4 @@ export function getRandomColor() {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
-}
-
-export function setup() {
-  componentInfo[Rect.displayName] = Rect;
-  componentInfo[Text.displayName] = Text;
-  componentInfo[Image.displayName] = Image;
-  componentInfo[RemoteImage.displayName] = RemoteImage;
-  componentInfo[GIF.displayName] = GIF;
-  componentInfo[GroupComponent.displayName] = GroupComponent;
-  componentInfo[Hover.displayName] = Hover;
-  componentInfo[CheckComponent.displayName] = CheckComponent;
-  componentInfo[Template.displayName] = Template;
-  componentInfo[Replica.displayName] = Replica;
-  componentInfo[View.displayName] = View;
-  componentInfo[Dummy.displayName] = Dummy;
 }

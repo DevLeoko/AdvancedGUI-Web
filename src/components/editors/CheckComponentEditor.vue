@@ -11,7 +11,7 @@
           @change="component.check = checks[$event.target.value].generator()"
         >
           <option
-            v-for="checkType in Object.keys(checks)"
+            v-for="checkType in checkIDs"
             :key="checkType"
             :value="checkType"
             >{{ checkType }}</option
@@ -39,13 +39,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { CheckComponent } from "@/utils/components/CheckComponent";
-import { checks } from "../../utils/manager/CheckManager";
+import { checks, checkIDs } from "../../utils/manager/CheckManager";
 import { error } from "../LoadingScreen.vue";
 
 export default defineComponent({
   data() {
     return {
       checks,
+      checkIDs,
       error
     };
   },

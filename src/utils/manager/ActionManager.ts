@@ -14,7 +14,7 @@ import { MessageAction } from "../actions/MessageAction";
 import { VisibilityAction } from "../actions/VisibilityAction";
 import { Component } from "../components/Component";
 import { ViewAction } from "../actions/ViewAction";
-import { checks } from "./CheckManager";
+import { checkIDs, checks } from "./CheckManager";
 import { CheckAction } from "../actions/CheckAction";
 import { DelayAction } from "../actions/DelayAction";
 import { GifControlAction } from "../actions/GifControlAction";
@@ -26,63 +26,74 @@ interface ActionMeta {
   component?: VueComponent;
 }
 
-export const actions: { [key: string]: ActionMeta } = {};
+export const actionIDs = [
+  CommandAction.id,
+  MessageAction.id,
+  ViewAction.id,
+  GifControlAction.id,
+  ViewAction.id,
+  DelayAction.id,
+  ListAction.id,
+  ...checkIDs
+];
 
-export function setup() {
-  actions[CommandAction.id] = {
+export const actions: { [key: string]: ActionMeta } = {
+  [CommandAction.id]: {
     generator: () => new CommandAction("heal %player%", true, false),
     fromJson: CommandAction.fromJson,
     icon: CommandAction.icon,
     component: markRaw(CommandEditor)
-  };
-  actions[MessageAction.id] = {
+  },
+  [MessageAction.id]: {
     generator: () => new MessageAction("&a&lHey there!"),
     fromJson: MessageAction.fromJson,
     icon: MessageAction.icon,
     component: markRaw(MessageEditor)
-  };
-  actions[VisibilityAction.id] = {
+  },
+  [VisibilityAction.id]: {
     generator: comp => new VisibilityAction(comp.id, true),
     fromJson: VisibilityAction.fromJson,
     icon: VisibilityAction.icon,
     component: markRaw(VisibilityEditor)
-  };
-  actions[GifControlAction.id] = {
+  },
+  [GifControlAction.id]: {
     generator: () => new GifControlAction("", true, false),
     fromJson: GifControlAction.fromJson,
     icon: GifControlAction.icon,
     component: markRaw(GifControlEditor)
-  };
-  actions[ViewAction.id] = {
+  },
+  [ViewAction.id]: {
     generator: () => new ViewAction("", ""),
     fromJson: ViewAction.fromJson,
     icon: ViewAction.icon,
     component: markRaw(ViewEditor)
-  };
-  actions[DelayAction.id] = {
+  },
+  [DelayAction.id]: {
     generator: () => new DelayAction(20, [], true),
     fromJson: DelayAction.fromJson,
     icon: DelayAction.icon,
     component: markRaw(DelayEditor)
-  };
-  actions[ListAction.id] = {
+  },
+  [ListAction.id]: {
     generator: () => new ListAction([], true),
     fromJson: ListAction.fromJson,
     icon: ListAction.icon
-  };
+  },
 
-  for (const name in checks) {
-    const check = checks[name];
-    actions[name] = {
-      generator: () => {
-        return new CheckAction(check.generator(), [], true);
-      },
-      fromJson: CheckAction.fromJson,
-      icon: CheckAction.icon,
-      component: markRaw(check.component)
-    };
-  }
-}
+  ...Object.fromEntries(
+    checkIDs.map(id => [
+      id,
+      {
+        generator: () => {
+          return new CheckAction(checks[id].generator(), [], true);
+        },
+        fromJson: CheckAction.fromJson,
+        icon: CheckAction.icon,
+        component: markRaw(checks[id].component)
+      }
+    ])
+  )
+};
 
 export function actionFromJson(jsonObj: JsonObject): Action {
   return actions[jsonObj.id].fromJson(jsonObj);
