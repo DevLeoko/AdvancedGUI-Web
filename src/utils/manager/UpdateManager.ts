@@ -10,7 +10,7 @@ import { Image } from "../components/Image";
 import { GIF } from "../components/GIF";
 import { CheckComponent } from "../components/CheckComponent";
 
-export const VERSION = "1.0.5";
+export const VERSION = "1.0.6";
 
 function traverseComponent(
   component: Component,
@@ -118,6 +118,15 @@ export function migrate(data: ExportData): ExportData {
       }
     });
     oldVersion = "1.0.5";
+  }
+
+  if (oldVersion == "1.0.5") {
+    traverseComponent(data.componentTree, comp => {
+      if ((comp as any).type == Text.displayName) {
+        (comp as Text).alignment = 0;
+      }
+    });
+    oldVersion = "1.0.6";
   }
 
   return data;

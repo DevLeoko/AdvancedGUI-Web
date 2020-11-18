@@ -26,6 +26,31 @@
       </div>
     </div>
     <div class="settings-row">
+      <div class="alignOptions">
+        <i
+          class="material-icons"
+          @click="component.alignment = 0"
+          :class="component.alignment == 0 ? 'active' : ''"
+        >
+          format_align_left
+        </i>
+        <i
+          class="material-icons"
+          @click="component.alignment = 1"
+          :class="component.alignment == 1 ? 'active' : ''"
+        >
+          format_align_center
+        </i>
+        <i
+          class="material-icons"
+          @click="component.alignment = 2"
+          :class="component.alignment == 2 ? 'active' : ''"
+        >
+          format_align_right
+        </i>
+      </div>
+    </div>
+    <div class="settings-row">
       <div class="input-box">
         <select v-model="component.font">
           <option
@@ -125,6 +150,33 @@ export default defineComponent({
 
   select {
     width: 150px !important;
+  }
+
+  .alignOptions {
+    display: flex;
+    align-items: center;
+
+    color: $light4;
+    border: $inputBorder;
+    padding: 5px 10px;
+    border-radius: 5px;
+
+    i {
+      cursor: pointer;
+      font-size: 20px;
+
+      &:hover {
+        color: $light2;
+      }
+
+      &.active {
+        color: $light;
+      }
+
+      &:nth-child(2) {
+        margin: 0px 10px;
+      }
+    }
   }
 }
 </style>

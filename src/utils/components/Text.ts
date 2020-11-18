@@ -24,6 +24,7 @@ export class Text extends Component {
     public font: string,
     public size: number,
     public color: string,
+    public alignment: number,
     public placeholder: boolean,
     public previewText: string
   ) {
@@ -34,18 +35,22 @@ export class Text extends Component {
     const renderText = this.placeholder ? this.previewText : this.text;
     context.font = `${this.size}px ${this.font}`;
     context.fillStyle = this.color;
-    context.fillText(renderText, this.x, this.y);
     this.lastWidth = context.measureText(renderText).width;
+    context.fillText(
+      renderText,
+      this.x - (this.alignment / 2) * this.lastWidth,
+      this.y
+    );
   }
 
   modify(newBoundingBox: BoundingBox): void {
-    this.x = newBoundingBox.x;
+    this.x = newBoundingBox.x + (this.alignment / 2) * this.lastWidth;
     this.y = newBoundingBox.y + this.size;
   }
 
   getBoundingBox() {
     return new BoundingBox(
-      this.x,
+      this.x - (this.alignment / 2) * this.lastWidth,
       this.y - this.size,
       this.lastWidth,
       this.size
@@ -61,6 +66,7 @@ export class Text extends Component {
       font: this.font,
       size: this.size,
       color: this.color,
+      alignment: this.alignment,
       placeholder: this.placeholder,
       previewText: this.previewText
     };
@@ -77,6 +83,7 @@ export class Text extends Component {
       jsonObj.font,
       jsonObj.size,
       jsonObj.color,
+      jsonObj.alignment,
       jsonObj.placeholder,
       jsonObj.previewText
     );
@@ -93,6 +100,7 @@ export class Text extends Component {
       "VT323",
       20,
       "#67809f",
+      0,
       false,
       "123"
     );
