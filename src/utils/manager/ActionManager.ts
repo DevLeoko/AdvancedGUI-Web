@@ -29,7 +29,7 @@ interface ActionMeta {
 export const actionIDs = [
   CommandAction.id,
   MessageAction.id,
-  ViewAction.id,
+  VisibilityAction.id,
   GifControlAction.id,
   ViewAction.id,
   DelayAction.id,
