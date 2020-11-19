@@ -49,7 +49,7 @@
       <drag-zone
         v-if="activeIndex != 0 && hasCapacity"
         :dragIndication="!!treeState.dragElement"
-        @drop="dragDrop(0)"
+        @droped="dragDrop(0)"
       ></drag-zone>
       <div v-for="(elem, index) in components" :key="index">
         <div
@@ -107,7 +107,7 @@
         </div>
         <drag-zone
           :dragIndication="!!treeState.dragElement"
-          @drop="dragDrop(index + 1)"
+          @droped="dragDrop(index + 1)"
           v-if="activeIndex != index && activeIndex != index + 1 && hasCapacity"
         ></drag-zone>
       </div>
@@ -116,7 +116,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
 import DragZone from "./DragZone.vue";
 import { ListItem, ListItemGroup } from "@/utils/ListItem";
 import { toggleVis, invisible } from "@/utils/manager/ComponentManager";
@@ -159,10 +159,11 @@ export default defineComponent({
         dragElement: null | ListItem;
         dragElementsList: null | ListItem[];
       },
-      default: () => ({
-        dragElement: null as null | ListItem,
-        dragElementsList: null as null | ListItem[]
-      })
+      default: () =>
+        reactive({
+          dragElement: null as null | ListItem,
+          dragElementsList: null as null | ListItem[]
+        })
     }
   },
 
