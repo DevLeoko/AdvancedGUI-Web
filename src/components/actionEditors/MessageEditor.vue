@@ -2,7 +2,7 @@
   <div>
     <div class="settings-row">
       <span class="label">Message</span>
-      <textarea type="text" v-model="action.message" />
+      <textarea v-model="action.message" />
     </div>
   </div>
 </template>

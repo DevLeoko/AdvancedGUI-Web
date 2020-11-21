@@ -7,6 +7,7 @@
       :modelValue="selected"
       @update:modelValue="val => $emit('select', val)"
       @copy="$emit('update:copiedComponent', $event)"
+      @deleted="checkDelete"
       @add-child="addChildToTreeElem"
     ></component-list>
 
@@ -42,7 +43,6 @@ import ComponentList from "@/components/ComponentList.vue";
 import {
   componentInfo,
   componentNames,
-  componentFromJson,
   registerComponent
 } from "@/utils/manager/ComponentManager";
 
@@ -79,6 +79,12 @@ export default defineComponent({
   },
 
   methods: {
+    checkDelete(component: Component) {
+      if (this.selected?.id == component.id) {
+        this.$emit("select", { value: null });
+      }
+    },
+
     checkClose(ev: MouseEvent) {
       const menuComp = this.$refs.compAddMenu as HTMLElement;
       if (ev.target != menuComp) menuComp.style.display = "none";

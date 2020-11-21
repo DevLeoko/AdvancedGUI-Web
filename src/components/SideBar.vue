@@ -48,7 +48,9 @@
             :components="selected.component.clickAction"
             :modelValue="selected.action"
             @update:modelValue="val => (selected.action = val.value)"
+            @deleted="checkDelete"
             @copy="val => (copiedAction = val)"
+            @add-child="addActionToTree"
           ></component-list>
           <div class="settings-row">
             <div class="btn addAction" @click="ev => showActionAddMenu(ev)">
@@ -124,6 +126,7 @@ import {
 import ComponentList from "@/components/ComponentList.vue";
 
 import { toggleVis, invisible } from "@/utils/manager/ComponentManager";
+import { Action } from "../utils/actions/Action";
 
 export default defineComponent({
   props: {
@@ -145,6 +148,7 @@ export default defineComponent({
 
   data() {
     return {
+      actionTarget: null as null | Action[],
       copiedAction: null as null | string,
       actions,
       actionIDs,
@@ -162,28 +166,40 @@ export default defineComponent({
   },
 
   methods: {
+    checkDelete(action: Action) {
+      if (action == this.selected?.action) {
+        this.selected.action = null;
+      }
+    },
+
+    addActionToTree(data: { event: MouseEvent; anchor: Action[] }) {
+      this.showActionAddMenu(data.event, data.anchor);
+    },
+
     addNewAction(key: string) {
-      if (this.selected) {
+      if (this.selected && this.actionTarget) {
         const nAction = actions[key].generator(this.selected.component);
-        this.selected.component.clickAction.push(nAction);
+        this.actionTarget.push(nAction);
         this.selected.action = nAction;
       }
     },
 
     pasteAction() {
-      if (this.selected && this.copiedAction) {
+      if (this.selected && this.copiedAction && this.actionTarget) {
         const nAction = actionFromJson(JSON.parse(this.copiedAction));
-        this.selected.component.clickAction.push(nAction);
+        this.actionTarget.push(nAction);
         this.selected.action = nAction;
       }
     },
 
-    showActionAddMenu(ev: MouseEvent) {
+    showActionAddMenu(ev: MouseEvent, target?: Action[]) {
+      this.actionTarget = target || this.selected?.component.clickAction!;
+
       const menu = this.$refs.actionAddMenu as HTMLElement;
       menu.style.display = "block";
       setTimeout(() => {
         menu.style.top = ev.y + 10 + "px";
-        menu.style.left = ev.x - menu.offsetWidth / 2 + "px";
+        menu.style.left = ev.x - menu.offsetWidth / (target ? 1 : 2) + "px";
       }, 10);
     },
 

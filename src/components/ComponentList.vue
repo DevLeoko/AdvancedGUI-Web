@@ -99,6 +99,7 @@
               :treeState="treeState"
               :itemLimit="elem.itemLimit"
               :itemClasses="elem.itemClasses"
+              @deleted="$emit('deleted', $event)"
               @update:modelValue="val => $emit('update:modelValue', val)"
               @copy="val => $emit('copy', val)"
               @add-child="val => $emit('add-child', val)"
@@ -257,6 +258,7 @@ export default defineComponent({
       if (index != -1) {
         this.components.splice(index, 1);
         this.optElem?.delete();
+        this.$emit("deleted", this.optElem!);
       }
     },
 
