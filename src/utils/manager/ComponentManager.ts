@@ -16,6 +16,7 @@ import { GIF } from "../components/GIF";
 import { RemoteImage } from "../components/RemoteImage";
 import { Dummy } from "../components/Dummy";
 import { reactive } from "vue";
+import { ListItemGroup } from "../ListItem";
 
 export type TemplateVariable = string;
 export type TemplateData = { name: string; value: string | number }[];
@@ -166,6 +167,14 @@ function _reassignIDs(
       }
     }
   }
+}
+
+export function getParentComponent(
+  component: Component
+): (ListItemGroup<Component> & Component) | undefined {
+  return Object.values(components).find(
+    comp => comp.isGroup() && comp.getItems().some(c => c.id == component.id)
+  ) as (ListItemGroup<Component> & Component) | undefined;
 }
 
 export function registerComponent(component: Component) {

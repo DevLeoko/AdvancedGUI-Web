@@ -55,6 +55,15 @@ export abstract class Component implements ListItem {
     return false;
   }
 
+  contains(componentId: string): boolean {
+    if (this.id == componentId) return true;
+
+    if (this.isGroup())
+      return this.getItems().some(c => c.contains(componentId));
+
+    return false;
+  }
+
   duplicate(): ListItem | null {
     const nComp = componentFromJson(JSON.parse(this.toJson()), true);
     if (nComp) {

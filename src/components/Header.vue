@@ -17,6 +17,9 @@
     <div>
       <b class="label">ZOOM</b>
       <select v-model.number="settings.zoom">
+        <option :value="settings.zoom" style="display: none"
+          >x{{ settings.zoom }}</option
+        >
         <option value="0.5">x0.5</option>
         <option value="1">x1</option>
         <option value="2">x2</option>

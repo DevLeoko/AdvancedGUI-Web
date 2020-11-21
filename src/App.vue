@@ -17,6 +17,8 @@
     <div class="row mainSpace" @click.capture="updateHistory">
       <component-tree
         :components="elements"
+        v-model:copied-component="copiedComponent"
+        @paste="pasteComponent()"
         :selected="selected ? selected.component : null"
         @select="updateSelection"
       />
@@ -28,8 +30,8 @@
           :selected="selected ? selected.component : null"
           :elements="elements"
           :zoom="settings.zoom"
-          :pauseRendering="pauseRendering"
-          @changeIndication="updateHistory"
+          :pause-rendering="pauseRendering"
+          @change-indication="updateHistory"
           @select="updateSelection"
         ></my-canvas>
       </div>
@@ -60,7 +62,8 @@ import {
   invisible,
   ExportData,
   unregisterComponent,
-  JsonObject
+  JsonObject,
+  getParentComponent
 } from "./utils/manager/ComponentManager";
 import {
   setupImageManager,
@@ -124,6 +127,8 @@ export default defineComponent({
       hisotryIndex: 0,
       pauseHistoryTracking: false,
 
+      copiedComponent: null as string | null,
+
       elements: [] as Component[],
 
       pauseRendering: false,
@@ -135,10 +140,123 @@ export default defineComponent({
   mounted() {
     setupImageManager(this.$refs.imageContainer as HTMLElement);
     this.updateHistory();
+
+    document.addEventListener("keydown", this.keyPress, { capture: true });
+    document.addEventListener("wheel", this.keyZoom, {
+      capture: true,
+      passive: false
+    });
+  },
+
+  unmounted() {
+    document.removeEventListener("keydown", this.keyPress, { capture: true });
+    document.removeEventListener("wheel", this.keyZoom, {
+      capture: true
+    });
   },
 
   methods: {
-    updateSelection(data: { value: Component; event: Event }) {
+    keyZoom(ev: WheelEvent) {
+      if (ev.ctrlKey) {
+        this.settings.zoom += -(ev.deltaY * this.settings.zoom) / 1000;
+        this.settings.zoom = Math.round(this.settings.zoom * 100) / 100;
+        ev.preventDefault();
+      }
+    },
+
+    keyPress(ev: KeyboardEvent) {
+      if (ev.target instanceof HTMLInputElement) return;
+
+      if (ev.ctrlKey && (ev.key == "c" || ev.key == "x")) {
+        if (this.selected?.component)
+          this.copiedComponent = this.selected.component.toJson();
+      }
+
+      if (ev.ctrlKey && ev.key == "v") {
+        let target: Component[] = this.elements;
+        if (this.selected?.component) {
+          if (this.selected.component.isGroup()) {
+            target = this.selected.component.getItems();
+          } else {
+            target =
+              getParentComponent(this.selected.component)?.getItems() || target;
+          }
+        }
+        this.pasteComponent(target);
+      }
+
+      if (ev.ctrlKey && ev.key == "s") {
+        this.exportSavepoint();
+        ev.preventDefault();
+      }
+
+      if (ev.ctrlKey && ev.key == "z") {
+        this.undo();
+      }
+
+      if (ev.ctrlKey && ev.key == "y") {
+        this.redo();
+      }
+
+      if (ev.code == "Delete" || (ev.ctrlKey && ev.key == "x")) {
+        if (this.selected?.component) {
+          const parent = this.getParentList(this.selected.component);
+          if (parent) {
+            const index = parent.findIndex(
+              c => c.id == this.selected?.component.id
+            );
+            parent.splice(index, 1);
+            this.updateSelection({ value: null });
+          }
+        }
+      }
+
+      if (
+        ev.code == "ArrowUp" ||
+        ev.code == "ArrowRight" ||
+        ev.code == "ArrowLeft" ||
+        ev.code == "ArrowDown"
+      ) {
+        if (this.selected?.component) {
+          const bBox = this.selected.component.getBoundingBox();
+
+          const mod = ev.shiftKey ? 10 : 1;
+
+          if (ev.code == "ArrowUp") bBox.y -= mod;
+          else if (ev.code == "ArrowDown") bBox.y += mod;
+          else if (ev.code == "ArrowRight") bBox.x += mod;
+          else if (ev.code == "ArrowLeft") bBox.x -= mod;
+
+          this.selected.component.modify(bBox);
+        }
+      }
+    },
+
+    getParentList(component: Component) {
+      if (this.elements.some(c => c.id == this.selected?.component.id)) {
+        return this.elements;
+      } else {
+        return getParentComponent(component)?.getItems();
+      }
+    },
+
+    pasteComponent(target?: Component[]) {
+      if (!target) {
+        target = this.elements;
+      }
+
+      if (this.copiedComponent) {
+        const nComp = componentFromJson(
+          JSON.parse(this.copiedComponent),
+          true
+        )!;
+
+        target.splice(0, 0, nComp);
+        this.updateSelection({ value: nComp });
+      }
+    },
+
+    updateSelection(data: { value: Component | null; event?: Event }) {
       if (
         data.value &&
         data.event &&
