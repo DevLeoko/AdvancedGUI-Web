@@ -39,7 +39,9 @@
     </div>
 
     <loading-screen></loading-screen>
-    <div ref="imageContainer" style="display:none"></div>
+    <div ref="imageContainer" style="display:none">
+      <img src="images/error.svg" id="borken_TAKEN_ID" />
+    </div>
     <a ref="downloadAnchor" style="display:none"></a>
   </div>
 </template>

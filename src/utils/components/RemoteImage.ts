@@ -54,8 +54,18 @@ export class RemoteImage extends GroupComponent {
         this.components[0].draw(context);
     } else {
       const img = getRemoteImage(this.id);
-      if (img) {
-        context.drawImage(img, this.x, this.y, this.width, this.height);
+      if (img && img.complete) {
+        try {
+          context.drawImage(img, this.x, this.y, this.width, this.height);
+        } catch {
+          context.drawImage(
+            document.getElementById("borken_TAKEN_ID") as HTMLImageElement,
+            Math.max(this.x, this.x + (this.width - 20) / 2),
+            Math.max(this.y, this.y + (this.height - 20) / 2),
+            Math.min(this.width, 20),
+            Math.min(this.height, 20)
+          );
+        }
       }
     }
   }

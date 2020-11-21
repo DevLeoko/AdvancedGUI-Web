@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import { getBase64 } from "./FontManager";
 import { RemoteImage } from "../components/RemoteImage";
+import { requestRedraw } from "@/components/Canvas.vue";
 
 export interface Image {
   name: string;
@@ -64,7 +65,12 @@ export function placeRemoteImage(
   }
 
   resImage.onload = () => {
+    requestRedraw();
     comp.ratio = resImage.naturalWidth / resImage.naturalHeight;
+  };
+
+  resImage.onerror = () => {
+    requestRedraw();
   };
 
   resImage.src = imageUrl;

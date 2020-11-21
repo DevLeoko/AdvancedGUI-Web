@@ -25,6 +25,14 @@ import { BoundingBox } from "@/utils/BoundingBox";
 import { images, regImages } from "@/utils/manager/ImageManager";
 import { ListItemGroup } from "../utils/ListItem";
 
+let redrawFunction: Function = () => {
+  // Initialized later
+};
+
+export function requestRedraw() {
+  redrawFunction();
+}
+
 export default defineComponent({
   props: {
     width: {
@@ -73,6 +81,8 @@ export default defineComponent({
 
   mounted() {
     this.adjustHeight();
+
+    redrawFunction = this.redraw;
 
     const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext(
       "2d"

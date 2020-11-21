@@ -38,6 +38,14 @@ export class Image extends Rectangular {
         this.width,
         this.height
       );
+    else
+      context.drawImage(
+        document.getElementById("borken_TAKEN_ID") as HTMLImageElement,
+        Math.max(this.x, this.x + (this.width - 20) / 2),
+        Math.max(this.y, this.y + (this.height - 20) / 2),
+        Math.min(this.width, 20),
+        Math.min(this.height, 20)
+      );
   }
 
   modify(newBoundingBox: BoundingBox): void {
