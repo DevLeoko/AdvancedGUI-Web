@@ -2,6 +2,8 @@ import { devMode } from "../App.vue";
 import { Point } from "./Point";
 
 export class BoundingBox {
+  static EMPTY = new BoundingBox(0, 0, 0, 0);
+
   constructor(
     public x: number,
     public y: number,

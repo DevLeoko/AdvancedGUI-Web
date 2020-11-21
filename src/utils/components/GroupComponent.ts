@@ -46,6 +46,8 @@ export class GroupComponent extends Component
     this.components.forEach(comp => {
       const cBox = comp.getBoundingBox();
 
+      if (cBox == BoundingBox.EMPTY) return;
+
       if (cBox.x < minX || minX == -1) minX = cBox.x;
       if (cBox.y < minY || minY == -1) minY = cBox.y;
 

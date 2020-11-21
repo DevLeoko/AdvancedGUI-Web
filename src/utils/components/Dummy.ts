@@ -31,7 +31,7 @@ export class Dummy extends Component {
   }
 
   getBoundingBox() {
-    return new BoundingBox(0, 0, 0, 0);
+    return BoundingBox.EMPTY;
   }
 
   toDataObj() {
