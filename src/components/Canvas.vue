@@ -23,6 +23,7 @@ import {
 import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
 import { images } from "@/utils/manager/ImageManager";
+import { ListItemGroup } from "../utils/ListItem";
 
 export default defineComponent({
   props: {
@@ -159,10 +160,28 @@ export default defineComponent({
         drawSelection(canvas, this.selected);
     },
 
+    getLowestCommonParents(
+      comp: Component,
+      targetId: string,
+      point: Point
+    ): (ListItemGroup<Component> & Component) | undefined {
+      if (comp.isGroup()) {
+        if (comp.getItems().some(c => c.id == targetId)) return comp;
+        else
+          return comp
+            .getItems()
+            .filter(c => c.getBoundingBox().isInside(point))
+            .map(c => this.getLowestCommonParents(c, targetId, point))
+            .find(c => !!c);
+      }
+
+      return undefined;
+    },
+
     onClickDown(event: MouseEvent) {
       const point = this.getCursorPosition(event);
       const handler = getHanderAt(point);
-      const hovered = this.getElementAt(point);
+      let hovered = this.getElementAt(point);
 
       if (!handler) {
         if (this.selected && this.selected.getBoundingBox().isInside(point))
@@ -173,6 +192,22 @@ export default defineComponent({
           hovered &&
           (!this.selected || !this.selected.getBoundingBox().isInside(point))
         ) {
+          // If there is already an element selected, then the new selection will try to be as low as possible
+          // in the component tree towards the current selection. e.g.: it will try to select sibilings within the parent
+          if (this.selected) {
+            const commonParent = this.getLowestCommonParents(
+              hovered,
+              this.selected.id,
+              point
+            );
+            const sibling = commonParent
+              ?.getItems()
+              ?.find(c => c.getBoundingBox().isInside(point));
+
+            if (sibling) hovered = sibling;
+            else if (commonParent) hovered = commonParent;
+          }
+
           this.$emit("select", { value: hovered });
         }
 
@@ -225,7 +260,7 @@ export default defineComponent({
         this.redraw();
       }
 
-      this.$emit("changeIndication");
+      this.$emit("change-indication");
 
       this.modifying = null;
     },
