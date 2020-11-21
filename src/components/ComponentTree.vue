@@ -6,7 +6,7 @@
       :components="components"
       :modelValue="selected"
       @update:modelValue="val => $emit('select', val)"
-      @copy="val => (copiedComponent = val)"
+      @copy="$emit('update:copiedComponent', $event)"
       @add-child="addChildToTreeElem"
     ></component-list>
 
@@ -16,7 +16,7 @@
 
       <div class="absoluteMenu compAddMenu" ref="compAddMenu">
         <template v-if="copiedComponent">
-          <div class="entry" @click.stop="pasteComponent()">
+          <div class="entry" @click.stop="$emit('paste')">
             <span class="material-icons">content_paste</span>
             Paste
           </div>
@@ -54,6 +54,9 @@ export default defineComponent({
     },
     selected: {
       type: Object as () => Component
+    },
+    copiedComponent: {
+      type: String
     }
   },
 
@@ -63,7 +66,6 @@ export default defineComponent({
     return {
       componentInfo,
       componentNames,
-      copiedComponent: null as null | string,
       addComponentAnchor: null as null | Component[]
     };
   },
@@ -115,17 +117,6 @@ export default defineComponent({
         menu.style.top = y + "px";
         menu.style.left = ev.x + "px";
       }, 3);
-    },
-
-    pasteComponent() {
-      if (this.copiedComponent) {
-        const nComp = componentFromJson(
-          JSON.parse(this.copiedComponent),
-          true
-        )!;
-        this.components.splice(0, 0, nComp);
-        this.$emit("select", { value: nComp });
-      }
     }
   }
 });
