@@ -4,7 +4,7 @@
     class="dropzone"
     @dragover.prevent.self="ev => ev.target.classList.add('targeted')"
     @dragleave.self="ev => ev.target.classList.remove('targeted')"
-    @drop.self="$emit('droped')"
+    @drop.prevent.self="$emit('droped')"
   ></div>
 </template>
 

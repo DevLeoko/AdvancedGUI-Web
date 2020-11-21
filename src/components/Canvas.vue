@@ -22,7 +22,7 @@ import {
 } from "@/utils/manager/ComponentManager";
 import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
-import { images } from "@/utils/manager/ImageManager";
+import { images, regImages } from "@/utils/manager/ImageManager";
 import { ListItemGroup } from "../utils/ListItem";
 
 export default defineComponent({
@@ -66,7 +66,8 @@ export default defineComponent({
 
       invisible,
       registeredComponents,
-      images
+      images,
+      regImages
     };
   },
 
@@ -97,7 +98,7 @@ export default defineComponent({
       }
     },
 
-    images: {
+    regImages: {
       deep: true,
       handler() {
         this.redraw();

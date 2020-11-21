@@ -27,7 +27,10 @@ export async function unregisterFont(fontName: string) {
 export async function registerFontBase64(dataUrl: string, fontName: string) {
   if (regFonts.indexOf(fontName) !== -1) unregisterFont(fontName);
 
-  const font = new FontFace(fontName, `url(${dataUrl})`);
+  const font = new FontFace(
+    fontName,
+    await (await fetch(dataUrl)).arrayBuffer()
+  );
   // wait for font to be loaded
   await font.load();
   // add font to document

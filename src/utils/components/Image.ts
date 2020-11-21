@@ -44,7 +44,7 @@ export class Image extends Rectangular {
     this.x = newBoundingBox.x;
     this.y = newBoundingBox.y;
 
-    if (this.keepImageRatio) {
+    if (this.keepImageRatio && images[this.image]) {
       const ratio = images[this.image].ratio;
 
       const w1 = newBoundingBox.height * ratio;
@@ -59,7 +59,7 @@ export class Image extends Rectangular {
   }
 
   setImage(nImage: string) {
-    if (this.keepImageRatio && images[this.image]) {
+    if (this.keepImageRatio && images[this.image] && images[nImage]) {
       const oldRatio = images[this.image].ratio;
       const ratio = images[nImage].ratio;
 
