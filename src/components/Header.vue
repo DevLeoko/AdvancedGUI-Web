@@ -1,6 +1,16 @@
 <template>
   <div class="head">
-    <b class="label">Project</b>
+    <b class="label moreBtn">
+      <i class="material-icons" style="padding-bottom: 2px; font-size: 18px"
+        >expand_more</i
+      >
+      Project
+
+      <div class="moreMenu">
+        <div class="entry" @click="showShortcuts = true">Shortcuts</div>
+        <div class="entry" @click="showAbout = true">About</div>
+      </div>
+    </b>
     <input
       class="inputProjectName"
       type="text"
@@ -76,6 +86,59 @@
     />
 
     <export-prompt v-model="exportModal" @export="exportProj()"></export-prompt>
+    <modal
+      title="About this page"
+      icon="help_outline"
+      v-model="showAbout"
+      closeBtn
+    >
+      <p>
+        This is the AdvancedGUI web editor developed by
+        <a href="https://leoko.dev/" target="_blank" rel="noopener noreferrer"
+          >Leo Garbe</a
+        >. <br />
+        AdvancedGUI is a game extension for the sandbox video game Minecraft. It
+        is available for purchase on
+        <a
+          href="https://www.spigotmc.org/resources/advancedgui-interactive-itemframe-guis.83636/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >SpigtMC</a
+        >. <br />
+        The code of this edtor is open-srouce on
+        <a
+          href="https://github.com/DevLeoko/AdvancedGUI-Web"
+          target="_blank"
+          rel="noopener noreferrer"
+          >GitHub</a
+        >. <br />
+        For support join our
+        <a
+          href="https://discord.gg/ycDG6rS"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Discord</a
+        >.
+        <br />
+        <br />
+        Current format-version: {{ formatVersion }}
+      </p>
+    </modal>
+    <modal title="Shortcuts" icon="keyboard" v-model="showShortcuts" closeBtn>
+      <p class="shortcuts">
+        <span>CTRL</span> <span>C</span> &ensp; Copy component <br />
+        <span>CTRL</span> <span>V</span> &ensp; Paste component <br />
+        <span>CTRL</span> <span>X</span> &ensp; Copy & delete component <br />
+        <span>DELETE</span> &ensp; Delete component <br />
+        <span>CTRL</span> <span>Z</span> &ensp; Undo <br />
+        <span>CTRL</span> <span>Y</span> &ensp; Redo <br />
+        <span>CTRL</span> <span>SCROLL</span> &ensp; Zoom in/out <br />
+        <span>ARROW KEY</span> &ensp; Move component by 1 pixel <br />
+        <span>SHIFT</span> <span>ARROW KEY</span> &ensp; Move component by 10
+        pixel <br />
+        <span>CTRL</span> <span>S</span> &ensp; Download savepoint <br />
+      </p>
+    </modal>
   </div>
 </template>
 
@@ -85,6 +148,8 @@ import { GeneralSettings } from "@/App.vue";
 
 import { loading } from "@/components/LoadingScreen.vue";
 import ExportPrompt from "@/components/ExportPrompt.vue";
+import Modal from "@/components/Modal.vue";
+import { VERSION } from "../utils/manager/UpdateManager";
 
 export default defineComponent({
   props: {
@@ -100,12 +165,15 @@ export default defineComponent({
     }
   },
 
-  components: { ExportPrompt },
+  components: { ExportPrompt, Modal },
 
   data() {
     return {
       importComponent: false,
-      exportModal: false
+      exportModal: false,
+      showAbout: false,
+      showShortcuts: false,
+      formatVersion: VERSION
     };
   },
 
@@ -135,4 +203,50 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.shortcuts {
+  line-height: 2;
+
+  span {
+    font-size: 14px;
+    background-color: $light4;
+    padding: 2px 4px 0px;
+    border-bottom: $light3 3px solid;
+  }
+}
+
+.moreBtn {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .moreMenu {
+    top: 100%;
+    position: absolute;
+    display: none;
+    flex-direction: column;
+    background-color: $light4;
+    box-shadow: $shadowStrong;
+    padding-bottom: 1px;
+
+    .entry {
+      margin: 1px;
+      margin-bottom: 0;
+      padding: 4px 10px;
+      font-size: 13px;
+      background-color: $dark3;
+      color: $light3;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $dark2;
+        color: $light2;
+      }
+    }
+  }
+
+  &:hover .moreMenu {
+    display: flex;
+  }
+}
+</style>
