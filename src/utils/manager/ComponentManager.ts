@@ -17,6 +17,7 @@ import { RemoteImage } from "../components/RemoteImage";
 import { Dummy } from "../components/Dummy";
 import { reactive } from "vue";
 import { ListItemGroup } from "../ListItem";
+import { ClickAnimation } from "../components/ClickAnimation";
 
 export type TemplateVariable = string;
 export type TemplateData = { name: string; value: string | number }[];
@@ -35,6 +36,7 @@ export type ComponentType =
   | "View"
   | "Template"
   | "Remote Image"
+  | "Click Animation"
   | "Dummy"
   | "GIF"
   | "Replica"
@@ -85,6 +87,7 @@ export const componentNames = [
   GIF.displayName,
   GroupComponent.displayName,
   Hover.displayName,
+  ClickAnimation.displayName,
   CheckComponent.displayName,
   Template.displayName,
   Replica.displayName,
@@ -102,6 +105,7 @@ export const componentInfo: {
   [GIF.displayName]: GIF,
   [GroupComponent.displayName]: GroupComponent,
   [Hover.displayName]: Hover,
+  [ClickAnimation.displayName]: ClickAnimation,
   [CheckComponent.displayName]: CheckComponent,
   [Template.displayName]: Template,
   [Replica.displayName]: Replica,
