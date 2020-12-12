@@ -20,12 +20,6 @@
     <br />
     <span class="label">Style</span>
     <div class="settings-row">
-      <div class="input-box">
-        <input type="number" v-model.number="component.size" />
-        <span>Size</span>
-      </div>
-    </div>
-    <div class="settings-row">
       <div class="alignOptions">
         <i
           class="material-icons"
@@ -50,30 +44,10 @@
         </i>
       </div>
     </div>
-    <div class="settings-row">
-      <div class="input-box">
-        <select v-model="component.font">
-          <option
-            v-for="font in regFonts"
-            :style="{ fontFamily: font }"
-            :key="font"
-            :value="font"
-            >{{ font }}</option
-          >
-        </select>
-        <span>Font</span>
-      </div>
-    </div>
-    <div class="settings-row">
-      <a @click="triggerFileSelector()">Upload custom font</a>
-      <input
-        type="file"
-        ref="fileDownload"
-        accept=".ttf"
-        style="display: none"
-        @change="checkForUpload()"
-      />
-    </div>
+    <font-editor
+      v-model:font="component.font"
+      v-model:size="component.size"
+    ></font-editor>
     <div class="label heading">Position</div>
     <div class="settings-row">
       <div class="input-box">
@@ -89,15 +63,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Text } from "@/utils/components/Text";
-import { registerFont, fonts, regFonts } from "@/utils/manager/FontManager";
+import FontEditor from "@/components/FontEditor.vue";
 
 export default defineComponent({
   data() {
-    return {
-      fonts,
-      regFonts
-    };
+    return {};
   },
+
+  components: { FontEditor },
 
   props: {
     component: {
@@ -120,19 +93,6 @@ export default defineComponent({
       if (this.component.x == undefined) this.component.x = 0;
       if (this.component.y == undefined) this.component.y = 0;
       if (this.component.size == undefined) this.component.size = 0;
-    },
-
-    triggerFileSelector() {
-      (this.$refs.fileDownload as HTMLElement).click();
-    },
-
-    checkForUpload() {
-      const selector = this.$refs.fileDownload as HTMLInputElement;
-
-      if (selector.files?.length) {
-        const file = selector.files[0];
-        registerFont(file, file.name.substr(0, file.name.length - 4));
-      }
     }
   }
 });
@@ -146,10 +106,6 @@ export default defineComponent({
 
   a {
     font-size: 14px;
-  }
-
-  select {
-    width: 150px !important;
   }
 
   .alignOptions {
