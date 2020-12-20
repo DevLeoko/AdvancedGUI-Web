@@ -103,7 +103,7 @@
           href="https://www.spigotmc.org/resources/advancedgui-interactive-itemframe-guis.83636/"
           target="_blank"
           rel="noopener noreferrer"
-          >SpigtMC</a
+          >SpigotMC</a
         >. <br />
         The code of this edtor is open-srouce on
         <a
