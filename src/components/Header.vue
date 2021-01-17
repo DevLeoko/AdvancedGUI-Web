@@ -8,6 +8,7 @@
 
       <div class="moreMenu">
         <div class="entry" @click="showShortcuts = true">Shortcuts</div>
+        <div class="entry" @click="showDevMode = true">Dev-Mode</div>
         <div class="entry" @click="showAbout = true">About</div>
       </div>
     </b>
@@ -139,6 +140,27 @@
         <span>CTRL</span> <span>S</span> &ensp; Download savepoint <br />
       </p>
     </modal>
+    <modal title="Dev-Mode" icon="code" v-model="showDevMode" closeBtn>
+      <p>
+        The AdvancedGUI web editor is designed to have a very intuitive user
+        interface. But some users might require some more advanced features that
+        would only confuse or dirsturb the average user. This is why we added
+        <b>dev-mode</b>. <br />
+        You can toggle the dev-mode by clicking on the
+        <span
+          class="material-icons"
+          style="font-size:16px; vertical-align: middle;"
+          >tune</span
+        >-icon next to <i>"General setting"</i> in the left options tab.
+        <br /><br />
+        The dev-mode allows you to:
+      </p>
+      <ul>
+        <li>Move component partially outside of the GUI view</li>
+        <li>Change the ID of components</li>
+        <li>Preview how the GUI will be divided into item-frames</li>
+      </ul>
+    </modal>
   </div>
 </template>
 
@@ -173,6 +195,7 @@ export default defineComponent({
       exportModal: false,
       showAbout: false,
       showShortcuts: false,
+      showDevMode: false,
       formatVersion: VERSION
     };
   },

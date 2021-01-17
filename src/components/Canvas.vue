@@ -24,6 +24,7 @@ import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
 import { images, regImages } from "@/utils/manager/ImageManager";
 import { ListItemGroup } from "../utils/ListItem";
+import { devMode } from "../App.vue";
 
 let redrawFunction: Function = () => {
   // Initialized later
@@ -75,7 +76,9 @@ export default defineComponent({
       invisible,
       registeredComponents,
       images,
-      regImages
+      regImages,
+
+      devMode
     };
   },
 
@@ -144,6 +147,12 @@ export default defineComponent({
 
     pauseRendering() {
       this.redraw();
+    },
+
+    "devMode.value": {
+      handler() {
+        this.redraw();
+      }
     }
   },
 
@@ -169,6 +178,22 @@ export default defineComponent({
 
       if (this.selected && this.registeredComponents[this.selected.id])
         drawSelection(canvas, this.selected);
+
+      if (devMode.value) {
+        canvas.strokeStyle = "rgba(255,255,255,0.3)";
+        canvas.setLineDash([]);
+        canvas.lineWidth = 1;
+        canvas.beginPath();
+        for (let lineX = 128; lineX < this.width; lineX += 128) {
+          canvas.moveTo(lineX - 0.5, 0);
+          canvas.lineTo(lineX - 0.5, this.height);
+        }
+        for (let lineY = 128; lineY < this.height; lineY += 128) {
+          canvas.moveTo(0, lineY - 0.5);
+          canvas.lineTo(this.width, lineY - 0.5);
+        }
+        canvas.stroke();
+      }
     },
 
     getLowestCommonParents(
