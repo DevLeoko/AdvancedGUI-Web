@@ -351,6 +351,10 @@ a {
       padding: 5px 10px;
       margin-left: 10px;
 
+      option{
+        color: $light4;
+      }
+
       &:focus {
         outline: none;
       }

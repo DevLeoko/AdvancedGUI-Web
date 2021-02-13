@@ -9,8 +9,10 @@ import { CommandAction } from "../actions/CommandAction";
 import { Image } from "../components/Image";
 import { GIF } from "../components/GIF";
 import { CheckComponent } from "../components/CheckComponent";
+import { ComparisonType, PlaceholderCheck } from "../checks/PlaceholderCheck";
+import { CheckAction } from "../actions/CheckAction";
 
-export const VERSION = "1.0.6";
+export const VERSION = "1.0.7";
 
 function traverseComponent(
   component: Component,
@@ -127,6 +129,25 @@ export function migrate(data: ExportData): ExportData {
       }
     });
     oldVersion = "1.0.6";
+  }
+
+  if (oldVersion == "1.0.6") {
+    traverseComponent(data.componentTree, comp => {
+      if ((comp as any).type == CheckComponent) {
+        if ((comp as any).check?.type == PlaceholderCheck.id) {
+          (comp as any).check.compType = ComparisonType.STRING;
+        }
+      }
+
+      (comp as any).action.forEach((act: any) => {
+        traverseAction(act, action => {
+          if ((action as any).check?.type == PlaceholderCheck.id) {
+            (action as any).check.compType = ComparisonType.STRING;
+          }
+        });
+      });
+    });
+    oldVersion = "1.0.7";
   }
 
   return data;
