@@ -6,11 +6,11 @@
       <input type="text" class="colorInput" v-model="component.color" />
     </div>
     <div class="settings-row">
-      <span class="label">Transparent</span>
+      <span class="label">Border-radius</span>
       <input
-        type="checkbox"
-        :checked="component.color == 'transparent'"
-        @change="setTransparent"
+        type="number"
+        style="width: 68px"
+        v-model.number="component.radius"
       />
     </div>
     <br />
@@ -95,12 +95,11 @@ export default defineComponent({
       const bounds = this.component.getBoundingBox();
       bounds.ensureBounds(this.maxWidth, this.maxHeight);
       this.component.modify(bounds);
-    },
 
-    setTransparent(ev: InputEvent) {
-      if ((ev?.target as HTMLInputElement).checked)
-        this.component.color = "transparent";
-      else this.component.color = "#ffffff";
+      const minDim = Math.min(this.component.height, this.component.width);
+      if (this.component.radius > minDim / 2) {
+        this.component.radius = Math.floor(minDim / 2);
+      }
     }
   }
 });
