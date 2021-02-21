@@ -10,7 +10,6 @@ import { Image } from "../components/Image";
 import { GIF } from "../components/GIF";
 import { CheckComponent } from "../components/CheckComponent";
 import { ComparisonType, PlaceholderCheck } from "../checks/PlaceholderCheck";
-import { CheckAction } from "../actions/CheckAction";
 import { hexToRgba } from "../ColorUtils";
 import { Rect } from "../components/Rect";
 

@@ -7,12 +7,8 @@
       @undo="undo"
       @redo="redo"
       @load-project="loadProject"
-      @export="
-        savepoint => {
-          if (savepoint) this.exportSavepoint();
-          else this.externalExport();
-        }
-      "
+      @export="this.exportSavepoint()"
+      @export-usage="key => this.externalExport(key)"
     />
     <div class="row mainSpace" @click.capture="updateHistory">
       <component-tree
@@ -468,7 +464,7 @@ export default defineComponent({
       this.pauseRendering = false;
     },
 
-    externalExport() {
+    externalExport(key: string) {
       loading(true);
 
       const savepoint = this.bundleToJson(false, true);
@@ -483,7 +479,10 @@ export default defineComponent({
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(savepoint)
+          body: JSON.stringify({
+            key,
+            savepoint
+          })
         }
       )
         .then(resp => resp.text())

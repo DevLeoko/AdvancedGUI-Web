@@ -69,7 +69,7 @@
         <span class="text">Import component</span>
       </div>
     </div>
-    <div class="btn export" @click="$emit('export', true)">
+    <div class="btn export" @click="$emit('export')">
       <span class="material-icons">get_app</span>
       <span class="text">Export savepoint</span>
     </div>
@@ -86,7 +86,10 @@
       @change="checkForUpload()"
     />
 
-    <export-prompt v-model="exportModal" @export="exportProj()"></export-prompt>
+    <export-prompt
+      v-model="exportModal"
+      @export="exportProj($event)"
+    ></export-prompt>
     <modal
       title="About this page"
       icon="help_outline"
@@ -222,9 +225,9 @@ export default defineComponent({
       (this.$refs.importFileSelect as HTMLElement).click();
     },
 
-    exportProj() {
+    exportProj(key: string) {
       this.exportModal = false;
-      this.$emit("export", false);
+      this.$emit("export-usage", key);
     }
   }
 });
