@@ -19,6 +19,7 @@ import { reactive } from "vue";
 import { ListItemGroup } from "../ListItem";
 import { ClickAnimation } from "../components/ClickAnimation";
 import { TextInput } from "../components/TextInput";
+import { hexToRgba } from "../ColorUtils";
 
 export type TemplateVariable = string;
 export type TemplateData = { name: string; value: string | number }[];
@@ -249,5 +250,5 @@ export function getRandomColor() {
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
-  return color;
+  return hexToRgba(color, 1);
 }

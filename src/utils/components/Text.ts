@@ -1,7 +1,11 @@
 import { BoundingBox } from "../BoundingBox";
 import TextEditor from "@/components/editors/TextEditor.vue";
 import { Action } from "../actions/Action";
-import { JsonObject, ComponentType } from "../manager/ComponentManager";
+import {
+  JsonObject,
+  ComponentType,
+  getRandomColor
+} from "../manager/ComponentManager";
 import { Component } from "./Component";
 import { markRaw } from "vue";
 
@@ -99,7 +103,7 @@ export class Text extends Component {
       "Text",
       "VT323",
       20,
-      "#67809f",
+      getRandomColor(),
       0,
       false,
       "123"

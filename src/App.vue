@@ -35,7 +35,7 @@
           @select="updateSelection"
         ></my-canvas>
       </div>
-      <side-bar :selected="selected" :settings="settings" :dev-mode="devMode" />
+      <side-bar :selected="selected" :settings="settings" />
     </div>
 
     <loading-screen></loading-screen>
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import LoadingScreen, {
   loading,
   error,
@@ -91,7 +91,7 @@ const idWatcher: { lastHandler: (val: string) => void } = {
   }
 };
 
-export const devMode = { value: false };
+export const devMode = ref(false);
 
 export function setWatcher(func: (val: string) => void): void {
   idWatcher.lastHandler = func;
@@ -114,7 +114,7 @@ export default defineComponent({
     AppHeader: Header
   },
 
-  data: () => {
+  data() {
     return {
       settings: {
         width: 3,
@@ -133,9 +133,7 @@ export default defineComponent({
 
       elements: [] as Component[],
 
-      pauseRendering: false,
-
-      devMode
+      pauseRendering: false
     };
   },
 

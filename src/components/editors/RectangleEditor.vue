@@ -1,15 +1,11 @@
 <template>
   <div id="rectEditor">
-    <div class="settings-row">
-      <span class="label">Color</span>
-      <input type="color" v-model="component.color" />
-      <input type="text" class="colorInput" v-model="component.color" />
-    </div>
+    <color-input v-model:color="component.color"></color-input>
     <div class="settings-row">
       <span class="label">Border-radius</span>
       <input
         type="number"
-        style="width: 68px"
+        style="width: 48px"
         v-model.number="component.radius"
       />
     </div>
@@ -58,8 +54,10 @@
 import { defineComponent } from "vue";
 import { Rect } from "@/utils/components/Rect";
 import { Template } from "@/utils/components/Template";
+import ColorInput from "../ColorInput.vue";
 
 export default defineComponent({
+  components: { ColorInput },
   data() {
     return {
       inputTransformer: Template.inputTransformer
@@ -107,8 +105,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 #rectEditor {
-  .colorInput {
-    width: 80px;
-  }
 }
 </style>

@@ -11,6 +11,8 @@ import { GIF } from "../components/GIF";
 import { CheckComponent } from "../components/CheckComponent";
 import { ComparisonType, PlaceholderCheck } from "../checks/PlaceholderCheck";
 import { CheckAction } from "../actions/CheckAction";
+import { hexToRgba } from "../ColorUtils";
+import { Rect } from "../components/Rect";
 
 export const VERSION = "1.0.7";
 
@@ -133,7 +135,11 @@ export function migrate(data: ExportData): ExportData {
 
   if (oldVersion == "1.0.6") {
     traverseComponent(data.componentTree, comp => {
-      if ((comp as any).type == CheckComponent) {
+      if ((comp as any).type == Rect.displayName) {
+        (comp as Rect).radius = 0;
+      }
+
+      if ((comp as any).type == CheckComponent.displayName) {
         if ((comp as any).check?.type == PlaceholderCheck.id) {
           (comp as any).check.compType = ComparisonType.STRING;
         }
@@ -147,6 +153,16 @@ export function migrate(data: ExportData): ExportData {
         });
       });
     });
+
+    let jsonData = JSON.stringify(data);
+
+    jsonData
+      .match(/#[0-9A-Fa-f]{6}/g)
+      ?.forEach(val => (jsonData = jsonData.replace(val, hexToRgba(val, 1))));
+    jsonData = jsonData.replaceAll("transparent", "rgba(0,0,0,0)");
+
+    data = JSON.parse(jsonData);
+
     oldVersion = "1.0.7";
   }
 

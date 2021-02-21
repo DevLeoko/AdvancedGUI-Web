@@ -5,8 +5,9 @@
         <h1>
           <span
             class="material-icons"
-            @click="devMode.value = !devMode.value"
-            >{{ devMode.value ? "code" : "tune" }}</span
+            style="cursor:pointer; user-select:none"
+            @click.prevent="devMode = !devMode"
+            >{{ devMode ? "code" : "tune" }}</span
           >
           General settings
         </h1>
@@ -20,7 +21,7 @@
             type="text"
             :value="selected.component.id"
             @input="
-              !devMode.value
+              !devMode
                 ? ($refs.idInput.value = selected.component.id)
                 : (selected.component.id = $refs.idInput.value)
             "
@@ -116,7 +117,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { GeneralSettings } from "@/App.vue";
+import { devMode, GeneralSettings } from "@/App.vue";
 import { Selection } from "@/utils/Selection";
 import {
   actions,
@@ -137,10 +138,6 @@ export default defineComponent({
     settings: {
       type: Object as () => GeneralSettings,
       required: true
-    },
-    devMode: {
-      type: Object as () => { value: boolean },
-      required: true
     }
   },
 
@@ -153,7 +150,8 @@ export default defineComponent({
       actions,
       actionIDs,
       toggleVis,
-      invisible
+      invisible,
+      devMode
     };
   },
 

@@ -4,6 +4,7 @@ import { Action } from "../actions/Action";
 import { JsonObject, ComponentType } from "../manager/ComponentManager";
 import { markRaw } from "vue";
 import { Rectangular } from "./Rectangular";
+import { hexToRgba } from "../ColorUtils";
 
 export class TextInput extends Rectangular {
   public static displayName: ComponentType = "Text-Input";
@@ -108,13 +109,13 @@ export class TextInput extends Rectangular {
       64,
       20,
       3,
-      "#2d5380",
-      "#042c5d",
+      hexToRgba("#2d5380", 1),
+      hexToRgba("#042c5d", 1),
       "",
       "Name...",
       7,
-      "#eeeeee",
-      "#c4c4c4",
+      hexToRgba("#eeeeee", 1),
+      hexToRgba("#c4c4c4", 1),
       "VT323",
       20
     );

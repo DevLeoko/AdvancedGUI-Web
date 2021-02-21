@@ -10,6 +10,7 @@ import {
 } from "../manager/ComponentManager";
 import { GroupComponent } from "./GroupComponent";
 import { markRaw } from "vue";
+import { hexToRgba } from "../ColorUtils";
 
 export class Template extends GroupComponent {
   public static inputTransformer = (
@@ -56,13 +57,16 @@ export class Template extends GroupComponent {
       .map(comp => {
         let json = comp.toJson(forUsage);
         for (const entry of data) {
-          const value = entry.value;
+          let value = entry.value;
           if (typeof value == "number") {
             json = json.replace(
               new RegExp(`"#${entry.name}"`, "g"),
               value.toString()
             );
           } else {
+            if (/#[0-9A-F]{6}/.test(value.toUpperCase()))
+              value = hexToRgba(value, 1);
+
             json = json.replace(new RegExp(`#${entry.name}`, "g"), value);
           }
         }

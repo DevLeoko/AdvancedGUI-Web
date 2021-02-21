@@ -159,6 +159,10 @@
         <li>Move component partially outside of the GUI view</li>
         <li>Change the ID of components</li>
         <li>Preview how the GUI will be divided into item-frames</li>
+        <li>
+          Set the direct RGBA color value of components (useful for using
+          template variables for colors)
+        </li>
       </ul>
     </modal>
   </div>
