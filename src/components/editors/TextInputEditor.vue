@@ -1,23 +1,13 @@
 <template>
   <div id="textInputEditor">
-    <div class="settings-row">
-      <span class="label">Background color</span>
-      <input type="color" v-model="component.backgroundColor" />
-      <input
-        type="text"
-        class="colorInput"
-        v-model="component.backgroundColor"
-      />
-    </div>
-    <div class="settings-row">
-      <span class="label">Active background color</span>
-      <input type="color" v-model="component.backgroundColorActive" />
-      <input
-        type="text"
-        class="colorInput"
-        v-model="component.backgroundColorActive"
-      />
-    </div>
+    <color-input
+      label="Background color"
+      v-model:color="component.backgroundColor"
+    ></color-input>
+    <color-input
+      label="Active background color"
+      v-model:color="component.backgroundColorActive"
+    ></color-input>
     <div class="settings-row">
       <span class="label">Placeholder</span>
       <input type="text" v-model="component.placeHolder" />
@@ -36,20 +26,11 @@
     </div>
     <br />
     <span class="label heading">Text-Style</span>
-    <div class="settings-row">
-      <span class="label">Color</span>
-      <input type="color" v-model="component.fontColor" />
-      <input type="text" class="colorInput" v-model="component.fontColor" />
-    </div>
-    <div class="settings-row">
-      <span class="label">Placeholder Color</span>
-      <input type="color" v-model="component.fontColorPlaceholder" />
-      <input
-        type="text"
-        class="colorInput"
-        v-model="component.fontColorPlaceholder"
-      />
-    </div>
+    <color-input v-model:color="component.fontColor"></color-input>
+    <color-input
+      label="Placeholder Color"
+      v-model:color="component.fontColorPlaceholder"
+    ></color-input>
     <font-editor
       v-model:font="component.font"
       v-model:size="component.size"
@@ -89,13 +70,14 @@
 import { defineComponent } from "vue";
 import { TextInput } from "@/utils/components/TextInput";
 import FontEditor from "@/components/FontEditor.vue";
+import ColorInput from "../ColorInput.vue";
 
 export default defineComponent({
   data() {
     return {};
   },
 
-  components: { FontEditor },
+  components: { FontEditor, ColorInput },
 
   props: {
     component: {

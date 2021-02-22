@@ -1,6 +1,6 @@
 <template>
   <div class="settings-row">
-    <span class="label">Color</span>
+    <span class="label">{{ label }}</span>
     <input type="color" v-model="colorHex" />
     <input type="text" style="max-width: 60px" v-model="colorHex" />
     <input
@@ -43,6 +43,10 @@ export default defineComponent({
     color: {
       type: String,
       required: true
+    },
+    label: {
+      type: String,
+      default: "Color"
     }
   },
 
@@ -53,6 +57,8 @@ export default defineComponent({
       immediate: true,
       handler(val: string) {
         const conv = rgbaToHex(val);
+        console.log(conv);
+
         this.colorHex = conv.hex;
         this.alpha = conv.alpha;
       }

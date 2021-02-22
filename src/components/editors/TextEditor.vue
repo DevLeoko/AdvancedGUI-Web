@@ -1,10 +1,6 @@
 <template>
   <div id="textEditor">
-    <div class="settings-row">
-      <span class="label">Color</span>
-      <input type="color" v-model="component.color" />
-      <input type="text" class="colorInput" v-model="component.color" />
-    </div>
+    <color-input v-model:color="component.color"></color-input>
     <div class="settings-row">
       <span class="label">Text</span>
       <input type="text" v-model="component.text" />
@@ -64,13 +60,14 @@
 import { defineComponent } from "vue";
 import { Text } from "@/utils/components/Text";
 import FontEditor from "@/components/FontEditor.vue";
+import ColorInput from "../ColorInput.vue";
 
 export default defineComponent({
   data() {
     return {};
   },
 
-  components: { FontEditor },
+  components: { FontEditor, ColorInput },
 
   props: {
     component: {
