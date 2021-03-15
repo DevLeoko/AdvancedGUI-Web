@@ -62,9 +62,9 @@ export default defineComponent({
         case 2:
           return "=";
         case 3:
-          return ">";
-        case 4:
           return ">=";
+        case 4:
+          return ">";
         default:
           return this.action.compType.toString();
       }

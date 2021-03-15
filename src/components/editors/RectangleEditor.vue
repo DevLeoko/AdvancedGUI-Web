@@ -5,6 +5,7 @@
       <span class="label">Border-radius</span>
       <input
         type="number"
+        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         style="width: 48px"
         v-model.number="component.radius"
       />

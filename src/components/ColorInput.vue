@@ -1,8 +1,13 @@
 <template>
   <div class="settings-row">
     <span class="label">{{ label }}</span>
-    <input type="color" v-model="colorHex" />
-    <input type="text" style="max-width: 60px" v-model="colorHex" />
+    <input type="color" v-model="colorHex" @input="updateColor" />
+    <input
+      type="text"
+      style="max-width: 60px"
+      v-model="colorHex"
+      @input="updateColor"
+    />
     <input
       type="number"
       style="max-width: 40px; text-align: right"
@@ -10,6 +15,7 @@
       @input="
         alpha = Math.max(Math.min(Math.round($event.target.value) / 100, 1), 0);
         $event.target.value = alpha * 100;
+        updateColor();
       "
     />
     <i style="opacity: 0.5">%</i>
@@ -57,19 +63,10 @@ export default defineComponent({
       immediate: true,
       handler(val: string) {
         const conv = rgbaToHex(val);
-        console.log(conv);
 
         this.colorHex = conv.hex;
         this.alpha = conv.alpha;
       }
-    },
-
-    alpha() {
-      this.updateColor();
-    },
-
-    colorHex() {
-      this.updateColor();
     }
   },
 

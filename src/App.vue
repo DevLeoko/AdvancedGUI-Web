@@ -473,6 +473,7 @@ export default defineComponent({
       delete (savepoint as JsonObject).fonts;
       delete (savepoint as JsonObject).gifs;
       fetch(
+        // "http://localhost:8888/.netlify/functions/convert",
         "https://advancedgui-convert.netlify.app/.netlify/functions/convert",
         {
           method: "POST",
@@ -485,7 +486,10 @@ export default defineComponent({
           })
         }
       )
-        .then(resp => resp.text())
+        .then(async resp => {
+          if (resp.status >= 400) throw await resp.text();
+          else return resp.text();
+        })
         .then(data => {
           const processed = {
             images,
@@ -496,7 +500,9 @@ export default defineComponent({
           this.exportData(JSON.stringify(processed), false);
           loading(false);
         })
-        .catch((err: Error) => error(`Error durring export: ${err.message}`));
+        .catch((err: Error) =>
+          error(`Error durring export: ${err.message || err}`)
+        );
     }
   }
 });

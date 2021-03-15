@@ -27,7 +27,7 @@
           <span class="material-icons">get_app</span>
           <span class="text"
             >Export
-            {{ key ? "" : "without key (works until 01.04.2021)" }}</span
+            {{ key ? "" : "without key (works until 14.04.2021)" }}</span
           >
         </div>
 
@@ -116,16 +116,23 @@ export default defineComponent({
 
     .license-key {
       input[type="text"] {
+        width: 200px;
         background-color: transparent;
-        border: $inputBorder;
-        border-radius: 5px;
+        border: none;
+        border-bottom: $inputBorder;
+        // border-radius: 5px;
         color: $light2;
         padding: 5px 10px;
         margin-bottom: 8px;
-      }
 
-      &:focus {
-        outline: none;
+        &::placeholder {
+          font-weight: 600;
+          text-transform: uppercase;
+        }
+
+        &:focus {
+          outline: none;
+        }
       }
     }
 
