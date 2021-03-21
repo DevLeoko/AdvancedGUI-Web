@@ -20,7 +20,8 @@
           rel="noopener noreferrer"
           >discord</a
         >
-        and use the <i>#verify-purchase</i> channel.
+        and use the <i>#verify-purchase</i> channel. The verifcation process is
+        automated and takes only a few seconds.
       </p>
       <div class="action-row">
         <div class="btn export" @click="exportFU()">
