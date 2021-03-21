@@ -8,7 +8,7 @@
         Make sure to also download a savepoint as you will
         <b>not be able to import this file back into the editor!</b>
       </p>
-      <!-- <div class="license-key">
+      <div class="license-key">
         <input type="text" placeholder="License key" v-model="key" /> <br />
         <input type="checkbox" v-model="remember" /> <span>Remember key</span>
       </div>
@@ -21,12 +21,14 @@
           >discord</a
         >
         and use the <i>#verify-purchase</i> channel.
-      </p> -->
+      </p>
       <div class="action-row">
         <div class="btn export" @click="exportFU()">
           <span class="material-icons">get_app</span>
-          <span class="text">Export</span>
-          <!-- {{ key ? "" : "without key (works until 14.04.2021)" }} -->
+          <span class="text"
+            >Export
+            {{ key ? "" : "without key (works until 21.04.2021)" }}</span
+          >
         </div>
 
         <div class="btn close" @click="$emit('update:modelValue', false)">
