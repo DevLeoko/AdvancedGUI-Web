@@ -24,12 +24,15 @@
         automated and takes only a few seconds.
       </p>
       <div class="action-row">
-        <div class="btn export" @click="exportFU()">
+        <div
+          class="btn export"
+          :class="!key ? 'inactive' : ''"
+          @click="exportFU()"
+        >
           <span class="material-icons">get_app</span>
-          <span class="text"
-            >Export
-            {{ key ? "" : "without key (works until 21.04.2021)" }}</span
-          >
+          <span class="text">{{
+            key ? "Export" : "Enter license key to export!"
+          }}</span>
         </div>
 
         <div class="btn close" @click="$emit('update:modelValue', false)">
@@ -70,6 +73,8 @@ export default defineComponent({
 
   methods: {
     exportFU() {
+      if (!this.key) return;
+
       if (this.remember && this.key && this.key != this.savedKey) {
         setCookie("license-key", this.key, 10 * 365);
       }
@@ -145,6 +150,11 @@ export default defineComponent({
       .export {
         background-color: $green;
         color: $dark2;
+
+        &.inactive {
+          background-color: $light3 !important;
+          cursor: not-allowed;
+        }
       }
 
       .close {

@@ -74,11 +74,6 @@ export default defineComponent({
       padding-top: 10px;
       justify-content: space-between;
 
-      .export {
-        background-color: $green;
-        color: $dark2;
-      }
-
       .close {
         background-color: transparent;
         border: 1px solid transparentize($color: $blue, $amount: 0.2);

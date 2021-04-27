@@ -108,11 +108,6 @@ export default defineComponent({
       display: flex;
       justify-content: center;
 
-      .export {
-        background-color: $green;
-        color: $dark2;
-      }
-
       .close {
         background-color: transparent;
         border: 1px solid transparentize($color: $light2, $amount: 0.2);
