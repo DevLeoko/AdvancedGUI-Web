@@ -109,7 +109,7 @@
           rel="noopener noreferrer"
           >SpigotMC</a
         >. <br />
-        The code of this edtor is open-srouce on
+        The code of this edtor is open-source on
         <a
           href="https://github.com/DevLeoko/AdvancedGUI-Web"
           target="_blank"
