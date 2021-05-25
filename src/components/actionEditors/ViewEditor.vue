@@ -5,7 +5,7 @@
       <input
         type="text"
         class="componentIdInput"
-        @focus="idWatcher.value = val => (action.targetId = val)"
+        @focus="idWatcher = val => (action.targetId = val)"
         v-model="action.targetId"
       />
     </div>
@@ -31,7 +31,7 @@
       <input
         type="text"
         class="componentIdInput"
-        @focus="idWatcher.value = val => (action.activate = val)"
+        @focus="idWatcher = val => (action.activate = val)"
         v-model="action.activate"
       />
     </div>
@@ -60,12 +60,13 @@ import { components } from "@/utils/manager/ComponentManager";
 import { ViewAction } from "@/utils/actions/ViewAction";
 import { View } from "@/utils/components/View";
 import { idWatcher } from "@/utils/manager/WorkspaceManager";
+import { vueRef } from "../../utils/VueRef";
 
 export default defineComponent({
   data() {
     return {
       components,
-      idWatcher
+      idWatcher: vueRef(idWatcher)
     };
   },
 

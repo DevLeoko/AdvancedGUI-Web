@@ -37,14 +37,17 @@ export async function undo() {
 }
 
 export function updateHistory() {
-  const state = JSON.stringify(bundleProjectData());
-  if (history.stack.length && JSON.stringify(history.stack[0]) == state) return;
-
-  const stateObj = JSON.parse(state) as Project;
+  const stateObj = JSON.parse(JSON.stringify(bundleProjectData())) as Project;
 
   delete stateObj.fonts;
   delete stateObj.images;
   delete stateObj.gifs;
+
+  if (
+    history.stack.length &&
+    JSON.stringify(history.stack[0]) == JSON.stringify(stateObj)
+  )
+    return;
 
   history.stack.splice(0, 0, stateObj);
   history.hisotryIndex = 0;

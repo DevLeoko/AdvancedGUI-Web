@@ -3,10 +3,10 @@
     <component-list
       class="actualTree"
       root
-      :components="componentTree.value"
+      :components="componentTree"
       :modelValue="selectedComponent"
       @update:modelValue="val => updateSelection(val)"
-      @copy="copiedComponent.value = $event"
+      @copy="copiedComponent = $event"
       @deleted="checkDelete"
       @add-child="addChildToTreeElem"
     ></component-list>
@@ -16,7 +16,7 @@
       <span class="text">Add component</span>
 
       <div class="absoluteMenu compAddMenu" ref="compAddMenu">
-        <template v-if="copiedComponent.value">
+        <template v-if="copiedComponent">
           <div class="entry" @click.stop="pasteComponent()">
             <span class="material-icons">content_paste</span>
             Paste
@@ -49,6 +49,7 @@ import {
   updateSelection
 } from "../utils/manager/WorkspaceManager";
 import { componentInfo, componentNames } from "../utils/ComponentMeta";
+import { vueRef } from "../utils/VueRef";
 
 export default defineComponent({
   components: { ComponentList },
@@ -57,11 +58,11 @@ export default defineComponent({
     return {
       componentInfo,
       componentNames,
-      componentTree,
-      selection,
+      componentTree: vueRef(componentTree),
+      selection: vueRef(selection),
+      copiedComponent: vueRef(copiedComponent),
       updateSelection,
       pasteComponent,
-      copiedComponent,
       addComponentAnchor: null as null | Component[]
     };
   },
@@ -76,13 +77,13 @@ export default defineComponent({
 
   computed: {
     selectedComponent(): Component | null {
-      return this.selection.value?.component || null;
+      return this.selection?.component || null;
     }
   },
 
   methods: {
     checkDelete(component: Component) {
-      if (this.selection.value?.component?.id == component.id) {
+      if (this.selection?.component?.id == component.id) {
         this.updateSelection({ value: null });
       }
     },
@@ -113,7 +114,7 @@ export default defineComponent({
       const menu = this.$refs.compAddMenu as HTMLElement;
       menu.style.display = "block";
       menu.style.opacity = "0";
-      this.addComponentAnchor = anchor || this.componentTree.value;
+      this.addComponentAnchor = anchor || this.componentTree;
 
       setTimeout(() => {
         let y = ev.y;

@@ -6,12 +6,7 @@
     @mousemove="onMove"
     @mouseleave="onClickUp"
   >
-    <canvas
-      ref="canvas"
-      id="canvas"
-      :width="settings.width"
-      :height="settings.height"
-    ></canvas>
+    <canvas ref="canvas" id="canvas" :width="width" :height="height"></canvas>
   </div>
 </template>
 
@@ -38,6 +33,7 @@ import {
   updateSelection
 } from "../utils/manager/WorkspaceManager";
 import { updateHistory } from "../utils/manager/HistoryManager";
+import { vueRef } from "../utils/VueRef";
 
 let redrawFunction: Function = () => {
   // Initialized later
@@ -60,16 +56,16 @@ export default defineComponent({
         singleAxis: boolean;
       },
 
-      invisibleIDs,
-      selection,
+      invisibleIDs: vueRef(invisibleIDs),
+      selection: vueRef(selection),
       settings,
-      componentTree,
+      componentTree: vueRef(componentTree),
       registeredComponents,
       images,
       regImages,
-      pauseRendering,
+      pauseRendering: vueRef(pauseRendering),
 
-      devMode
+      devMode: vueRef(devMode)
     };
   },
 
@@ -85,6 +81,16 @@ export default defineComponent({
     canvas.imageSmoothingEnabled = false;
 
     this.redraw();
+  },
+
+  computed: {
+    height(): number {
+      return this.settings.height * 128;
+    },
+
+    width(): number {
+      return this.settings.width * 128;
+    }
   },
 
   watch: {
@@ -124,8 +130,8 @@ export default defineComponent({
 
     registeredComponents() {
       if (
-        selection.value?.component &&
-        !this.registeredComponents[selection.value?.component.id]
+        this.selection?.component &&
+        !this.registeredComponents[this.selection?.component.id]
       )
         updateSelection({ value: null });
 
@@ -143,7 +149,7 @@ export default defineComponent({
       this.redraw();
     },
 
-    "devMode.value": {
+    devMode: {
       handler() {
         this.redraw();
       }
@@ -152,42 +158,42 @@ export default defineComponent({
 
   methods: {
     adjustHeight() {
-      (this.$refs.canvas as HTMLElement).style.height = `${this.settings
-        .height * this.settings.zoom}px`;
+      (this.$refs.canvas as HTMLElement).style.height = `${this.height *
+        this.settings.zoom}px`;
     },
 
     redraw() {
-      if (pauseRendering.value) return;
+      if (this.pauseRendering) return;
 
       const canvas = (this.$refs.canvas as HTMLCanvasElement).getContext("2d", {
         alpha: false
       }) as CanvasRenderingContext2D;
 
-      canvas.clearRect(0, 0, this.settings.width, this.settings.height);
+      canvas.clearRect(0, 0, this.width, this.height);
 
-      for (let i = componentTree.value.length - 1; i >= 0; i--) {
-        const element = componentTree.value[i];
+      for (let i = this.componentTree.length - 1; i >= 0; i--) {
+        const element = this.componentTree[i];
         if (!isInvisible(element.id)) element.draw(canvas);
       }
 
       if (
-        selection.value?.component &&
-        this.registeredComponents[selection.value?.component.id]
+        this.selection?.component &&
+        this.registeredComponents[this.selection?.component.id]
       )
-        drawSelection(canvas, selection.value?.component);
+        drawSelection(canvas, this.selection?.component);
 
-      if (devMode.value) {
+      if (this.devMode) {
         canvas.strokeStyle = "rgba(255,255,255,0.3)";
         canvas.setLineDash([]);
         canvas.lineWidth = 1;
         canvas.beginPath();
-        for (let lineX = 128; lineX < this.settings.width; lineX += 128) {
+        for (let lineX = 128; lineX < this.width; lineX += 128) {
           canvas.moveTo(lineX - 0.5, 0);
-          canvas.lineTo(lineX - 0.5, this.settings.height);
+          canvas.lineTo(lineX - 0.5, this.height);
         }
-        for (let lineY = 128; lineY < this.settings.height; lineY += 128) {
+        for (let lineY = 128; lineY < this.height; lineY += 128) {
           canvas.moveTo(0, lineY - 0.5);
-          canvas.lineTo(this.settings.width, lineY - 0.5);
+          canvas.lineTo(this.width, lineY - 0.5);
         }
         canvas.stroke();
       }
@@ -218,23 +224,23 @@ export default defineComponent({
 
       if (!handler) {
         if (
-          selection.value?.component &&
-          selection.value?.component.getBoundingBox().isInside(point)
+          this.selection?.component &&
+          this.selection?.component.getBoundingBox().isInside(point)
         )
           this.mouseDownTime = Date.now();
 
         // Check for change of selection
         if (
           hovered &&
-          (!selection.value?.component ||
-            !selection.value?.component.getBoundingBox().isInside(point))
+          (!this.selection?.component ||
+            !this.selection?.component.getBoundingBox().isInside(point))
         ) {
           // If there is already an element selected, then the new selection will try to be as low as possible
           // in the component tree towards the current selection. e.g.: it will try to select sibilings within the parent
-          if (selection.value?.component) {
+          if (this.selection?.component) {
             const commonParent = this.getLowestCommonParents(
               hovered,
-              selection.value?.component.id,
+              this.selection?.component.id,
               point
             );
             const sibling = commonParent
@@ -251,7 +257,7 @@ export default defineComponent({
         if (!hovered) updateSelection({ value: null });
       }
 
-      if (selection.value?.component) {
+      if (this.selection?.component) {
         let modifier;
         let modifierIcon: ResizeIcon | "move" = "move";
         let singleAxis = false;
@@ -259,9 +265,7 @@ export default defineComponent({
           modifier = handler.modifier;
           modifierIcon = handler.icon;
           singleAxis = handler.singleAxisAction;
-        } else if (
-          selection.value?.component.getBoundingBox().isInside(point)
-        ) {
+        } else if (this.selection?.component.getBoundingBox().isInside(point)) {
           this.setCursor("move");
           modifier = moveModifier;
         }
@@ -270,7 +274,7 @@ export default defineComponent({
           this.modifying = {
             startPosition: point,
             icon: modifierIcon,
-            elementStartPosition: selection.value?.component.getBoundingBox(),
+            elementStartPosition: this.selection?.component.getBoundingBox(),
             modifier,
             singleAxis
           };
@@ -285,17 +289,17 @@ export default defineComponent({
       const hovered = this.getElementAt(point);
 
       if (Date.now() - this.mouseDownTime < 200) {
-        if (selection.value?.component) {
+        if (this.selection?.component) {
           if (
             hovered &&
             this.containsComponentAtPoint(
               hovered,
-              selection.value?.component,
+              this.selection?.component,
               point
             )
           )
             updateSelection({
-              value: selection.value?.component.refineSelection(point)
+              value: this.selection?.component.refineSelection(point)
             });
           else updateSelection({ value: hovered! });
         }
@@ -309,7 +313,7 @@ export default defineComponent({
     },
 
     getElementAt(point: Point) {
-      return componentTree.value.find(element =>
+      return this.componentTree.find(element =>
         element.getBoundingBox().isInside(point)
       );
     },
@@ -350,20 +354,17 @@ export default defineComponent({
           this.modifying.elementStartPosition
         );
 
-        newBounds.ensureBounds(this.settings.width, this.settings.height);
+        newBounds.ensureBounds(this.width, this.height);
 
-        selection.value?.component?.modify(
-          newBounds,
-          this.modifying.singleAxis
-        );
+        this.selection?.component?.modify(newBounds, this.modifying.singleAxis);
       } else {
         const handler = getHanderAt(point);
-        if (handler && selection.value?.component) {
+        if (handler && this.selection?.component) {
           this.setCursor(handler.icon);
         } else if (hovered) {
           if (
-            hovered == selection.value?.component ||
-            selection.value?.component?.getBoundingBox().isInside(point)
+            hovered == this.selection?.component ||
+            this.selection?.component?.getBoundingBox().isInside(point)
           ) {
             this.setCursor("move");
           } else this.setCursor("pointer");
@@ -376,10 +377,10 @@ export default defineComponent({
     getCursorPosition(event: MouseEvent): Point {
       const rect = (this.$refs.canvas as HTMLElement).getBoundingClientRect();
       const x = Math.round(
-        (event.clientX - rect.left) * (this.settings.width / rect.width)
+        (event.clientX - rect.left) * (this.width / rect.width)
       );
       const y = Math.round(
-        (event.clientY - rect.top) * (this.settings.width / rect.width)
+        (event.clientY - rect.top) * (this.width / rect.width)
       );
       return new Point(x, y);
     }

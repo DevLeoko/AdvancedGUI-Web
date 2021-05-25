@@ -35,11 +35,12 @@
 import { defineComponent } from "vue";
 import { hexToRgba, rgbaToHex } from "../utils/ColorUtils";
 import { devMode } from "../utils/manager/WorkspaceManager";
+import { vueRef } from "../utils/VueRef";
 
 export default defineComponent({
   data() {
     return {
-      devMode,
+      devMode: vueRef(devMode),
       colorHex: "#FFFFFF",
       alpha: 1.0
     };

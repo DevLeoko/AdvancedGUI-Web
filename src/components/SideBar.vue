@@ -1,6 +1,6 @@
 <template>
   <div id="settings">
-    <div id="generalSettings" v-if="selection.value">
+    <div id="generalSettings" v-if="selection">
       <div class="settings-box gen-box">
         <h1>
           <span
@@ -13,17 +13,17 @@
         </h1>
         <div class="settings-row">
           <span class="label">Name</span>
-          <input type="text" v-model="selection.value.component.name" />
+          <input type="text" v-model="selection.component.name" />
         </div>
         <div class="settings-row id-box">
           <span class="label">ID</span>
           <input
             type="text"
-            :value="selection.value.component.id"
+            :value="selection.component.id"
             @input="
               !devMode
-                ? ($refs.idInput.value = selection.value.component.id)
-                : (selection.value.component.id = $refs.idInput.value)
+                ? ($refs.idInput.value = selection.component.id)
+                : (selection.component.id = $refs.idInput.value)
             "
             ref="idInput"
           />
@@ -31,24 +31,24 @@
             >content_copy</span
           >
         </div>
-        <div class="settings-row" v-if="selection.value.component.hideable">
+        <div class="settings-row" v-if="selection.component.hideable">
           <span class="label">Visibility</span>
           <input
             type="checkbox"
-            :checked="invisibleIDs.indexOf(selection.value.component.id) == -1"
-            @change="toggleVis(selection.value.component.id)"
+            :checked="invisibleIDs.indexOf(selection.component.id) == -1"
+            @change="toggleVis(selection.component.id)"
           />
         </div>
       </div>
-      <template v-if="selection.value.component.actionable">
+      <template v-if="selection.component.actionable">
         <div class="divider"></div>
         <div class="settings-box clickActions">
           <h1><span class="material-icons">touch_app</span> Click Action</h1>
           <component-list
             root
-            :components="selection.value.component.clickAction"
-            :modelValue="selection.value.action"
-            @update:modelValue="val => (selection.value.action = val.value)"
+            :components="selection.component.clickAction"
+            :modelValue="selection.action"
+            @update:modelValue="val => (selection.action = val.value)"
             @deleted="checkDelete"
             @copy="val => (copiedAction = val)"
             @add-child="addActionToTree"
@@ -77,20 +77,17 @@
             </div>
           </div>
 
-          <div
-            v-if="selection.value && selection.value.action"
-            id="actionEditor"
-          >
+          <div v-if="selection && selection.action" id="actionEditor">
             <h2>
               <span class="material-icons">edit</span> Edit
-              {{ selection.value.action.id.toLowerCase() }}
+              {{ selection.action.id.toLowerCase() }}
             </h2>
             <component
-              v-bind:is="actions[selection.value.action.id].component"
+              v-bind:is="actions[selection.action.id].component"
               :action="
-                selection.value.action.isCheck()
-                  ? selection.value.action.check
-                  : selection.value.action
+                selection.action.isCheck()
+                  ? selection.action.check
+                  : selection.action
               "
             ></component>
           </div>
@@ -99,14 +96,12 @@
       <div class="divider"></div>
       <div class="settings-box">
         <h1>
-          <span class="material-icons">{{
-            selection.value.component.icon
-          }}</span>
-          {{ selection.value.component.displayName }}
+          <span class="material-icons">{{ selection.component.icon }}</span>
+          {{ selection.component.displayName }}
         </h1>
         <component
-          v-bind:is="selection.value.component.vueComponent"
-          :component="selection.value.component"
+          v-bind:is="selection.component.vueComponent"
+          :component="selection.component"
           :maxWidth="settings.width * 128"
           :maxHeight="settings.height * 128"
         ></component>
@@ -133,6 +128,7 @@ import { toggleVis, invisibleIDs } from "@/utils/manager/ComponentManager";
 import { Action } from "../utils/actions/Action";
 import { settings } from "../utils/manager/SettingsManager";
 import { devMode, selection } from "../utils/manager/WorkspaceManager";
+import { vueRef } from "../utils/VueRef";
 
 export default defineComponent({
   components: { ComponentList },
@@ -145,9 +141,9 @@ export default defineComponent({
       actions,
       actionIDs,
       toggleVis,
-      invisibleIDs,
-      selection,
-      devMode
+      invisibleIDs: vueRef(invisibleIDs),
+      selection: vueRef(selection),
+      devMode: vueRef(devMode)
     };
   },
 
@@ -161,8 +157,8 @@ export default defineComponent({
 
   methods: {
     checkDelete(action: Action) {
-      if (action == this.selection.value?.action) {
-        this.selection.value.action = null;
+      if (action == this.selection?.action) {
+        this.selection.action = null;
       }
     },
 
@@ -171,24 +167,23 @@ export default defineComponent({
     },
 
     addNewAction(key: string) {
-      if (this.selection.value && this.actionTarget) {
-        const nAction = actions[key].generator(this.selection.value.component);
+      if (this.selection && this.actionTarget) {
+        const nAction = actions[key].generator(this.selection.component);
         this.actionTarget.push(nAction);
-        this.selection.value.action = nAction;
+        this.selection.action = nAction;
       }
     },
 
     pasteAction() {
-      if (this.selection.value && this.copiedAction && this.actionTarget) {
+      if (this.selection && this.copiedAction && this.actionTarget) {
         const nAction = actionFromJson(JSON.parse(this.copiedAction));
         this.actionTarget.push(nAction);
-        this.selection.value.action = nAction;
+        this.selection.action = nAction;
       }
     },
 
     showActionAddMenu(ev: MouseEvent, target?: Action[]) {
-      this.actionTarget =
-        target || this.selection.value?.component.clickAction!;
+      this.actionTarget = target || this.selection?.component.clickAction!;
 
       const menu = this.$refs.actionAddMenu as HTMLElement;
       menu.style.display = "block";

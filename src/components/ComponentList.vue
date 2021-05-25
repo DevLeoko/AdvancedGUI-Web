@@ -37,11 +37,11 @@
           @click.stop="visibilityOpt()"
         >
           <span class="material-icons">{{
-            invisibleIDs.value.indexOf(optElem.id) != -1
+            invisibleIDs.indexOf(optElem.id) != -1
               ? "visibility"
               : "visibility_off"
           }}</span>
-          {{ invisibleIDs.value.indexOf(optElem.id) != -1 ? "Show" : "Hide" }}
+          {{ invisibleIDs.indexOf(optElem.id) != -1 ? "Show" : "Hide" }}
         </div>
       </template>
     </div>
@@ -56,7 +56,7 @@
           class="item"
           :class="
             (modelValue == elem ? 'active ' : '') +
-              (elem.id && invisibleIDs.value.indexOf(elem.id) != -1
+              (elem.id && invisibleIDs.indexOf(elem.id) != -1
                 ? 'invisible '
                 : '') +
               (itemClasses[index] || '')
@@ -121,6 +121,7 @@ import { defineComponent, reactive } from "vue";
 import DragZone from "./DragZone.vue";
 import { ListItem, ListItemGroup } from "@/utils/ListItem";
 import { toggleVis, invisibleIDs } from "@/utils/manager/ComponentManager";
+import { vueRef } from "../utils/VueRef";
 
 export default defineComponent({
   name: "ComponentList",
@@ -131,7 +132,7 @@ export default defineComponent({
     return {
       activeIndex: -2,
       optElem: null as null | ListItem,
-      invisibleIDs,
+      invisibleIDs: vueRef(invisibleIDs),
       toggleVis
     };
   },
