@@ -1,15 +1,14 @@
 import { BoundingBox } from "../BoundingBox";
 import { Point } from "../Point";
 import EmptyEditor from "@/components/editors/EmptyEditor.vue";
-import { Component } from "./Component";
+import { Component, ComponentType } from "./Component";
 import { Action } from "../actions/Action";
 import { ListItemGroup } from "../ListItem";
 import { Component as VueComponent, markRaw } from "vue";
 import {
   componentFromJson,
   JsonObject,
-  isInvisible,
-  ComponentType
+  isInvisible
 } from "../manager/ComponentManager";
 
 export class GroupComponent extends Component

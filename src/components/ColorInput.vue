@@ -34,7 +34,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { hexToRgba, rgbaToHex } from "../utils/ColorUtils";
-import { devMode } from "@/App.vue";
+import { devMode } from "../utils/manager/WorkspaceManager";
 
 export default defineComponent({
   data() {

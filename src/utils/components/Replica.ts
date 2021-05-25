@@ -3,11 +3,10 @@ import Editor from "@/components/editors/ReplicaEditor.vue";
 import { Action } from "../actions/Action";
 import {
   JsonObject,
-  ComponentType,
   TemplateData,
   components
 } from "../manager/ComponentManager";
-import { Component } from "./Component";
+import { Component, ComponentType } from "./Component";
 import { Template } from "./Template";
 import { GroupComponent } from "./GroupComponent";
 import { markRaw } from "vue";

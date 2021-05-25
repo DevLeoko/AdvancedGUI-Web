@@ -5,7 +5,7 @@
       <input
         type="text"
         class="componentIdInput"
-        @focus="setWatcher(val => (action.targetId = val))"
+        @focus="idWatcher.value = val => (action.targetId = val)"
         v-model="action.targetId"
       />
     </div>
@@ -31,13 +31,13 @@
 import { defineComponent } from "vue";
 import { VisibilityAction } from "@/utils/actions/VisibilityAction";
 import { components } from "@/utils/manager/ComponentManager";
-import { setWatcher } from "@/App.vue";
+import { idWatcher } from "@/utils/manager/WorkspaceManager";
 
 export default defineComponent({
   data() {
     return {
       components,
-      setWatcher
+      idWatcher
     };
   },
 

@@ -1,9 +1,8 @@
 import Editor from "@/components/editors/TemplateEditor.vue";
-import { Component } from "./Component";
+import { Component, ComponentType } from "./Component";
 import { Action } from "../actions/Action";
 import {
   JsonObject,
-  ComponentType,
   TemplateData,
   componentFromJson,
   reassignIDs

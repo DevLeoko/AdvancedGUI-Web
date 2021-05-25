@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ExportData } from "./ComponentManager";
 import { Component } from "../components/Component";
 import { Action } from "../actions/Action";
 import { Text } from "../components/Text";
@@ -12,6 +11,7 @@ import { CheckComponent } from "../components/CheckComponent";
 import { ComparisonType, PlaceholderCheck } from "../checks/PlaceholderCheck";
 import { hexToRgba } from "../ColorUtils";
 import { Rect } from "../components/Rect";
+import { Project } from "../Project";
 
 export const VERSION = "1.0.7";
 
@@ -43,7 +43,7 @@ function reassignObject(object: any, newObject: any) {
   Object.assign(object, newObject);
 }
 
-export function migrate(data: ExportData): ExportData {
+export function migrate(data: Project): Project {
   let oldVersion = data.version || "1.0.0";
 
   if (oldVersion == "1.0.0") {

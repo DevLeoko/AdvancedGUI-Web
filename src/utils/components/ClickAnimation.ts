@@ -1,11 +1,7 @@
 import ComponentEditor from "@/components/editors/ClickAnimationEditor.vue";
-import { Component } from "./Component";
+import { Component, ComponentType } from "./Component";
 import { Action } from "../actions/Action";
-import {
-  JsonObject,
-  isInvisible,
-  ComponentType
-} from "../manager/ComponentManager";
+import { JsonObject, isInvisible } from "../manager/ComponentManager";
 import { GroupComponent } from "./GroupComponent";
 import { Point } from "../Point";
 import { markRaw } from "vue";

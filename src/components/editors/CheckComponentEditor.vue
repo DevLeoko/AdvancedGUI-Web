@@ -40,7 +40,7 @@
 import { defineComponent } from "vue";
 import { CheckComponent } from "@/utils/components/CheckComponent";
 import { checks, checkIDs } from "../../utils/manager/CheckManager";
-import { error } from "../LoadingScreen.vue";
+import { error } from "../../utils/manager/WorkspaceManager";
 
 export default defineComponent({
   data() {

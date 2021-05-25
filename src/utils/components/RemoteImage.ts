@@ -1,11 +1,7 @@
 import Editor from "@/components/editors/RemoteImageEditor.vue";
-import { Component } from "./Component";
+import { Component, ComponentType } from "./Component";
 import { Action } from "../actions/Action";
-import {
-  JsonObject,
-  isInvisible,
-  ComponentType
-} from "../manager/ComponentManager";
+import { JsonObject, isInvisible } from "../manager/ComponentManager";
 import { GroupComponent } from "./GroupComponent";
 import { BoundingBox } from "../BoundingBox";
 import { getRemoteImage, placeRemoteImage } from "../manager/ImageManager";
@@ -59,7 +55,7 @@ export class RemoteImage extends GroupComponent {
           context.drawImage(img, this.x, this.y, this.width, this.height);
         } catch {
           context.drawImage(
-            document.getElementById("borken_TAKEN_ID") as HTMLImageElement,
+            document.getElementById("broken_TAKEN_ID") as HTMLImageElement,
             Math.max(this.x, this.x + (this.width - 20) / 2),
             Math.max(this.y, this.y + (this.height - 20) / 2),
             Math.min(this.width, 20),

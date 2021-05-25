@@ -37,31 +37,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
-const loadingContainer = reactive({
-  loading: false,
-  error: null as string | null,
-  info: null as string | null
-});
-
-export function loading(val: boolean) {
-  loadingContainer.loading = val;
-}
-
-export function info(val: string, keepLoadingState = false) {
-  if (!keepLoadingState) loadingContainer.loading = false;
-  loadingContainer.info = val;
-}
-
-export function error(val: string) {
-  loadingContainer.loading = false;
-  loadingContainer.error = val;
-}
+import { defineComponent } from "vue";
+import { loadingState } from "../utils/manager/WorkspaceManager";
 
 export default defineComponent({
   data() {
     return {
-      loading: loadingContainer
+      loading: loadingState
     };
   }
 });

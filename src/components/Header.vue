@@ -41,16 +41,18 @@
     <div class="historyControls row">
       <div
         class="btn"
-        :class="canUndo ? 'inactive' : ''"
-        @click.prevent="$emit('undo')"
+        :class="
+          history.stack.length <= history.hisotryIndex + 2 ? 'inactive' : ''
+        "
+        @click.prevent="undo"
       >
         <span class="material-icons">undo</span>
         <span class="text">Undo</span>
       </div>
       <div
         class="btn"
-        :class="canRedo ? '' : 'inactive'"
-        @click.prevent="$emit('redo')"
+        :class="history.hisotryIndex != 0 ? '' : 'inactive'"
+        @click.prevent="redo"
       >
         <span class="material-icons">redo</span>
         <span class="text">Redo</span>
@@ -86,10 +88,7 @@
       @change="checkForUpload()"
     />
 
-    <export-prompt
-      v-model="exportModal"
-      @export="exportProj($event)"
-    ></export-prompt>
+    <export-prompt v-model="exportModal"></export-prompt>
     <modal
       title="About this page"
       icon="help_outline"
@@ -173,31 +172,27 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { GeneralSettings } from "@/App.vue";
 
-import { loading } from "@/components/LoadingScreen.vue";
 import ExportPrompt from "@/components/ExportPrompt.vue";
 import Modal from "@/components/Modal.vue";
 import { VERSION } from "../utils/manager/UpdateManager";
+import { settings } from "../utils/manager/SettingsManager";
+import { undo, redo, history } from "../utils/manager/HistoryManager";
+import {
+  importComponentFomJson,
+  loadProjectFromJson
+} from "../utils/handler/ProjectSerializationHandler";
+import { loading } from "../utils/manager/WorkspaceManager";
 
 export default defineComponent({
-  props: {
-    settings: {
-      type: Object as () => GeneralSettings,
-      required: true
-    },
-    canUndo: {
-      type: Boolean
-    },
-    canRedo: {
-      type: Boolean
-    }
-  },
-
   components: { ExportPrompt, Modal },
 
   data() {
     return {
+      settings,
+      undo,
+      redo,
+      history,
       importComponent: false,
       exportModal: false,
       showAbout: false,
@@ -215,19 +210,16 @@ export default defineComponent({
         loading(true);
         const file = selector.files[0];
         const json = await file.text();
-        this.$emit("load-project", JSON.parse(json), this.importComponent);
+        if (this.importComponent) importComponentFomJson(JSON.parse(json));
+        else await loadProjectFromJson(JSON.parse(json));
         selector.value = "";
+        loading(false);
       }
     },
 
     triggerImportSelector(componentMode = false) {
       this.importComponent = componentMode;
       (this.$refs.importFileSelect as HTMLElement).click();
-    },
-
-    exportProj(key: string) {
-      this.exportModal = false;
-      this.$emit("export-usage", key);
     }
   }
 });

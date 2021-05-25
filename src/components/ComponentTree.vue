@@ -3,10 +3,10 @@
     <component-list
       class="actualTree"
       root
-      :components="components"
-      :modelValue="selected"
-      @update:modelValue="val => $emit('select', val)"
-      @copy="$emit('update:copiedComponent', $event)"
+      :components="componentTree.value"
+      :modelValue="selectedComponent"
+      @update:modelValue="val => updateSelection(val)"
+      @copy="copiedComponent.value = $event"
       @deleted="checkDelete"
       @add-child="addChildToTreeElem"
     ></component-list>
@@ -16,8 +16,8 @@
       <span class="text">Add component</span>
 
       <div class="absoluteMenu compAddMenu" ref="compAddMenu">
-        <template v-if="copiedComponent">
-          <div class="entry" @click.stop="$emit('paste')">
+        <template v-if="copiedComponent.value">
+          <div class="entry" @click.stop="pasteComponent()">
             <span class="material-icons">content_paste</span>
             Paste
           </div>
@@ -40,32 +40,28 @@ import { defineComponent } from "vue";
 import { Component } from "@/utils/components/Component";
 import ComponentList from "@/components/ComponentList.vue";
 
+import { registerComponent } from "@/utils/manager/ComponentManager";
 import {
-  componentInfo,
-  componentNames,
-  registerComponent
-} from "@/utils/manager/ComponentManager";
+  componentTree,
+  copiedComponent,
+  pasteComponent,
+  selection,
+  updateSelection
+} from "../utils/manager/WorkspaceManager";
+import { componentInfo, componentNames } from "../utils/ComponentMeta";
 
 export default defineComponent({
-  props: {
-    components: {
-      type: Array as () => Component[],
-      required: true
-    },
-    selected: {
-      type: Object as () => Component
-    },
-    copiedComponent: {
-      type: String
-    }
-  },
-
   components: { ComponentList },
 
   data() {
     return {
       componentInfo,
       componentNames,
+      componentTree,
+      selection,
+      updateSelection,
+      pasteComponent,
+      copiedComponent,
       addComponentAnchor: null as null | Component[]
     };
   },
@@ -78,10 +74,16 @@ export default defineComponent({
     document.removeEventListener("click", this.checkClose, { capture: true });
   },
 
+  computed: {
+    selectedComponent(): Component | null {
+      return this.selection.value?.component || null;
+    }
+  },
+
   methods: {
     checkDelete(component: Component) {
-      if (this.selected?.id == component.id) {
-        this.$emit("select", { value: null });
+      if (this.selection.value?.component?.id == component.id) {
+        this.updateSelection({ value: null });
       }
     },
 
@@ -99,7 +101,7 @@ export default defineComponent({
       registerComponent(nComp);
 
       this.addComponentAnchor!.splice(0, 0, nComp);
-      this.$emit("select", { value: nComp });
+      this.updateSelection({ value: nComp });
       const menu = this.$refs.compAddMenu as HTMLElement;
       menu.style.display = "none";
     },
@@ -111,7 +113,7 @@ export default defineComponent({
       const menu = this.$refs.compAddMenu as HTMLElement;
       menu.style.display = "block";
       menu.style.opacity = "0";
-      this.addComponentAnchor = anchor || this.components;
+      this.addComponentAnchor = anchor || this.componentTree.value;
 
       setTimeout(() => {
         let y = ev.y;

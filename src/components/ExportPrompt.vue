@@ -46,6 +46,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { eraseCookie, getCookie, setCookie } from "../utils/CookieUtils";
+import { downloadProjectFile } from "../utils/handler/ProjectSerializationHandler";
 export default defineComponent({
   data() {
     return {
@@ -61,7 +62,7 @@ export default defineComponent({
     }
   },
 
-  emits: ["export"],
+  emits: ["update:modelValue"],
 
   mounted() {
     this.savedKey = getCookie("license-key");
@@ -84,7 +85,8 @@ export default defineComponent({
         this.savedKey = "";
       }
 
-      this.$emit("export", this.key);
+      this.$emit("update:modelValue", false);
+      downloadProjectFile(this.key);
     }
   }
 });
