@@ -3,8 +3,9 @@
     <app-header />
     <div class="row mainSpace" @click.capture="updateHistory">
       <component-tree />
-      <div id="canvasContainer" @click.self="selected = null">
+      <div class="canvasContainer" @click.self="selection = null">
         <my-canvas></my-canvas>
+        <toolbar />
       </div>
       <side-bar />
     </div>
@@ -30,6 +31,9 @@ import {
   shutdownShortcutHandler
 } from "./utils/handler/ShortcutHandler";
 import { updateHistory } from "./utils/manager/HistoryManager";
+import Toolbar from "./components/Toolbar.vue";
+import { selection } from "./utils/manager/WorkspaceManager";
+import { vueRef } from "./utils/VueRef";
 
 export default defineComponent({
   name: "App",
@@ -38,12 +42,14 @@ export default defineComponent({
     ComponentTree,
     SideBar,
     LoadingScreen,
+    Toolbar,
     AppHeader: Header
   },
 
   data() {
     return {
-      updateHistory
+      updateHistory,
+      selection: vueRef(selection)
     };
   },
 

@@ -1,5 +1,8 @@
 <template>
   <div class="head">
+    <div class="exitBtn">
+      <span class="material-icons">exit_to_app</span>
+    </div>
     <b class="label moreBtn">
       <i class="material-icons" style="padding-bottom: 2px; font-size: 18px"
         >expand_more</i
@@ -12,81 +15,32 @@
         <div class="entry" @click="showAbout = true">About</div>
       </div>
     </b>
-    <input
-      class="inputProjectName"
-      type="text"
-      v-model="settings.projectName"
-    />
-    <div class="input">
-      <b class="label">Width</b>
-      <span><input type="number" v-model="settings.width" /> frames</span>
-    </div>
-    <div class="input">
-      <b class="label">Height</b>
-      <span><input type="number" v-model="settings.height" /> frames</span>
-    </div>
-    <div>
-      <b class="label">ZOOM</b>
-      <select v-model.number="settings.zoom">
-        <option :value="settings.zoom" style="display: none"
-          >x{{ settings.zoom }}</option
-        >
-        <option value="0.5">x0.5</option>
-        <option value="1">x1</option>
-        <option value="2">x2</option>
-        <option value="4">x4</option>
-      </select>
-    </div>
-
-    <div class="historyControls row">
-      <div
-        class="btn"
-        :class="
-          history.stack.length <= history.hisotryIndex + 2 ? 'inactive' : ''
-        "
-        @click.prevent="undo"
-      >
-        <span class="material-icons">undo</span>
-        <span class="text">Undo</span>
-      </div>
-      <div
-        class="btn"
-        :class="history.hisotryIndex != 0 ? '' : 'inactive'"
-        @click.prevent="redo"
-      >
-        <span class="material-icons">redo</span>
-        <span class="text">Redo</span>
+    <div class="center">
+      <input
+        class="inputProjectName"
+        type="text"
+        v-model="settings.projectName"
+      />
+      <div class="size">
+        <input type="number" v-model="settings.width" />
+        <span class="label">x</span>
+        <input type="number" v-model="settings.height" />
+        <span class="label">frames</span>
       </div>
     </div>
 
-    <div class="btn import" @click="triggerImportSelector()">
+    <div class="btn sync">
       <span class="material-icons">cloud_upload</span>
-      <span class="text">Import project</span>
-
-      <div
-        class="btn import secondary"
-        @click.stop="triggerImportSelector(true)"
-      >
-        <span class="material-icons">extension</span>
-        <span class="text">Import component</span>
-      </div>
+      <span class="text">Live sync</span>
     </div>
-    <div class="btn export" @click="$emit('export')">
-      <span class="material-icons">get_app</span>
-      <span class="text">Export savepoint</span>
+    <div class="btn save" @click="$emit('export')">
+      <span class="material-icons">save</span>
+      <span class="text">Save</span>
     </div>
     <div class="btn export" @click="exportModal = true">
       <span class="material-icons">get_app</span>
-      <span class="text">Export for usage</span>
+      <span class="text">Download</span>
     </div>
-
-    <input
-      type="file"
-      ref="importFileSelect"
-      accept=".json"
-      style="display: none"
-      @change="checkForUpload()"
-    />
 
     <export-prompt v-model="exportModal"></export-prompt>
     <modal
@@ -178,11 +132,6 @@ import Modal from "@/components/Modal.vue";
 import { VERSION } from "../utils/manager/UpdateManager";
 import { settings } from "../utils/manager/SettingsManager";
 import { undo, redo, history } from "../utils/manager/HistoryManager";
-import {
-  importComponentFomJson,
-  loadProjectFromJson
-} from "../utils/handler/ProjectSerializationHandler";
-import { loading } from "../utils/manager/WorkspaceManager";
 
 export default defineComponent({
   components: { ExportPrompt, Modal },
@@ -202,26 +151,7 @@ export default defineComponent({
     };
   },
 
-  methods: {
-    async checkForUpload() {
-      const selector = this.$refs.importFileSelect as HTMLInputElement;
-
-      if (selector.files?.length) {
-        loading(true);
-        const file = selector.files[0];
-        const json = await file.text();
-        if (this.importComponent) importComponentFomJson(JSON.parse(json));
-        else await loadProjectFromJson(JSON.parse(json));
-        selector.value = "";
-        loading(false);
-      }
-    },
-
-    triggerImportSelector(componentMode = false) {
-      this.importComponent = componentMode;
-      (this.$refs.importFileSelect as HTMLElement).click();
-    }
-  }
+  methods: {}
 });
 </script>
 
