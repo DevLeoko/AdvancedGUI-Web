@@ -25,7 +25,7 @@ export async function redo() {
 }
 
 export async function undo() {
-  if (history.stack.length <= history.hisotryIndex + 2) return;
+  if (history.stack.length <= history.hisotryIndex + 1) return;
 
   history.hisotryIndex++;
   const exportData = history.stack[history.hisotryIndex];
@@ -45,7 +45,8 @@ export function updateHistory() {
 
   if (
     history.stack.length &&
-    JSON.stringify(history.stack[0]) == JSON.stringify(stateObj)
+    JSON.stringify(history.stack[history.hisotryIndex]) ==
+      JSON.stringify(stateObj)
   )
     return;
 
