@@ -64,11 +64,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import {
-  images,
-  registerImage,
-  unregisterImage
-} from "@/utils/manager/ImageManager";
+import { images, unregisterImage } from "@/utils/manager/ImageManager";
 import { Template } from "@/utils/components/Template";
 import { RemoteImage } from "@/utils/components/RemoteImage";
 
@@ -116,24 +112,6 @@ export default defineComponent({
       const bounds = this.component.getBoundingBox();
       bounds.ensureBounds(this.maxWidth, this.maxHeight);
       this.component.modify(bounds);
-    },
-
-    triggerFileSelector() {
-      (this.$refs.fileDownload as HTMLElement).click();
-    },
-
-    checkForUpload() {
-      const selector = this.$refs.fileDownload as HTMLInputElement;
-
-      if (selector.files?.length) {
-        for (const file of selector.files) {
-          registerImage(
-            file,
-            file.name.substr(0, file.name.length - 4),
-            this.gifMode
-          );
-        }
-      }
     }
   }
 });

@@ -1,6 +1,6 @@
 <template>
   <div class="head">
-    <div class="exitBtn">
+    <div class="exitBtn" @click="projectExplorerOpen = true">
       <span class="material-icons">exit_to_app</span>
     </div>
     <b class="label moreBtn">
@@ -33,7 +33,11 @@
       <span class="material-icons">cloud_upload</span>
       <span class="text">Live sync</span>
     </div>
-    <div class="btn save" @click="$emit('export')">
+    <div
+      class="btn save"
+      :class="!unsavedChange ? 'inactive' : ''"
+      @click="saveCurrentProject"
+    >
       <span class="material-icons">save</span>
       <span class="text">Save</span>
     </div>
@@ -41,8 +45,6 @@
       <span class="material-icons">get_app</span>
       <span class="text">Download</span>
     </div>
-
-    <export-prompt v-model="exportModal"></export-prompt>
     <modal
       title="About this page"
       icon="help_outline"
@@ -127,14 +129,23 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import ExportPrompt from "@/components/ExportPrompt.vue";
 import Modal from "@/components/Modal.vue";
 import { VERSION } from "../utils/manager/UpdateManager";
 import { settings } from "../utils/manager/SettingsManager";
-import { undo, redo, history } from "../utils/manager/HistoryManager";
+import {
+  undo,
+  redo,
+  history,
+  unsavedChange
+} from "../utils/manager/HistoryManager";
+import {
+  projectExplorerOpen,
+  saveCurrentProject
+} from "../utils/manager/ProjectManager";
+import { vueRef } from "../utils/VueRef";
 
 export default defineComponent({
-  components: { ExportPrompt, Modal },
+  components: { Modal },
 
   data() {
     return {
@@ -147,7 +158,11 @@ export default defineComponent({
       showAbout: false,
       showShortcuts: false,
       showDevMode: false,
-      formatVersion: VERSION
+      formatVersion: VERSION,
+      projectExplorerOpen: vueRef(projectExplorerOpen),
+      unsavedChange: vueRef(unsavedChange),
+
+      saveCurrentProject
     };
   },
 

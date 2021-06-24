@@ -59,7 +59,8 @@ a {
 }
 
 .absoluteMenu {
-  position: absolute;
+  z-index: 5;
+  position: fixed;
   background-color: $dark3;
   color: $light2;
   border-radius: 10px;
@@ -209,6 +210,11 @@ a {
       margin-left: 10px;
       border: 1px solid $green;
       color: $green;
+
+      &.inactive {
+        border-color: $light3;
+        color: $light3;
+      }
     }
   }
 

@@ -1,17 +1,21 @@
 import { GroupComponent } from "../components/GroupComponent";
+import { Image } from "../components/Image";
 import { Template } from "../components/Template";
 import {
   invisibleIDs,
   JsonObject,
+  traverseComponent,
   unregisterComponent
 } from "../manager/ComponentManager";
 import {
+  DEFAULT_FONTS,
   fonts,
   regFonts,
   registerFontBase64,
   unregisterFont
 } from "../manager/FontManager";
 import {
+  DEFAULT_IMAGES,
   images,
   regImages,
   registerImageBase64,
@@ -41,15 +45,32 @@ function createComponentTreeGroup() {
 }
 
 export function bundleProjectData() {
+  const usedImages: string[] = [];
+
+  componentTree.value.forEach(comp =>
+    traverseComponent(comp, c => {
+      if (c.displayName == Image.displayName) {
+        usedImages.push((c as Image).image);
+      }
+    })
+  );
+
   const projectData: Project = {
     name: settings.projectName,
     version: VERSION,
     invisible: invisibleIDs.value,
-    fonts: Object.values(fonts),
+    fonts: Object.values(fonts).filter(
+      font => !DEFAULT_FONTS.includes(font.name)
+    ),
     width: settings.width,
     height: settings.height,
     images: Object.values(images)
       .filter(image => !image.isGif)
+      .filter(
+        image =>
+          !DEFAULT_IMAGES.includes(image.name) ||
+          usedImages.includes(image.name)
+      )
       .map(image => ({
         name: image.name,
         data: image.data.src
@@ -66,26 +87,24 @@ export function bundleProjectData() {
   return projectData;
 }
 
-export async function downloadProjectFile(key: string) {
+export async function downloadProjectFile(savepoint: Project, key: string) {
   function downloadJson(data: string) {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(data);
     const dlAnchorElem = document.getElementById("downloadAnchor")!;
     dlAnchorElem.setAttribute("href", dataStr);
     dlAnchorElem.setAttribute(
       "download",
-      settings.projectName.replaceAll(" ", "_") + ".json"
+      savepoint.name.replaceAll(" ", "_") + ".json"
     );
     dlAnchorElem.click();
   }
 
   loading(true);
 
-  const savepoint: Project = bundleProjectData();
-
   try {
     const resp = await fetch(
-      // "http://localhost:8888/.netlify/functions/convert",
-      "https://advancedgui-convert.netlify.app/.netlify/functions/convert",
+      "http://127.0.0.1:3000/convert",
+      // "https://advancedgui-convert.netlify.app/.netlify/functions/convert",
       {
         method: "POST",
         headers: {
@@ -95,7 +114,7 @@ export async function downloadProjectFile(key: string) {
           key,
           savepoint: {
             invisible: invisibleIDs.value,
-            componentTree: createComponentTreeGroup().toJson(true)
+            componentTree: JSON.parse(createComponentTreeGroup().toJson(true))
           }
         })
       }
@@ -113,6 +132,13 @@ export async function downloadProjectFile(key: string) {
   } catch (exc) {
     error(`Error durring export: ${exc.message || exc}`);
   }
+}
+
+export async function downloadCurrentProjectFile(key: string) {
+  loading(true);
+  const savepoint: Project = bundleProjectData();
+  await downloadProjectFile(savepoint, key);
+  loading(false);
 }
 
 function checkForUpdate(project: Project) {
@@ -155,8 +181,12 @@ export async function loadProjectFromJson(
 
   pauseRendering.value = true;
   if (!keepResrouces) {
-    regImages.forEach(img => unregisterImage(img));
-    regFonts.forEach(font => unregisterFont(font));
+    regImages.forEach(img => {
+      if (!DEFAULT_IMAGES.includes(img)) unregisterImage(img);
+    });
+    regFonts.forEach(font => {
+      if (!DEFAULT_FONTS.includes(font)) unregisterFont(font);
+    });
   }
 
   selection.value = null;
@@ -176,10 +206,14 @@ export async function loadProjectFromJson(
   if (!keepResrouces) {
     try {
       await Promise.all([
-        ...jsonObj.fonts!.map(font => registerFontBase64(font.data, font.name)),
-        ...jsonObj.images!.map(image =>
-          registerImageBase64(image.data, image.name, false)
-        ),
+        ...jsonObj.fonts!.map(font => {
+          if (!DEFAULT_FONTS.includes(font.name))
+            registerFontBase64(font.data, font.name);
+        }),
+        ...jsonObj.images!.map(image => {
+          if (!DEFAULT_IMAGES.includes(image.name))
+            registerImageBase64(image.data, image.name, false);
+        }),
         ...jsonObj.gifs!.map(image =>
           registerImageBase64(image.data, image.name, true)
         )

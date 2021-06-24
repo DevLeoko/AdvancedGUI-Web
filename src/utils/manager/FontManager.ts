@@ -16,6 +16,18 @@ export interface Font {
   data: string;
 }
 
+export const DEFAULT_FONTS = [
+  "Anton",
+  "Bitter",
+  "IndieFlower",
+  "Oswald",
+  "PermanentMarker",
+  "PressStart2P",
+  "Roboto",
+  "VT323",
+  "Yoster"
+];
+
 export const fonts: { [key: string]: Font } = {};
 export const regFonts: string[] = reactive([]);
 
@@ -49,17 +61,7 @@ export async function registerFont(file: File | Blob, fontName: string) {
 }
 
 export function registerDefaultFonts() {
-  for (const font of [
-    "Anton",
-    "Bitter",
-    "IndieFlower",
-    "Oswald",
-    "PermanentMarker",
-    "PressStart2P",
-    "Roboto",
-    "VT323",
-    "Yoster"
-  ]) {
+  for (const font of DEFAULT_FONTS) {
     fetch(`fonts/${font}.ttf`)
       .then(resp => resp.blob())
       .then(blob => registerFont(blob, font));

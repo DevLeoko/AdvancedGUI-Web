@@ -77,6 +77,19 @@ function _reassignIDs(
   }
 }
 
+export function traverseComponent(
+  component: Component,
+  callback: (component: Component) => void
+) {
+  callback(component);
+
+  if (component.isGroup()) {
+    component
+      .getItems()
+      .forEach((comp: Component) => traverseComponent(comp, callback));
+  }
+}
+
 export function getParentComponent(
   component: Component
 ): (ListItemGroup<Component> & Component) | undefined {

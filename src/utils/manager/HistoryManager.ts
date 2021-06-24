@@ -1,4 +1,4 @@
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import {
   loadProjectFromJson,
   bundleProjectData
@@ -11,6 +11,8 @@ export const history = reactive({
   hisotryIndex: 0,
   pauseHistoryTracking: false
 });
+
+export const unsavedChange = ref(false);
 
 export async function redo() {
   if (history.hisotryIndex == 0) return;
@@ -50,7 +52,14 @@ export function updateHistory() {
   )
     return;
 
+  if (history.stack.length) unsavedChange.value = true;
+
   history.stack.splice(0, 0, stateObj);
   history.hisotryIndex = 0;
   if (history.stack.length >= 50) history.stack.pop();
+}
+
+export function clearHistory() {
+  history.hisotryIndex = 0;
+  history.stack = [];
 }

@@ -1,20 +1,30 @@
 <template>
   <div id="app">
-    <app-header />
-    <div class="row mainSpace" @click.capture="updateHistory">
-      <component-tree />
-      <div class="canvasContainer" @click.self="selection = null">
-        <my-canvas></my-canvas>
-        <toolbar />
+    <template v-if="!projectExplorerOpen">
+      <app-header />
+      <div class="row mainSpace" @click.capture="updateHistory">
+        <component-tree />
+        <div class="canvasContainer" @click.self="selection = null">
+          <my-canvas></my-canvas>
+          <toolbar />
+        </div>
+        <side-bar />
       </div>
-      <side-bar />
-    </div>
+    </template>
+
+    <project-explorer v-else></project-explorer>
 
     <loading-screen></loading-screen>
-    <div ref="imageContainer" style="display:none">
-      <img src="images/error.svg" id="broken_TAKEN_ID" />
-    </div>
+    <license-prompt></license-prompt>
+
     <a id="downloadAnchor" style="display:none"></a>
+    <div ref="imageContainer" style="display:none">
+      <img
+        src="images/error.svg"
+        crossorigin="anonymous"
+        id="broken_TAKEN_ID"
+      />
+    </div>
   </div>
 </template>
 
@@ -30,10 +40,16 @@ import {
   initializeShortcutHandler,
   shutdownShortcutHandler
 } from "./utils/handler/ShortcutHandler";
-import { updateHistory } from "./utils/manager/HistoryManager";
+import {
+  loadProjects,
+  projectExplorerOpen
+} from "./utils/manager/ProjectManager";
 import Toolbar from "./components/Toolbar.vue";
-import { selection } from "./utils/manager/WorkspaceManager";
+import { loading, selection } from "./utils/manager/WorkspaceManager";
 import { vueRef } from "./utils/VueRef";
+import ProjectExplorer from "./components/ProjectExplorer.vue";
+import { updateHistory } from "./utils/manager/HistoryManager";
+import LicensePrompt from "./components/LicensePrompt.vue";
 
 export default defineComponent({
   name: "App",
@@ -43,20 +59,25 @@ export default defineComponent({
     SideBar,
     LoadingScreen,
     Toolbar,
+    ProjectExplorer,
+    LicensePrompt,
     AppHeader: Header
   },
 
   data() {
     return {
+      projectExplorerOpen: vueRef(projectExplorerOpen),
       updateHistory,
       selection: vueRef(selection)
     };
   },
 
-  mounted() {
+  async mounted() {
     setupImageManager(this.$refs.imageContainer as HTMLElement);
-    this.updateHistory();
     initializeShortcutHandler();
+    loading(true);
+    await loadProjects();
+    loading(false);
   },
 
   unmounted() {

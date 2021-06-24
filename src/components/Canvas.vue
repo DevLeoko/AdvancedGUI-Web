@@ -34,13 +34,12 @@ import {
 } from "../utils/manager/WorkspaceManager";
 import { updateHistory } from "../utils/manager/HistoryManager";
 import { vueRef } from "../utils/VueRef";
+import { updateCurrentThumbnail } from "../utils/manager/ProjectManager";
 
-let redrawFunction: Function = () => {
-  // Initialized later
-};
+let redrawFunction: Function | null = null;
 
 export function requestRedraw() {
-  redrawFunction();
+  if (redrawFunction) redrawFunction();
 }
 
 export default defineComponent({
@@ -65,7 +64,8 @@ export default defineComponent({
       regImages,
       pauseRendering: vueRef(pauseRendering),
 
-      devMode: vueRef(devMode)
+      devMode: vueRef(devMode),
+      lastSnap: new Date().getTime() - 1000 * 12
     };
   },
 
@@ -81,6 +81,10 @@ export default defineComponent({
     canvas.imageSmoothingEnabled = false;
 
     this.redraw();
+  },
+
+  unmounted() {
+    redrawFunction = null;
   },
 
   computed: {
@@ -174,6 +178,14 @@ export default defineComponent({
       for (let i = this.componentTree.length - 1; i >= 0; i--) {
         const element = this.componentTree[i];
         if (!isInvisible(element.id)) element.draw(canvas);
+      }
+
+      if (new Date().getTime() - this.lastSnap > 1000 * 15) {
+        updateCurrentThumbnail(
+          (this.$refs.canvas as HTMLCanvasElement).toDataURL()
+        );
+
+        this.lastSnap = new Date().getTime();
       }
 
       if (

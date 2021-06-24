@@ -13,7 +13,7 @@ import { hexToRgba } from "../ColorUtils";
 import { Rect } from "../components/Rect";
 import { Project } from "../Project";
 
-export const VERSION = "1.0.7";
+export const VERSION = "1.0.8"; // still 1.0.7
 
 function traverseComponent(
   component: Component,
@@ -45,6 +45,7 @@ function reassignObject(object: any, newObject: any) {
 
 export function migrate(data: Project): Project {
   let oldVersion = data.version || "1.0.0";
+  data.version = VERSION;
 
   if (oldVersion == "1.0.0") {
     traverseComponent(data.componentTree, comp => {

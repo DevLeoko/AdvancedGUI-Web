@@ -1,6 +1,10 @@
 import { Component } from "../components/Component";
 import { getParentComponent } from "../manager/ComponentManager";
 import { redo, undo } from "../manager/HistoryManager";
+import {
+  projectExplorerOpen,
+  saveCurrentProject
+} from "../manager/ProjectManager";
 import { settings } from "../manager/SettingsManager";
 import {
   componentTree,
@@ -29,6 +33,8 @@ function keyZoom(ev: WheelEvent) {
 function keyPress(ev: KeyboardEvent) {
   if (ev.target instanceof HTMLInputElement) return;
 
+  if (projectExplorerOpen.value) return;
+
   if (ev.ctrlKey && (ev.key == "c" || ev.key == "x")) {
     if (selection.value?.component)
       copiedComponent.value = selection.value.component.toJson();
@@ -48,7 +54,7 @@ function keyPress(ev: KeyboardEvent) {
   }
 
   if (ev.ctrlKey && ev.key == "s") {
-    // TODO: save to local storage
+    saveCurrentProject();
     ev.preventDefault();
   }
 
