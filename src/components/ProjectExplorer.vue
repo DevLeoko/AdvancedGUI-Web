@@ -70,7 +70,7 @@
 
       <span
         class="material-icons openLicensePrompt"
-        @click="licensePromptOpen = true"
+        @click="licensePromptDoneAction = () => {}"
         >vpn_key</span
       >
     </div>
@@ -92,7 +92,7 @@ import {
   exportProject,
   getThumbnail,
   importProject,
-  licensePromptOpen,
+  licensePromptDoneAction,
   openNewProject,
   openProject,
   projects,
@@ -108,7 +108,7 @@ export default defineComponent({
   data() {
     return {
       projects: vueRef(projects),
-      licensePromptOpen: vueRef(licensePromptOpen),
+      licensePromptDoneAction: vueRef(licensePromptDoneAction),
       openNewProject,
       openProject,
       VERSION,

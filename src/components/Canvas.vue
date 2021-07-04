@@ -32,7 +32,7 @@ import {
   selection,
   updateSelection
 } from "../utils/manager/WorkspaceManager";
-import { updateHistory } from "../utils/manager/HistoryManager";
+import { unsavedChange, updateHistory } from "../utils/manager/HistoryManager";
 import { vueRef } from "../utils/VueRef";
 import { updateCurrentThumbnail } from "../utils/manager/ProjectManager";
 
@@ -57,6 +57,7 @@ export default defineComponent({
 
       invisibleIDs: vueRef(invisibleIDs),
       selection: vueRef(selection),
+      unsavedChange: vueRef(unsavedChange),
       settings,
       componentTree: vueRef(componentTree),
       registeredComponents,
@@ -98,6 +99,11 @@ export default defineComponent({
   },
 
   watch: {
+    unsavedChange() {
+      this.lastSnap = 0;
+      this.redraw();
+    },
+
     selection: {
       deep: true,
       handler() {

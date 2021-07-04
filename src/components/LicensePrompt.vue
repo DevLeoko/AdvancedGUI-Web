@@ -1,7 +1,7 @@
 <template>
   <div
     class="exportPrompt"
-    :style="{ display: licensePromptOpen ? 'flex' : 'none' }"
+    :style="{ display: licensePromptDoneAction ? 'flex' : 'none' }"
   >
     <div class="exportPromptContainer">
       <h1><span class="material-icons">vpn_key</span> License required</h1>
@@ -11,7 +11,7 @@
         won't lose any progress if you don't have a key yet.
       </p>
       <div class="license-key">
-        <input type="text" placeholder="License key" v-model="licenseKey" />
+        <input type="password" placeholder="License key" v-model="licenseKey" />
         <br />
         <input type="checkbox" v-model="remember" /> <span>Remember key</span>
       </div>
@@ -36,7 +36,7 @@
           <span class="text">Save license key</span>
         </div>
 
-        <div class="btn close" @click="licensePromptOpen = false">
+        <div class="btn close" @click="licensePromptDoneAction = null">
           <span class="text">Close</span>
         </div>
       </div>
@@ -47,7 +47,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { eraseCookie, getCookie, setCookie } from "../utils/CookieUtils";
-import { licenseKey, licensePromptOpen } from "../utils/manager/ProjectManager";
+import {
+  licenseKey,
+  licensePromptDoneAction
+} from "../utils/manager/ProjectManager";
 import { vueRef } from "../utils/VueRef";
 
 export default defineComponent({
@@ -55,7 +58,7 @@ export default defineComponent({
     return {
       licenseKey: vueRef(licenseKey),
       remember: false,
-      licensePromptOpen: vueRef(licensePromptOpen),
+      licensePromptDoneAction: vueRef(licensePromptDoneAction),
       savedKey: null as null | string
     };
   },
@@ -85,7 +88,8 @@ export default defineComponent({
         this.savedKey = "";
       }
 
-      this.licensePromptOpen = false;
+      this.licensePromptDoneAction!();
+      this.licensePromptDoneAction = null;
     }
   }
 });
@@ -122,7 +126,7 @@ export default defineComponent({
     }
 
     .license-key {
-      input[type="text"] {
+      input[type="password"] {
         width: 200px;
         background-color: transparent;
         border: none;

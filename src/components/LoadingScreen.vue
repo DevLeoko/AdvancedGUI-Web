@@ -10,13 +10,21 @@
       autorenew
     </span>
     <div v-else-if="loading.error" class="errorScreen">
-      <h1>
-        <span class="material-icons">warning</span> Something went wrong :(
-      </h1>
+      <h1><span class="material-icons">warning</span> Something went wrong</h1>
       <p>
         {{ loading.error }}
       </p>
       <div class="action-row">
+        <div
+          v-if="loading.action"
+          class="btn action"
+          @click="
+            loading.error = null;
+            loading.action.callback();
+          "
+        >
+          <span class="text">{{ loading.action.label }}</span>
+        </div>
         <div class="btn close" @click="loading.error = null">
           <span class="text">Close</span>
         </div>
@@ -90,7 +98,8 @@ export default defineComponent({
       display: flex;
       justify-content: center;
 
-      .close {
+      .close,
+      .action {
         background-color: transparent;
         border: 1px solid transparentize($color: $light2, $amount: 0.2);
         color: transparentize($color: $light2, $amount: 0.2);
@@ -98,6 +107,17 @@ export default defineComponent({
         &:hover {
           border: 1px solid $light2;
           color: $light2;
+        }
+      }
+
+      .action {
+        margin-right: auto;
+        border: 1px solid $blue;
+        color: $blue;
+
+        &:hover {
+          border: 1px solid transparentize($color: $blue, $amount: 0.2);
+          color: transparentize($color: $blue, $amount: 0.2);
         }
       }
     }

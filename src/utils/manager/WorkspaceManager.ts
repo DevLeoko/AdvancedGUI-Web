@@ -15,9 +15,16 @@ export const devMode = ref(false);
 export const idWatcher = ref((() => {
   /* Do nothing */
 }) as (val: string) => void);
+
+interface Action {
+  label: string;
+  callback: Function;
+}
+
 export const loadingState = reactive({
   loading: false,
   error: null as string | null,
+  action: null as null | Action,
   info: null as string | null
 });
 
@@ -27,10 +34,12 @@ export function loading(val: boolean) {
 
 export function info(val: string, keepLoadingState = false) {
   if (!keepLoadingState) loadingState.loading = false;
+  loadingState.action = null;
   loadingState.info = val;
 }
 
-export function error(val: string) {
+export function error(val: string, action?: Action) {
+  loadingState.action = action || null;
   loadingState.loading = false;
   loadingState.error = val;
 }

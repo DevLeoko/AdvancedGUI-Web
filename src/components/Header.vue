@@ -41,7 +41,7 @@
       <span class="material-icons">save</span>
       <span class="text">Save</span>
     </div>
-    <div class="btn export" @click="exportModal = true">
+    <div class="btn export" @click="exportCurrentProject()">
       <span class="material-icons">get_app</span>
       <span class="text">Download</span>
     </div>
@@ -139,6 +139,7 @@ import {
   unsavedChange
 } from "../utils/manager/HistoryManager";
 import {
+  exportCurrentProject,
   projectExplorerOpen,
   saveCurrentProject
 } from "../utils/manager/ProjectManager";
@@ -154,7 +155,6 @@ export default defineComponent({
       redo,
       history,
       importComponent: false,
-      exportModal: false,
       showAbout: false,
       showShortcuts: false,
       showDevMode: false,
@@ -162,7 +162,8 @@ export default defineComponent({
       projectExplorerOpen: vueRef(projectExplorerOpen),
       unsavedChange: vueRef(unsavedChange),
 
-      saveCurrentProject
+      saveCurrentProject,
+      exportCurrentProject
     };
   },
 

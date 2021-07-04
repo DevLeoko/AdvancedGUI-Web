@@ -16,7 +16,7 @@ import { error } from "./WorkspaceManager";
 export const projectExplorerOpen = ref(true);
 
 export const projects = ref([] as Project[]);
-export const licensePromptOpen = ref(false);
+export const licensePromptDoneAction = ref(null as null | Function);
 export const licenseKey = ref(getCookie("license-key") || "");
 
 let lastOpendProjectName = "";
@@ -72,15 +72,29 @@ export async function deleteProject(name: string) {
 }
 
 export function exportProject(name: string) {
+  const exportAction = () =>
+    downloadProjectFile(
+      projects.value.find(p => p.name == name)!,
+      licenseKey.value
+    );
   if (!licenseKey.value) {
-    licensePromptOpen.value = true;
+    licensePromptDoneAction.value = exportAction;
     return;
   }
 
-  downloadProjectFile(
-    projects.value.find(p => p.name == name)!,
-    licenseKey.value
-  );
+  exportAction();
+}
+
+export function exportCurrentProject() {
+  const savepoint = bundleProjectData();
+
+  if (!licenseKey.value) {
+    licensePromptDoneAction.value = () =>
+      downloadProjectFile(savepoint, licenseKey.value);
+    return;
+  }
+
+  downloadProjectFile(savepoint, licenseKey.value);
 }
 
 export async function saveCurrentProject() {

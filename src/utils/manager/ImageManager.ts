@@ -10,7 +10,7 @@ export interface Image {
   isGif: boolean;
 }
 
-export const DEFAULT_IMAGES = [
+export const DEFAULT_IMAGE_FILES = [
   "Down.png",
   "Down_H.png",
   "Down_C.png",
@@ -33,6 +33,10 @@ export const DEFAULT_IMAGES = [
   "List2.png",
   "List3.png"
 ];
+
+export const DEFAULT_IMAGES = DEFAULT_IMAGE_FILES.map(name =>
+  name.substr(0, name.length - 4)
+);
 
 export const regImages: string[] = reactive([]);
 export const images: { [key: string]: Image } = {};
@@ -117,11 +121,11 @@ export async function registerImage(
 
 export function setupImageManager(hiddenImageContainer: HTMLElement) {
   imageContainer = hiddenImageContainer;
-  for (const font of DEFAULT_IMAGES) {
-    fetch(`images/${font}`)
+  for (const name of DEFAULT_IMAGES) {
+    fetch(`images/${name}`)
       .then(resp => resp.blob())
       .then(blob =>
-        registerImage(blob, font.substr(0, font.length - 4), false)
+        registerImage(blob, name.substr(0, name.length - 4), false)
       );
   }
 }

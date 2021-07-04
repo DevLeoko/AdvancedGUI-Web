@@ -1,6 +1,7 @@
 import { GroupComponent } from "../components/GroupComponent";
 import { Image } from "../components/Image";
 import { Template } from "../components/Template";
+import { BACKEND_URL } from "../Config";
 import {
   invisibleIDs,
   JsonObject,
@@ -21,6 +22,7 @@ import {
   registerImageBase64,
   unregisterImage
 } from "../manager/ImageManager";
+import { licensePromptDoneAction } from "../manager/ProjectManager";
 import { settings } from "../manager/SettingsManager";
 import { migrate, VERSION } from "../manager/UpdateManager";
 import {
@@ -103,8 +105,8 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
 
   try {
     const resp = await fetch(
-      "http://127.0.0.1:3000/convert",
-      // "https://advancedgui-convert.netlify.app/.netlify/functions/convert",
+      // "http://127.0.0.1:3000/sync",
+      `${BACKEND_URL}/convert`,
       {
         method: "POST",
         headers: {
@@ -124,13 +126,34 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
 
     if (resp.status >= 400) throw data;
 
-    const { invisibleExp, componentTreeExp } = JSON.parse(data);
-    savepoint.invisible = invisibleExp;
-    savepoint.exportedTree = componentTreeExp;
-    downloadJson(JSON.stringify(savepoint));
+    const { invisible, componentTree } = JSON.parse(data);
+
+    downloadJson(
+      JSON.stringify({
+        ...savepoint,
+        invisible,
+        exportedTree: componentTree
+      })
+    );
     loading(false);
   } catch (exc) {
-    error(`Error durring export: ${exc.message || exc}`);
+    const errorText = `Error durring export: ${exc.message || exc}`;
+    const licenseError =
+      errorText.toLocaleLowerCase().includes("licence") ||
+      errorText.toLocaleLowerCase().includes("license");
+    error(
+      errorText,
+      licenseError
+        ? {
+            label: "Change license key",
+            callback: () => {
+              licensePromptDoneAction.value = () => {
+                /**/
+              };
+            }
+          }
+        : undefined
+    );
   }
 }
 
