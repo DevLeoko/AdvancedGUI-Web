@@ -1,7 +1,7 @@
 import { reactive, ref } from "vue";
 import {
   loadProjectFromJson,
-  bundleProjectData
+  bundleCurrentProjectData
 } from "../handler/ProjectSerializationHandler";
 import { Project } from "../Project";
 import { loading } from "./WorkspaceManager";
@@ -39,7 +39,9 @@ export async function undo() {
 }
 
 export function updateHistory() {
-  const stateObj = JSON.parse(JSON.stringify(bundleProjectData())) as Project;
+  const stateObj = JSON.parse(
+    JSON.stringify(bundleCurrentProjectData())
+  ) as Project;
 
   delete stateObj.fonts;
   delete stateObj.images;

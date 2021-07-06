@@ -34,7 +34,7 @@ import {
   pauseRendering,
   selection
 } from "../manager/WorkspaceManager";
-import { Project } from "../Project";
+import { Project, ProjectTransferData } from "../Project";
 
 function createComponentTreeGroup() {
   return new GroupComponent(
@@ -46,7 +46,7 @@ function createComponentTreeGroup() {
   );
 }
 
-export function bundleProjectData() {
+export function bundleCurrentProjectData() {
   const usedImages: string[] = [];
 
   componentTree.value.forEach(comp =>
@@ -89,6 +89,13 @@ export function bundleProjectData() {
   return projectData;
 }
 
+export function getCurrentTransferData(): ProjectTransferData {
+  return {
+    componentTree: JSON.parse(createComponentTreeGroup().toJson(true)),
+    invisible: invisibleIDs.value
+  };
+}
+
 export async function downloadProjectFile(savepoint: Project, key: string) {
   function downloadJson(data: string) {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(data);
@@ -115,8 +122,8 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
         body: JSON.stringify({
           key,
           savepoint: {
-            invisible: invisibleIDs.value,
-            componentTree: JSON.parse(createComponentTreeGroup().toJson(true))
+            invisible: savepoint.invisible,
+            componentTree: JSON.parse(savepoint.componentTree.toJson(true))
           }
         })
       }
@@ -159,7 +166,7 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
 
 export async function downloadCurrentProjectFile(key: string) {
   loading(true);
-  const savepoint: Project = bundleProjectData();
+  const savepoint: Project = bundleCurrentProjectData();
   await downloadProjectFile(savepoint, key);
   loading(false);
 }

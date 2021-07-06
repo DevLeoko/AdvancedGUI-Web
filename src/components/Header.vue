@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <div class="btn sync">
+    <div class="btn sync" @click="openSyncPrompt()">
       <span class="material-icons">cloud_upload</span>
       <span class="text">Live sync</span>
     </div>
@@ -144,6 +144,7 @@ import {
   saveCurrentProject
 } from "../utils/manager/ProjectManager";
 import { vueRef } from "../utils/VueRef";
+import { openSyncPrompt } from "../utils/manager/SyncManager";
 
 export default defineComponent({
   components: { Modal },
@@ -161,6 +162,8 @@ export default defineComponent({
       formatVersion: VERSION,
       projectExplorerOpen: vueRef(projectExplorerOpen),
       unsavedChange: vueRef(unsavedChange),
+
+      openSyncPrompt,
 
       saveCurrentProject,
       exportCurrentProject

@@ -16,6 +16,7 @@
 
     <loading-screen></loading-screen>
     <license-prompt></license-prompt>
+    <sync-prompt></sync-prompt>
 
     <a id="downloadAnchor" style="display:none"></a>
     <div ref="imageContainer" style="display:none">
@@ -50,6 +51,7 @@ import { vueRef } from "./utils/VueRef";
 import ProjectExplorer from "./components/ProjectExplorer.vue";
 import { updateHistory } from "./utils/manager/HistoryManager";
 import LicensePrompt from "./components/LicensePrompt.vue";
+import SyncPrompt from "./components/SyncPrompt.vue";
 
 export default defineComponent({
   name: "App",
@@ -61,6 +63,7 @@ export default defineComponent({
     Toolbar,
     ProjectExplorer,
     LicensePrompt,
+    SyncPrompt,
     AppHeader: Header
   },
 

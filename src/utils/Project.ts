@@ -19,3 +19,8 @@ export interface Project {
   componentTree: GroupComponent;
   exportedTree?: GroupComponent;
 }
+
+export interface ProjectTransferData {
+  invisible: string[];
+  componentTree: GroupComponent;
+}

@@ -140,20 +140,6 @@ export default defineComponent({
 
   .spin {
     font-size: 40px;
-    animation-name: spin;
-    animation-duration: 1.2s;
-    animation-iteration-count: infinite;
-    cursor: default;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
   }
 }
 </style>

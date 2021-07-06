@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { GroupComponent } from "../components/GroupComponent";
 import { getCookie } from "../CookieUtils";
 import {
-  bundleProjectData,
+  bundleCurrentProjectData,
   downloadProjectFile,
   loadProjectFromJson
 } from "../handler/ProjectSerializationHandler";
@@ -86,7 +86,7 @@ export function exportProject(name: string) {
 }
 
 export function exportCurrentProject() {
-  const savepoint = bundleProjectData();
+  const savepoint = bundleCurrentProjectData();
 
   if (!licenseKey.value) {
     licensePromptDoneAction.value = () =>
@@ -98,7 +98,7 @@ export function exportCurrentProject() {
 }
 
 export async function saveCurrentProject() {
-  const savepoint = bundleProjectData();
+  const savepoint = bundleCurrentProjectData();
 
   const nameChange = savepoint.name != lastOpendProjectName;
   if (nameChange) {

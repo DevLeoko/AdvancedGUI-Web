@@ -11,7 +11,12 @@
         won't lose any progress if you don't have a key yet.
       </p>
       <div class="license-key">
-        <input type="password" placeholder="License key" v-model="licenseKey" />
+        <input
+          type="text"
+          autocomplete="off"
+          placeholder="License key"
+          v-model="licenseKey"
+        />
         <br />
         <input type="checkbox" v-model="remember" /> <span>Remember key</span>
       </div>
@@ -67,6 +72,8 @@ export default defineComponent({
     this.savedKey = getCookie("license-key");
     if (this.savedKey) {
       this.licenseKey = this.savedKey;
+      console.log(this.savedKey, this.licenseKey);
+
       this.remember = true;
     }
   },
@@ -126,7 +133,7 @@ export default defineComponent({
     }
 
     .license-key {
-      input[type="password"] {
+      input[type="text"] {
         width: 200px;
         background-color: transparent;
         border: none;
