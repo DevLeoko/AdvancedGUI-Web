@@ -3,6 +3,7 @@ import { BACKEND_URL } from "../Config";
 import { getCookie } from "../CookieUtils";
 import { getCurrentTransferData } from "../handler/ProjectSerializationHandler";
 import { licenseKey, licensePromptDoneAction } from "./ProjectManager";
+import { settings } from "./SettingsManager";
 import { error } from "./WorkspaceManager";
 
 export enum SyncStatus {
@@ -11,16 +12,19 @@ export enum SyncStatus {
   CONNECTED
 }
 
+export enum SyncType {
+  SOCKET = 0,
+  MANUAL = 1
+}
+
 export const syncPromptOpen = ref(false);
 export const serverAddress = ref(null as string | null);
-export const syncKey = ref(
-  "48c39069f0cd498de4e508f677499875bd1787c0b5054b24b58c8f22608b69ac" as
-    | string
-    | null
-);
+export const syncKey = ref(null as string | null);
+export const userIp = ref(null as string | null);
 export const syncStatus = ref(SyncStatus.DISCONNECTED);
+export const syncType = ref(SyncType.SOCKET);
 
-async function callSyncServer(): Promise<string> {
+async function callSyncServer(): Promise<{ id: string; ip: string }> {
   const resp = await fetch(
     // "http://127.0.0.1:3000/sync",
     `${BACKEND_URL}/sync`,
@@ -31,6 +35,7 @@ async function callSyncServer(): Promise<string> {
       },
       body: JSON.stringify({
         key: licenseKey.value,
+        name: settings.projectName,
         savepoint: getCurrentTransferData()
       })
     }
@@ -40,7 +45,12 @@ async function callSyncServer(): Promise<string> {
 
   if (resp.status >= 400) throw data;
 
-  return JSON.parse(data).id;
+  const { id, ip } = JSON.parse(data);
+
+  return {
+    id,
+    ip
+  };
 }
 
 export function openSyncPrompt() {
@@ -50,11 +60,15 @@ export function openSyncPrompt() {
   }
 
   serverAddress.value = getCookie("server-address") || null;
+  syncType.value = Number.parseInt(getCookie("sync-type") || "0");
   syncKey.value = null;
   syncPromptOpen.value = true;
 
   callSyncServer()
-    .then(id => (syncKey.value = id))
+    .then(data => {
+      userIp.value = data.ip;
+      syncKey.value = data.id;
+    })
     .catch(exc => {
       const errorText = `Starting sync failed: ${exc.message || exc}`;
       const licenseError =
@@ -74,4 +88,47 @@ export function openSyncPrompt() {
 
       syncPromptOpen.value = false;
     });
+}
+
+export async function pingServer() {
+  if (syncStatus.value == SyncStatus.SYNCING) return;
+
+  syncStatus.value = SyncStatus.SYNCING;
+
+  await callSyncServer();
+
+  if (syncType.value == SyncType.MANUAL) {
+    syncStatus.value = SyncStatus.CONNECTED;
+    return;
+  }
+
+  if (syncType.value == SyncType.SOCKET) {
+    const socket = new WebSocket(`ws://${serverAddress.value || "localhost"}`);
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const timer = setTimeout(() => {
+          console.error("Server not in sync mode, TIMEOUT.");
+          syncStatus.value = SyncStatus.DISCONNECTED;
+          reject("Server not reachable or not in sync mode!");
+        }, 1000 * 5);
+
+        socket.addEventListener("message", function(event) {
+          clearTimeout(timer);
+
+          if (event.data != syncKey.value) {
+            console.error("Server not in sync mode, resp:", event.data);
+            syncStatus.value = SyncStatus.DISCONNECTED;
+            reject("Server not in sync mode!");
+            return;
+          }
+
+          syncStatus.value = SyncStatus.CONNECTED;
+          resolve();
+        });
+      });
+    } finally {
+      socket.close();
+    }
+  }
 }

@@ -72,8 +72,6 @@ export default defineComponent({
     this.savedKey = getCookie("license-key");
     if (this.savedKey) {
       this.licenseKey = this.savedKey;
-      console.log(this.savedKey, this.licenseKey);
-
       this.remember = true;
     }
   },

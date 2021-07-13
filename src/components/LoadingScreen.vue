@@ -59,6 +59,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .loadingPrompt {
+  z-index: 11;
   position: absolute;
   top: 0;
   left: 0;

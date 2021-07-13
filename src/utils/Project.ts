@@ -17,7 +17,10 @@ export interface Project {
     data: string;
   }[];
   componentTree: GroupComponent;
-  exportedTree?: GroupComponent;
+  exportedTree: {
+    draft: GroupComponent;
+    finalized?: GroupComponent;
+  };
 }
 
 export interface ProjectTransferData {

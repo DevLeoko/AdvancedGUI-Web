@@ -10,6 +10,7 @@ import {
 import { Project } from "../Project";
 import { clearHistory, unsavedChange } from "./HistoryManager";
 import { settings } from "./SettingsManager";
+import { pingServer, SyncStatus, syncStatus } from "./SyncManager";
 import { migrate, VERSION } from "./UpdateManager";
 import { error } from "./WorkspaceManager";
 
@@ -40,35 +41,6 @@ export async function loadProjects() {
       JSON.parse((await localforage.getItem(`project/${name}`))! as string)
     );
   }
-}
-
-export async function importProject(data: Project) {
-  if (data.version && data.name) {
-    while (projects.value.some(proj => proj.name == data.name)) {
-      data.name += " - 2";
-    }
-
-    delete data.exportedTree;
-
-    projects.value.splice(0, 0, data);
-    await localforage.setItem(`project/${data.name}`, JSON.stringify(data));
-
-    await updateProjectNames();
-  } else {
-    error("This does not look like a AdvancedGUI project file.");
-  }
-}
-
-export async function deleteProject(name: string) {
-  projects.value.splice(
-    projects.value.findIndex(p => p.name == name),
-    1
-  );
-
-  await localforage.removeItem(`project/${name}`);
-  await localforage.removeItem(`thumbnail/${name}`);
-
-  await updateProjectNames();
 }
 
 export function exportProject(name: string) {
@@ -129,7 +101,46 @@ export async function saveCurrentProject() {
 
   if (nameChange) await updateProjectNames();
 
+  if (syncStatus.value == SyncStatus.CONNECTED) await pingServer();
+
   unsavedChange.value = false;
+}
+
+export async function importProject(data: Project) {
+  // lastOpendProjectName = project.name;
+  // projectExplorerOpen.value = false;
+
+  // clearHistory();
+  // unsavedChange.value = false; //TODO
+
+  if (data.version && data.name) {
+    while (projects.value.some(proj => proj.name == data.name)) {
+      data.name += " - 2";
+    }
+
+    loadProjectFromJson(data, false);
+
+    projects.value.splice(0, 0, data);
+    await localforage.setItem(`project/${data.name}`, JSON.stringify(data));
+
+    await updateProjectNames();
+
+    await saveCurrentProject();
+  } else {
+    error("This does not look like a AdvancedGUI project file.");
+  }
+}
+
+export async function deleteProject(name: string) {
+  projects.value.splice(
+    projects.value.findIndex(p => p.name == name),
+    1
+  );
+
+  await localforage.removeItem(`project/${name}`);
+  await localforage.removeItem(`thumbnail/${name}`);
+
+  await updateProjectNames();
 }
 
 export async function updateProject(project: Project) {
@@ -143,11 +154,12 @@ export async function updateProject(project: Project) {
 
 export function openProject(project: Project) {
   lastOpendProjectName = project.name;
-  loadProjectFromJson(project, false);
-  projectExplorerOpen.value = false;
 
   clearHistory();
   unsavedChange.value = false;
+
+  loadProjectFromJson(project, false);
+  projectExplorerOpen.value = false;
 }
 
 export async function openNewProject() {
@@ -159,7 +171,9 @@ export async function openNewProject() {
     name = `Unnamed ${num}`;
   }
 
-  const newProject = {
+  const baseGroup = new GroupComponent("component_tree", "-", [], [], true);
+
+  const newProject: Project = {
     name,
     height: 2,
     width: 3,
@@ -168,7 +182,10 @@ export async function openNewProject() {
     fonts: [],
     gifs: [],
     images: [],
-    componentTree: new GroupComponent("component_tree", "-", [], [], true)
+    componentTree: baseGroup,
+    exportedTree: {
+      draft: JSON.parse(baseGroup.toJson(true))
+    }
   };
 
   openProject(newProject);

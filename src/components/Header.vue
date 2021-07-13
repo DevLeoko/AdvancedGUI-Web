@@ -29,17 +29,41 @@
       </div>
     </div>
 
-    <div class="btn sync" @click="openSyncPrompt()">
+    <div
+      v-if="syncStatus == SyncStatus.DISCONNECTED"
+      class="btn sync"
+      @click="openSyncPrompt()"
+    >
       <span class="material-icons">cloud_upload</span>
       <span class="text">Live sync</span>
     </div>
     <div
+      v-else
+      class="syncStatus"
+      :class="syncStatus != SyncStatus.CONNECTED ? 'pending' : ''"
+    >
+      <div class="row">
+        <div class="dot"></div>
+        {{ syncStatus == SyncStatus.CONNECTED ? "Connected" : "Syncing..." }}
+      </div>
+      <div class="detail">
+        <a @click="syncStatus = SyncStatus.DISCONNECTED">Disconnect</a>
+        <span v-if="syncType == SyncType.MANUAL"
+          >| Use '/ag pull' to apply changes</span
+        >
+      </div>
+    </div>
+    <div
       class="btn save"
-      :class="!unsavedChange ? 'inactive' : ''"
+      :class="
+        !unsavedChange || syncStatus == SyncStatus.SYNCING ? 'inactive' : ''
+      "
       @click="saveCurrentProject"
     >
       <span class="material-icons">save</span>
-      <span class="text">Save</span>
+      <span class="text"
+        >Save{{ syncStatus != SyncStatus.DISCONNECTED ? " & sync" : "" }}</span
+      >
     </div>
     <div class="btn export" @click="exportCurrentProject()">
       <span class="material-icons">get_app</span>
@@ -144,7 +168,13 @@ import {
   saveCurrentProject
 } from "../utils/manager/ProjectManager";
 import { vueRef } from "../utils/VueRef";
-import { openSyncPrompt } from "../utils/manager/SyncManager";
+import {
+  openSyncPrompt,
+  SyncStatus,
+  syncStatus,
+  syncType,
+  SyncType
+} from "../utils/manager/SyncManager";
 
 export default defineComponent({
   components: { Modal },
@@ -162,6 +192,10 @@ export default defineComponent({
       formatVersion: VERSION,
       projectExplorerOpen: vueRef(projectExplorerOpen),
       unsavedChange: vueRef(unsavedChange),
+      syncStatus: vueRef(syncStatus),
+      SyncStatus,
+      syncType: vueRef(syncType),
+      SyncType,
 
       openSyncPrompt,
 

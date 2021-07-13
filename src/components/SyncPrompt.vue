@@ -5,26 +5,58 @@
   >
     <div class="exportPromptContainer">
       <h1><span class="material-icons">cloud_upload</span> Start live sync</h1>
-      <p>
-        <b>1.</b> What is the server address, that you woud like to sync to?
-      </p>
-      <div class="address">
-        <input
-          type="text"
-          placeholder="hypixel.net:25565"
-          v-model="serverAddress"
-        />
-        <br />
+      <p><b>1.</b> Select sync type:</p>
+      <div>
+        <div>
+          <input
+            type="radio"
+            name="syncType"
+            id="socket"
+            :value="SyncType.SOCKET"
+            v-model.number="syncType"
+          />
+          <label for="socket"
+            >Socket <i>- Default (Works for most servers)</i></label
+          >
+        </div>
+        <div>
+          <input
+            type="radio"
+            name="syncType"
+            id="manual"
+            :value="SyncType.MANUAL"
+            v-model.number="syncType"
+          />
+          <label for="manual"
+            >Manual <i>- Use this when socket doesn't work</i></label
+          >
+        </div>
       </div>
-      <p><b>2.</b> Run this command on your server:</p>
+      <div v-if="syncType == SyncType.SOCKET">
+        <p>
+          <b>2.</b> Enter your server address and the port configured for the
+          sync socket (default 27757):
+        </p>
+        <div class="address">
+          <input
+            type="text"
+            placeholder=" hypixel.net:27757"
+            v-model="serverAddress"
+          />
+        </div>
+      </div>
+      <p>
+        <b>{{ syncType == SyncType.SOCKET ? "3" : "2" }}.</b> Run this command
+        on your server:
+      </p>
       <div class="command">
         <span class="spin material-icons" v-if="!syncKey">autorenew</span>
         <input
           v-else
           ref="commandInput"
           type="text"
-          @input="$refs.commandInput.value = `/ag sync ${syncKey}`"
-          :value="`/ag sync ${syncKey}`"
+          @input="$refs.commandInput.value = syncCommand"
+          :value="syncCommand"
         />
         <span
           class="material-icons copyBtn"
@@ -34,11 +66,11 @@
         >
       </div>
       <div class="action-row">
-        <b>3.</b>
+        <b>{{ syncType == SyncType.SOCKET ? "4" : "3" }}.</b>
         <div
           class="btn export"
-          :class="!serverAddress ? 'inactive' : ''"
-          @click="syncPromptOpen = false"
+          :class="!serverAddress || !syncKey ? 'inactive' : ''"
+          @click="sync()"
         >
           <span class="material-icons">cloud_upload</span>
           <span class="text">Connect live sync</span>
@@ -60,17 +92,25 @@ import {
   serverAddress,
   syncPromptOpen,
   syncStatus,
-  syncKey
+  syncKey,
+  syncType,
+  SyncType,
+  userIp,
+  pingServer
 } from "../utils/manager/SyncManager";
+import { error, loading } from "../utils/manager/WorkspaceManager";
 import { vueRef } from "../utils/VueRef";
 
 export default defineComponent({
   data() {
     return {
       serverAddress: vueRef(serverAddress),
+      userIp: vueRef(userIp),
       syncPromptOpen: vueRef(syncPromptOpen),
       syncStatus: vueRef(syncStatus),
-      syncKey: vueRef(syncKey)
+      syncKey: vueRef(syncKey),
+      syncType: vueRef(syncType),
+      SyncType
     };
   },
 
@@ -78,9 +118,26 @@ export default defineComponent({
     this.serverAddress = getCookie("server-address") || null;
   },
 
+  computed: {
+    syncCommand(): string {
+      return `/ag sync ${this.syncType == SyncType.MANUAL ? "-manual " : ""}${
+        this.syncKey
+      } ${this.userIp}`;
+    }
+  },
+
   methods: {
-    sync() {
+    async sync() {
       setCookie("server-address", this.serverAddress!, 10 * 365);
+      setCookie("sync-type", this.syncType!.toString(), 10 * 365);
+      loading(true);
+      try {
+        await pingServer();
+        syncPromptOpen.value = false;
+        loading(false);
+      } catch (exc) {
+        error(exc.message || exc);
+      }
     },
 
     copyCommand() {
@@ -115,7 +172,7 @@ export default defineComponent({
     padding: 30px;
     box-shadow: $shadow;
     background-color: $dark1;
-    max-width: 30vw;
+    width: 30rem;
     color: $light2;
 
     p {

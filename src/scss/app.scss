@@ -9,6 +9,22 @@ body {
   font-family: "Nunito", sans-serif;
 }
 
+input[type="radio"] {
+  cursor: pointer;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  border: 1px solid $light4;
+  background-color: transparent;
+  margin-right: 0.5rem;
+
+  &:checked {
+    background-color: $light2;
+    border: 3px solid $light4;
+  }
+}
+
 .spin {
   animation-name: spin;
   animation-duration: 1.2s;
@@ -23,6 +39,20 @@ body {
 
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseBorder {
+  0% {
+    border-width: 1px;
+  }
+
+  50% {
+    border-width: 4px;
+  }
+
+  100% {
+    border-width: 1px;
   }
 }
 
@@ -128,6 +158,51 @@ a {
     padding: 20px 20px;
     background-color: $dark3;
     z-index: 3;
+
+    .syncStatus {
+      color: $green;
+
+      .row {
+        align-items: center;
+
+        .dot {
+          box-sizing: border-box;
+          height: 10px;
+          width: 10px;
+          border-radius: 10px;
+          margin-right: 0.2rem;
+          margin-bottom: 3px;
+          background-color: $green;
+          border: 3px solid transparentize($color: $dark1, $amount: 0.5);
+          animation-name: pulseBorder;
+          animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          animation-duration: 2s;
+          animation-iteration-count: infinite;
+        }
+      }
+
+      &.pending {
+        color: $blue;
+
+        .dot {
+          background-color: $blue;
+        }
+      }
+
+      .detail {
+        opacity: 0.7;
+        display: block;
+        margin-top: -5px;
+        font-size: 0.8rem;
+
+        a{
+          color: unset;
+          text-decoration: underline;
+          margin-right: 5px;
+          text-transform: uppercase;
+        }
+      }
+    }
 
     .exitBtn {
       border-right: 1px solid $light4;

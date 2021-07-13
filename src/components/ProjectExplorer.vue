@@ -95,8 +95,7 @@ import {
   licensePromptDoneAction,
   openNewProject,
   openProject,
-  projects,
-  updateProject
+  projects
 } from "../utils/manager/ProjectManager";
 import { VERSION } from "../utils/manager/UpdateManager";
 import { info, loading } from "../utils/manager/WorkspaceManager";
@@ -180,9 +179,9 @@ export default defineComponent({
       if (project.version != VERSION) {
         actions.splice(0, 0, {
           icon: "update",
-          name: "Update",
+          name: "Open to update",
           action: () => {
-            updateProject(project);
+            openProject(project);
           }
         });
       }
@@ -312,7 +311,7 @@ export default defineComponent({
           cursor: pointer;
 
           &:hover {
-            background-color: $dark1;
+            background-color: transparentize($color: $dark1, $amount: 0.7);
           }
 
           .info {
@@ -330,7 +329,7 @@ export default defineComponent({
       }
 
       .openNote {
-        color: $light2;
+        color: $light;
         margin: auto auto;
         padding-top: 1rem;
         font-weight: 700;

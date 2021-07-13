@@ -15,6 +15,7 @@ import {
   registerFontBase64,
   unregisterFont
 } from "../manager/FontManager";
+import { unsavedChange } from "../manager/HistoryManager";
 import {
   DEFAULT_IMAGES,
   images,
@@ -57,6 +58,8 @@ export function bundleCurrentProjectData() {
     })
   );
 
+  const baseGroup = createComponentTreeGroup();
+
   const projectData: Project = {
     name: settings.projectName,
     version: VERSION,
@@ -83,7 +86,10 @@ export function bundleCurrentProjectData() {
         name: image.name,
         data: image.data.src
       })),
-    componentTree: JSON.parse(createComponentTreeGroup().toJson())
+    componentTree: JSON.parse(baseGroup.toJson()),
+    exportedTree: {
+      draft: JSON.parse(baseGroup.toJson(true))
+    }
   };
 
   return projectData;
@@ -123,7 +129,7 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
           key,
           savepoint: {
             invisible: savepoint.invisible,
-            componentTree: JSON.parse(savepoint.componentTree.toJson(true))
+            componentTree: savepoint.exportedTree.draft
           }
         })
       }
@@ -139,8 +145,11 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
       JSON.stringify({
         ...savepoint,
         invisible,
-        exportedTree: componentTree
-      })
+        exportedTree: {
+          draft: savepoint.exportedTree.draft,
+          finalized: componentTree
+        }
+      } as Project)
     );
     loading(false);
   } catch (exc) {
@@ -171,7 +180,7 @@ export async function downloadCurrentProjectFile(key: string) {
   loading(false);
 }
 
-function checkForUpdate(project: Project) {
+function checkForUpdate(project: Project): [Project, boolean] {
   if (project.version != VERSION) {
     const oldVersion = project.version;
     const updated = migrate(project);
@@ -179,9 +188,9 @@ function checkForUpdate(project: Project) {
       `Your savepoint was still on format-version <b>${oldVersion}</b> and got migrated to the new format-version <b>${VERSION}</b>`,
       true
     );
-    return updated;
+    return [updated, true];
   }
-  return project;
+  return [project, false];
 }
 
 export function importComponentFomJson(componentProject: Project) {
@@ -197,7 +206,7 @@ export function importComponentFomJson(componentProject: Project) {
   }
 
   pauseRendering.value = true;
-  componentProject = checkForUpdate(componentProject);
+  componentProject = checkForUpdate(componentProject)[0];
   invisibleIDs.value.push(...componentProject.invisible);
   addJsonComponentsToRoot(componentProject.componentTree.components, false);
   pauseRendering.value = false;
@@ -207,9 +216,12 @@ export async function loadProjectFromJson(
   jsonObj: Project,
   keepResrouces = false
 ) {
-  jsonObj = checkForUpdate(jsonObj);
-
+  let updated: boolean;
+  [jsonObj, updated] = checkForUpdate(JSON.parse(JSON.stringify(jsonObj)));
   pauseRendering.value = true;
+
+  if (updated) unsavedChange.value = true;
+
   if (!keepResrouces) {
     regImages.forEach(img => {
       if (!DEFAULT_IMAGES.includes(img)) unregisterImage(img);
