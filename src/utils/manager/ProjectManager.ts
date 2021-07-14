@@ -118,6 +118,7 @@ export async function importProject(data: Project) {
       data.name += " - 2";
     }
 
+    lastOpendProjectName = data.name;
     loadProjectFromJson(data, false);
 
     projects.value.splice(0, 0, data);
