@@ -72,6 +72,8 @@ export function exportCurrentProject() {
 export async function saveCurrentProject() {
   const savepoint = bundleCurrentProjectData();
 
+  const index = projects.value.findIndex(p => p.name == lastOpendProjectName);
+
   const nameChange = savepoint.name != lastOpendProjectName;
   if (nameChange) {
     while (projects.value.some(p => p.name == savepoint.name)) {
@@ -89,8 +91,6 @@ export async function saveCurrentProject() {
     settings.projectName = savepoint.name;
     lastOpendProjectName = savepoint.name;
   }
-
-  const index = projects.value.findIndex(p => p.name == lastOpendProjectName);
 
   projects.value.splice(index, 1, savepoint);
 
