@@ -1,6 +1,6 @@
 <template>
   <div class="head">
-    <div class="exitBtn" @click="projectExplorerOpen = true">
+    <div class="exitBtn" @click="exitToExplorer()">
       <span class="material-icons">exit_to_app</span>
     </div>
     <b class="label moreBtn">
@@ -175,6 +175,7 @@ import {
   syncType,
   SyncType
 } from "../utils/manager/SyncManager";
+import { info } from "../utils/manager/WorkspaceManager";
 
 export default defineComponent({
   components: { Modal },
@@ -204,7 +205,20 @@ export default defineComponent({
     };
   },
 
-  methods: {}
+  methods: {
+    exitToExplorer() {
+      if (this.unsavedChange) {
+        info("Unsaved changes! Save all your changes before you exit.", false, {
+          label: "Discard changes and exit",
+          callback: () => {
+            this.projectExplorerOpen = true;
+          }
+        });
+      } else {
+        this.projectExplorerOpen = true;
+      }
+    }
+  }
 });
 </script>
 

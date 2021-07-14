@@ -37,7 +37,17 @@
       </p>
       <div class="action-row">
         <div class="btn close" @click="loading.info = null">
-          <span class="text">Close</span>
+          <span class="text">Okay</span>
+        </div>
+        <div
+          v-if="loading.action"
+          class="btn action"
+          @click="
+            loading.info = null;
+            loading.action.callback();
+          "
+        >
+          <span class="text">{{ loading.action.label }}</span>
         </div>
       </div>
     </div>
@@ -136,6 +146,13 @@ export default defineComponent({
     .material-icons {
       color: $blue;
       margin-right: 10px;
+    }
+
+    .action-row {
+      .action {
+        margin-right: 0;
+        margin-left: auto;
+      }
     }
   }
 

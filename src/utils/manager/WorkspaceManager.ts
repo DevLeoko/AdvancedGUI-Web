@@ -32,9 +32,9 @@ export function loading(val: boolean) {
   loadingState.loading = val;
 }
 
-export function info(val: string, keepLoadingState = false) {
+export function info(val: string, keepLoadingState = false, action?: Action) {
   if (!keepLoadingState) loadingState.loading = false;
-  loadingState.action = null;
+  loadingState.action = action || null;
   loadingState.info = val;
 }
 

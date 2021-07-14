@@ -49,7 +49,7 @@ import Toolbar from "./components/Toolbar.vue";
 import { loading, selection } from "./utils/manager/WorkspaceManager";
 import { vueRef } from "./utils/VueRef";
 import ProjectExplorer from "./components/ProjectExplorer.vue";
-import { updateHistory } from "./utils/manager/HistoryManager";
+import { unsavedChange, updateHistory } from "./utils/manager/HistoryManager";
 import LicensePrompt from "./components/LicensePrompt.vue";
 import SyncPrompt from "./components/SyncPrompt.vue";
 
@@ -81,6 +81,19 @@ export default defineComponent({
     loading(true);
     await loadProjects();
     loading(false);
+
+    window.addEventListener("beforeunload", (e: BeforeUnloadEvent) => {
+      if (!unsavedChange.value || projectExplorerOpen.value) {
+        return undefined;
+      }
+
+      const confirmationMessage =
+        "It looks like you have been editing something. " +
+        "If you leave before saving, your changes will be lost.";
+
+      (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+      return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    });
   },
 
   unmounted() {
