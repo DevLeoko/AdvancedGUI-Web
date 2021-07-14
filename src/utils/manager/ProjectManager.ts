@@ -154,6 +154,7 @@ export async function updateProject(project: Project) {
 
 export function openProject(project: Project) {
   lastOpendProjectName = project.name;
+  syncStatus.value = SyncStatus.DISCONNECTED;
 
   clearHistory();
   unsavedChange.value = false;

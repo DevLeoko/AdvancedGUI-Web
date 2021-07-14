@@ -121,7 +121,7 @@ export async function registerImage(
 
 export function setupImageManager(hiddenImageContainer: HTMLElement) {
   imageContainer = hiddenImageContainer;
-  for (const name of DEFAULT_IMAGES) {
+  for (const name of DEFAULT_IMAGE_FILES) {
     fetch(`images/${name}`)
       .then(resp => resp.blob())
       .then(blob =>

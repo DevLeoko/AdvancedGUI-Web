@@ -223,12 +223,12 @@ export async function loadProjectFromJson(
   if (updated) unsavedChange.value = true;
 
   if (!keepResrouces) {
-    regImages.forEach(img => {
-      if (!DEFAULT_IMAGES.includes(img)) unregisterImage(img);
-    });
-    regFonts.forEach(font => {
-      if (!DEFAULT_FONTS.includes(font)) unregisterFont(font);
-    });
+    regImages
+      .filter(img => !DEFAULT_IMAGES.includes(img))
+      .forEach(unregisterImage);
+    regFonts
+      .filter(font => !DEFAULT_FONTS.includes(font))
+      .forEach(unregisterFont);
   }
 
   selection.value = null;
