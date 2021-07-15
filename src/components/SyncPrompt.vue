@@ -88,6 +88,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { getCookie, setCookie } from "../utils/CookieUtils";
+import { settings } from "../utils/manager/SettingsManager";
 import {
   serverAddress,
   syncPromptOpen,
@@ -95,7 +96,6 @@ import {
   syncKey,
   syncType,
   SyncType,
-  userIp,
   pingServer
 } from "../utils/manager/SyncManager";
 import { error, loading } from "../utils/manager/WorkspaceManager";
@@ -105,11 +105,11 @@ export default defineComponent({
   data() {
     return {
       serverAddress: vueRef(serverAddress),
-      userIp: vueRef(userIp),
       syncPromptOpen: vueRef(syncPromptOpen),
       syncStatus: vueRef(syncStatus),
       syncKey: vueRef(syncKey),
       syncType: vueRef(syncType),
+      settings,
       SyncType
     };
   },
@@ -122,7 +122,7 @@ export default defineComponent({
     syncCommand(): string {
       return `/ag sync ${this.syncType == SyncType.MANUAL ? "-manual " : ""}${
         this.syncKey
-      } ${this.userIp}`;
+      } ${this.settings.projectName}`;
     }
   },
 

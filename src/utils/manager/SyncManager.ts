@@ -20,24 +20,54 @@ export enum SyncType {
 export const syncPromptOpen = ref(false);
 export const serverAddress = ref(null as string | null);
 export const syncKey = ref(null as string | null);
-export const userIp = ref(null as string | null);
 export const syncStatus = ref(SyncStatus.DISCONNECTED);
 export const syncType = ref(SyncType.SOCKET);
 
-async function callSyncServer(): Promise<{ id: string; ip: string }> {
+async function manaulSync(): Promise<void> {
+  const resp = await fetch(`${BACKEND_URL}/sync`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      key: licenseKey.value,
+      name: settings.projectName,
+      savepoint: getCurrentTransferData()
+    })
+  });
+
+  const data = await resp.text();
+
+  if (resp.status >= 400) throw data;
+}
+
+async function socketSync(): Promise<void> {
+  const resp = await fetch(`${BACKEND_URL}/sync-direct-call`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      key: licenseKey.value,
+      name: settings.projectName,
+      savepoint: getCurrentTransferData(),
+      serverAddress: serverAddress.value
+    })
+  });
+
+  const data = await resp.text();
+
+  if (resp.status >= 400) throw data;
+}
+
+async function querySyncKey(): Promise<string> {
   const resp = await fetch(
-    // "http://127.0.0.1:3000/sync",
-    `${BACKEND_URL}/sync`,
+    `${BACKEND_URL}/sync-key/${encodeURIComponent(licenseKey.value)}`,
     {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        key: licenseKey.value,
-        name: settings.projectName,
-        savepoint: getCurrentTransferData()
-      })
+      }
     }
   );
 
@@ -45,12 +75,7 @@ async function callSyncServer(): Promise<{ id: string; ip: string }> {
 
   if (resp.status >= 400) throw data;
 
-  const { id, ip } = JSON.parse(data);
-
-  return {
-    id,
-    ip
-  };
+  return JSON.parse(data).id;
 }
 
 export function openSyncPrompt() {
@@ -64,10 +89,9 @@ export function openSyncPrompt() {
   syncKey.value = null;
   syncPromptOpen.value = true;
 
-  callSyncServer()
-    .then(data => {
-      userIp.value = data.ip;
-      syncKey.value = data.id;
+  querySyncKey()
+    .then(key => {
+      syncKey.value = key;
     })
     .catch(exc => {
       const errorText = `Starting sync failed: ${exc.message || exc}`;
@@ -95,40 +119,18 @@ export async function pingServer() {
 
   syncStatus.value = SyncStatus.SYNCING;
 
-  await callSyncServer();
-
-  if (syncType.value == SyncType.MANUAL) {
-    syncStatus.value = SyncStatus.CONNECTED;
-    return;
-  }
-
-  if (syncType.value == SyncType.SOCKET) {
-    const socket = new WebSocket(`ws://${serverAddress.value || "localhost"}`);
-
-    try {
-      await new Promise<void>((resolve, reject) => {
-        const timer = setTimeout(() => {
-          console.error("Server not in sync mode, TIMEOUT.");
-          syncStatus.value = SyncStatus.DISCONNECTED;
-          reject("Server not reachable or not in sync mode!");
-        }, 1000 * 5);
-
-        socket.addEventListener("message", function(event) {
-          clearTimeout(timer);
-
-          if (event.data != syncKey.value) {
-            console.error("Server not in sync mode, resp:", event.data);
-            syncStatus.value = SyncStatus.DISCONNECTED;
-            reject("Server not in sync mode!");
-            return;
-          }
-
-          syncStatus.value = SyncStatus.CONNECTED;
-          resolve();
-        });
-      });
-    } finally {
-      socket.close();
+  try {
+    if (syncType.value == SyncType.MANUAL) {
+      await manaulSync();
     }
+
+    if (syncType.value == SyncType.SOCKET) {
+      await socketSync();
+    }
+
+    syncStatus.value = SyncStatus.CONNECTED;
+  } catch (exc) {
+    syncStatus.value = SyncStatus.DISCONNECTED;
+    throw exc;
   }
 }
