@@ -10,13 +10,21 @@
       autorenew
     </span>
     <div v-else-if="loading.error" class="errorScreen">
-      <h1>
-        <span class="material-icons">warning</span> Something went wrong :(
-      </h1>
+      <h1><span class="material-icons">warning</span> Something went wrong</h1>
       <p>
         {{ loading.error }}
       </p>
       <div class="action-row">
+        <div
+          v-if="loading.action"
+          class="btn action"
+          @click="
+            loading.error = null;
+            loading.action.callback();
+          "
+        >
+          <span class="text">{{ loading.action.label }}</span>
+        </div>
         <div class="btn close" @click="loading.error = null">
           <span class="text">Close</span>
         </div>
@@ -29,7 +37,17 @@
       </p>
       <div class="action-row">
         <div class="btn close" @click="loading.info = null">
-          <span class="text">Close</span>
+          <span class="text">Okay</span>
+        </div>
+        <div
+          v-if="loading.action"
+          class="btn action"
+          @click="
+            loading.info = null;
+            loading.action.callback();
+          "
+        >
+          <span class="text">{{ loading.action.label }}</span>
         </div>
       </div>
     </div>
@@ -37,31 +55,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
-const loadingContainer = reactive({
-  loading: false,
-  error: null as string | null,
-  info: null as string | null
-});
-
-export function loading(val: boolean) {
-  loadingContainer.loading = val;
-}
-
-export function info(val: string, keepLoadingState = false) {
-  if (!keepLoadingState) loadingContainer.loading = false;
-  loadingContainer.info = val;
-}
-
-export function error(val: string) {
-  loadingContainer.loading = false;
-  loadingContainer.error = val;
-}
+import { defineComponent } from "vue";
+import { loadingState } from "../utils/manager/WorkspaceManager";
 
 export default defineComponent({
   data() {
     return {
-      loading: loadingContainer
+      loading: loadingState
     };
   }
 });
@@ -69,6 +69,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .loadingPrompt {
+  z-index: 11;
   position: absolute;
   top: 0;
   left: 0;
@@ -108,7 +109,8 @@ export default defineComponent({
       display: flex;
       justify-content: center;
 
-      .close {
+      .close,
+      .action {
         background-color: transparent;
         border: 1px solid transparentize($color: $light2, $amount: 0.2);
         color: transparentize($color: $light2, $amount: 0.2);
@@ -116,6 +118,17 @@ export default defineComponent({
         &:hover {
           border: 1px solid $light2;
           color: $light2;
+        }
+      }
+
+      .action {
+        margin-right: auto;
+        border: 1px solid $blue;
+        color: $blue;
+
+        &:hover {
+          border: 1px solid transparentize($color: $blue, $amount: 0.2);
+          color: transparentize($color: $blue, $amount: 0.2);
         }
       }
     }
@@ -134,24 +147,17 @@ export default defineComponent({
       color: $blue;
       margin-right: 10px;
     }
+
+    .action-row {
+      .action {
+        margin-right: 0;
+        margin-left: auto;
+      }
+    }
   }
 
   .spin {
     font-size: 40px;
-    animation-name: spin;
-    animation-duration: 1.2s;
-    animation-iteration-count: infinite;
-    cursor: default;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
   }
 }
 </style>

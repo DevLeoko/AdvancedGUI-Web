@@ -17,50 +17,32 @@ import { ResizeIcon, Modifier, moveModifier } from "@/utils/Modifier";
 import { Component } from "@/utils/components/Component";
 import {
   isInvisible,
-  invisible,
+  invisibleIDs,
   components as registeredComponents
 } from "@/utils/manager/ComponentManager";
 import { drawSelection, getHanderAt } from "@/utils/Selection";
 import { BoundingBox } from "@/utils/BoundingBox";
 import { images, regImages } from "@/utils/manager/ImageManager";
 import { ListItemGroup } from "../utils/ListItem";
-import { devMode } from "../App.vue";
+import { settings } from "../utils/manager/SettingsManager";
+import {
+  componentTree,
+  devMode,
+  pauseRendering,
+  selection,
+  updateSelection
+} from "../utils/manager/WorkspaceManager";
+import { unsavedChange, updateHistory } from "../utils/manager/HistoryManager";
+import { vueRef } from "../utils/VueRef";
+import { updateCurrentThumbnail } from "../utils/manager/ProjectManager";
 
-let redrawFunction: Function = () => {
-  // Initialized later
-};
+let redrawFunction: Function | null = null;
 
 export function requestRedraw() {
-  redrawFunction();
+  if (redrawFunction) redrawFunction();
 }
 
 export default defineComponent({
-  props: {
-    width: {
-      type: Number,
-      required: true
-    },
-    height: {
-      type: Number,
-      required: true
-    },
-    zoom: {
-      type: Number,
-      required: true
-    },
-    pauseRendering: {
-      type: Boolean
-    },
-    selected: {
-      type: Object as () => Component | null,
-      required: false
-    },
-    elements: {
-      type: Array as () => Component[],
-      required: true
-    }
-  },
-
   data() {
     return {
       mouseDownTime: Date.now(),
@@ -73,12 +55,18 @@ export default defineComponent({
         singleAxis: boolean;
       },
 
-      invisible,
+      invisibleIDs: vueRef(invisibleIDs),
+      selection: vueRef(selection),
+      unsavedChange: vueRef(unsavedChange),
+      settings,
+      componentTree: vueRef(componentTree),
       registeredComponents,
       images,
       regImages,
+      pauseRendering: vueRef(pauseRendering),
 
-      devMode
+      devMode: vueRef(devMode),
+      lastSnap: new Date().getTime() - 1000 * 12
     };
   },
 
@@ -96,15 +84,34 @@ export default defineComponent({
     this.redraw();
   },
 
+  unmounted() {
+    redrawFunction = null;
+  },
+
+  computed: {
+    height(): number {
+      return this.settings.height * 128;
+    },
+
+    width(): number {
+      return this.settings.width * 128;
+    }
+  },
+
   watch: {
-    selected: {
+    unsavedChange() {
+      this.lastSnap = 0;
+      this.redraw();
+    },
+
+    selection: {
       deep: true,
       handler() {
         this.redraw();
       }
     },
 
-    elements: {
+    componentTree: {
       deep: true,
       handler() {
         this.redraw();
@@ -118,27 +125,30 @@ export default defineComponent({
       }
     },
 
-    zoom() {
+    "settings.zoom"() {
       this.adjustHeight();
     },
 
-    height() {
+    "settings.height"() {
       this.adjustHeight();
       setTimeout(this.redraw, 10);
     },
 
-    width() {
+    "settings.width"() {
       setTimeout(this.redraw, 10);
     },
 
     registeredComponents() {
-      if (this.selected && !this.registeredComponents[this.selected.id])
-        this.$emit("select", { value: null });
+      if (
+        this.selection?.component &&
+        !this.registeredComponents[this.selection?.component.id]
+      )
+        updateSelection({ value: null });
 
       this.redraw();
     },
 
-    invisible: {
+    invisibleIDs: {
       deep: true,
       handler() {
         this.redraw();
@@ -149,7 +159,7 @@ export default defineComponent({
       this.redraw();
     },
 
-    "devMode.value": {
+    devMode: {
       handler() {
         this.redraw();
       }
@@ -159,7 +169,7 @@ export default defineComponent({
   methods: {
     adjustHeight() {
       (this.$refs.canvas as HTMLElement).style.height = `${this.height *
-        this.zoom}px`;
+        this.settings.zoom}px`;
     },
 
     redraw() {
@@ -171,15 +181,26 @@ export default defineComponent({
 
       canvas.clearRect(0, 0, this.width, this.height);
 
-      for (let i = this.elements.length - 1; i >= 0; i--) {
-        const element = this.elements[i];
+      for (let i = this.componentTree.length - 1; i >= 0; i--) {
+        const element = this.componentTree[i];
         if (!isInvisible(element.id)) element.draw(canvas);
       }
 
-      if (this.selected && this.registeredComponents[this.selected.id])
-        drawSelection(canvas, this.selected);
+      if (new Date().getTime() - this.lastSnap > 1000 * 15) {
+        updateCurrentThumbnail(
+          (this.$refs.canvas as HTMLCanvasElement).toDataURL()
+        );
 
-      if (devMode.value) {
+        this.lastSnap = new Date().getTime();
+      }
+
+      if (
+        this.selection?.component &&
+        this.registeredComponents[this.selection?.component.id]
+      )
+        drawSelection(canvas, this.selection?.component);
+
+      if (this.devMode) {
         canvas.strokeStyle = "rgba(255,255,255,0.3)";
         canvas.setLineDash([]);
         canvas.lineWidth = 1;
@@ -220,20 +241,24 @@ export default defineComponent({
       let hovered = this.getElementAt(point);
 
       if (!handler) {
-        if (this.selected && this.selected.getBoundingBox().isInside(point))
+        if (
+          this.selection?.component &&
+          this.selection?.component.getBoundingBox().isInside(point)
+        )
           this.mouseDownTime = Date.now();
 
         // Check for change of selection
         if (
           hovered &&
-          (!this.selected || !this.selected.getBoundingBox().isInside(point))
+          (!this.selection?.component ||
+            !this.selection?.component.getBoundingBox().isInside(point))
         ) {
           // If there is already an element selected, then the new selection will try to be as low as possible
           // in the component tree towards the current selection. e.g.: it will try to select sibilings within the parent
-          if (this.selected) {
+          if (this.selection?.component) {
             const commonParent = this.getLowestCommonParents(
               hovered,
-              this.selected.id,
+              this.selection?.component.id,
               point
             );
             const sibling = commonParent
@@ -244,13 +269,13 @@ export default defineComponent({
             else if (commonParent) hovered = commonParent;
           }
 
-          this.$emit("select", { value: hovered });
+          updateSelection({ value: hovered });
         }
 
-        if (!hovered) this.$emit("select", { value: null });
+        if (!hovered) updateSelection({ value: null });
       }
 
-      if (this.selected) {
+      if (this.selection?.component) {
         let modifier;
         let modifierIcon: ResizeIcon | "move" = "move";
         let singleAxis = false;
@@ -258,7 +283,7 @@ export default defineComponent({
           modifier = handler.modifier;
           modifierIcon = handler.icon;
           singleAxis = handler.singleAxisAction;
-        } else if (this.selected.getBoundingBox().isInside(point)) {
+        } else if (this.selection?.component.getBoundingBox().isInside(point)) {
           this.setCursor("move");
           modifier = moveModifier;
         }
@@ -267,7 +292,7 @@ export default defineComponent({
           this.modifying = {
             startPosition: point,
             icon: modifierIcon,
-            elementStartPosition: this.selected.getBoundingBox(),
+            elementStartPosition: this.selection?.component.getBoundingBox(),
             modifier,
             singleAxis
           };
@@ -282,27 +307,31 @@ export default defineComponent({
       const hovered = this.getElementAt(point);
 
       if (Date.now() - this.mouseDownTime < 200) {
-        if (this.selected) {
+        if (this.selection?.component) {
           if (
             hovered &&
-            this.containsComponentAtPoint(hovered, this.selected, point)
+            this.containsComponentAtPoint(
+              hovered,
+              this.selection?.component,
+              point
+            )
           )
-            this.$emit("select", {
-              value: this.selected.refineSelection(point)
+            updateSelection({
+              value: this.selection?.component.refineSelection(point)
             });
-          else this.$emit("select", { value: hovered });
+          else updateSelection({ value: hovered! });
         }
 
         this.redraw();
       }
 
-      this.$emit("change-indication");
+      updateHistory();
 
       this.modifying = null;
     },
 
     getElementAt(point: Point) {
-      return this.elements.find(element =>
+      return this.componentTree.find(element =>
         element.getBoundingBox().isInside(point)
       );
     },
@@ -345,15 +374,15 @@ export default defineComponent({
 
         newBounds.ensureBounds(this.width, this.height);
 
-        this.selected?.modify(newBounds, this.modifying.singleAxis);
+        this.selection?.component?.modify(newBounds, this.modifying.singleAxis);
       } else {
         const handler = getHanderAt(point);
-        if (handler && this.selected) {
+        if (handler && this.selection?.component) {
           this.setCursor(handler.icon);
         } else if (hovered) {
           if (
-            hovered == this.selected ||
-            this.selected?.getBoundingBox().isInside(point)
+            hovered == this.selection?.component ||
+            this.selection?.component?.getBoundingBox().isInside(point)
           ) {
             this.setCursor("move");
           } else this.setCursor("pointer");

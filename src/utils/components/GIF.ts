@@ -1,5 +1,6 @@
 import { Action } from "../actions/Action";
-import { JsonObject, ComponentType } from "../manager/ComponentManager";
+import { JsonObject } from "../manager/ComponentManager";
+import { ComponentType } from "./Component";
 import { Image } from "./Image";
 
 export class GIF extends Image {

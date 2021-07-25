@@ -1,10 +1,11 @@
 import { BoundingBox } from "../BoundingBox";
 import ComponentEditor from "@/components/editors/TextInputEditor.vue";
 import { Action } from "../actions/Action";
-import { JsonObject, ComponentType } from "../manager/ComponentManager";
+import { JsonObject } from "../manager/ComponentManager";
 import { markRaw } from "vue";
 import { Rectangular } from "./Rectangular";
 import { hexToRgba } from "../ColorUtils";
+import { ComponentType } from "./Component";
 
 export class TextInput extends Rectangular {
   public static displayName: ComponentType = "Text-Input";

@@ -5,7 +5,7 @@
       <input
         type="text"
         class="componentIdInput"
-        @focus="setWatcher(val => (component.targetId = val))"
+        @focus="idWatcher = val => (component.targetId = val)"
         v-model="component.targetId"
       />
     </div>
@@ -58,14 +58,15 @@
 import { defineComponent } from "vue";
 import { Replica } from "@/utils/components/Replica";
 import { components, TemplateData } from "@/utils/manager/ComponentManager";
-import { setWatcher } from "@/App.vue";
+import { idWatcher } from "@/utils/manager/WorkspaceManager";
+import { vueRef } from "../../utils/VueRef";
 
 export default defineComponent({
   data() {
     return {
       components,
       defaultData: undefined as undefined | TemplateData,
-      setWatcher
+      idWatcher: vueRef(idWatcher)
     };
   },
 

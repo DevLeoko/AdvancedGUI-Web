@@ -10,6 +10,34 @@ export interface Image {
   isGif: boolean;
 }
 
+export const DEFAULT_IMAGE_FILES = [
+  "Down.png",
+  "Down_H.png",
+  "Down_C.png",
+  "Up.png",
+  "Up_H.png",
+  "Up_C.png",
+  "Left.png",
+  "Left_H.png",
+  "Left_C.png",
+  "Right.png",
+  "Right_H.png",
+  "Right_C.png",
+  "Play.png",
+  "Play_H.png",
+  "Play_C.png",
+  "PlayRed.png",
+  "PlayRed_H.png",
+  "PlayRed_C.png",
+  "List1.png",
+  "List2.png",
+  "List3.png"
+];
+
+export const DEFAULT_IMAGES = DEFAULT_IMAGE_FILES.map(name =>
+  name.substr(0, name.length - 4)
+);
+
 export const regImages: string[] = reactive([]);
 export const images: { [key: string]: Image } = {};
 let imageContainer: HTMLElement;
@@ -30,6 +58,7 @@ export async function registerImageBase64(
   if (regImages.indexOf(imageName) !== -1) unregisterImage(imageName);
 
   const imageElement = document.createElement("img") as HTMLImageElement;
+  imageElement.crossOrigin = "anonymous";
   imageElement.onload = () => {
     const image: Image = {
       name: imageName,
@@ -60,6 +89,7 @@ export function placeRemoteImage(
 
   if (!resImage) {
     resImage = document.createElement("img") as HTMLImageElement;
+    resImage.crossOrigin = "anonymous";
     resImage.id = id;
     imageContainer.appendChild(resImage);
   }
@@ -91,33 +121,11 @@ export async function registerImage(
 
 export function setupImageManager(hiddenImageContainer: HTMLElement) {
   imageContainer = hiddenImageContainer;
-  for (const font of [
-    "Down.png",
-    "Down_H.png",
-    "Down_C.png",
-    "Up.png",
-    "Up_H.png",
-    "Up_C.png",
-    "Left.png",
-    "Left_H.png",
-    "Left_C.png",
-    "Right.png",
-    "Right_H.png",
-    "Right_C.png",
-    "Play.png",
-    "Play_H.png",
-    "Play_C.png",
-    "PlayRed.png",
-    "PlayRed_H.png",
-    "PlayRed_C.png",
-    "List1.png",
-    "List2.png",
-    "List3.png"
-  ]) {
-    fetch(`images/${font}`)
+  for (const name of DEFAULT_IMAGE_FILES) {
+    fetch(`images/${name}`)
       .then(resp => resp.blob())
       .then(blob =>
-        registerImage(blob, font.substr(0, font.length - 4), false)
+        registerImage(blob, name.substr(0, name.length - 4), false)
       );
   }
 }

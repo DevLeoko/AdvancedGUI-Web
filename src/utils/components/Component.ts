@@ -7,9 +7,29 @@ import { ListItem, ListItemGroup } from "../ListItem";
 import {
   componentFromJson,
   JsonObject,
-  unregisterComponent,
-  ComponentType
+  unregisterComponent
 } from "../manager/ComponentManager";
+
+export type ComponentType =
+  | "Rect"
+  | "Group"
+  | "Hover"
+  | "Text"
+  | "Image"
+  | "View"
+  | "Template"
+  | "Remote Image"
+  | "Text-Input"
+  | "Click Animation"
+  | "Dummy"
+  | "GIF"
+  | "Replica"
+  | "Check";
+
+export type JsonConverter = (
+  jsonObj: JsonObject,
+  clickAction: Action[]
+) => Component;
 
 export abstract class Component implements ListItem {
   public hideable = true;

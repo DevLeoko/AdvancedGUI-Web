@@ -1,5 +1,8 @@
 <template>
   <div class="head">
+    <div class="exitBtn" @click="exitToExplorer()">
+      <span class="material-icons">exit_to_app</span>
+    </div>
     <b class="label moreBtn">
       <i class="material-icons" style="padding-bottom: 2px; font-size: 18px"
         >expand_more</i
@@ -12,84 +15,60 @@
         <div class="entry" @click="showAbout = true">About</div>
       </div>
     </b>
-    <input
-      class="inputProjectName"
-      type="text"
-      v-model="settings.projectName"
-    />
-    <div class="input">
-      <b class="label">Width</b>
-      <span><input type="number" v-model="settings.width" /> frames</span>
-    </div>
-    <div class="input">
-      <b class="label">Height</b>
-      <span><input type="number" v-model="settings.height" /> frames</span>
-    </div>
-    <div>
-      <b class="label">ZOOM</b>
-      <select v-model.number="settings.zoom">
-        <option :value="settings.zoom" style="display: none"
-          >x{{ settings.zoom }}</option
-        >
-        <option value="0.5">x0.5</option>
-        <option value="1">x1</option>
-        <option value="2">x2</option>
-        <option value="4">x4</option>
-      </select>
-    </div>
-
-    <div class="historyControls row">
-      <div
-        class="btn"
-        :class="canUndo ? 'inactive' : ''"
-        @click.prevent="$emit('undo')"
-      >
-        <span class="material-icons">undo</span>
-        <span class="text">Undo</span>
-      </div>
-      <div
-        class="btn"
-        :class="canRedo ? '' : 'inactive'"
-        @click.prevent="$emit('redo')"
-      >
-        <span class="material-icons">redo</span>
-        <span class="text">Redo</span>
+    <div class="center">
+      <input
+        class="inputProjectName"
+        type="text"
+        v-model="settings.projectName"
+      />
+      <div class="size">
+        <input type="number" v-model="settings.width" />
+        <span class="label">x</span>
+        <input type="number" v-model="settings.height" />
+        <span class="label">frames</span>
       </div>
     </div>
 
-    <div class="btn import" @click="triggerImportSelector()">
+    <div
+      v-if="syncStatus == SyncStatus.DISCONNECTED"
+      class="btn sync"
+      @click="openSyncPrompt()"
+    >
       <span class="material-icons">cloud_upload</span>
-      <span class="text">Import project</span>
-
-      <div
-        class="btn import secondary"
-        @click.stop="triggerImportSelector(true)"
-      >
-        <span class="material-icons">extension</span>
-        <span class="text">Import component</span>
+      <span class="text">Live sync</span>
+    </div>
+    <div
+      v-else
+      class="syncStatus"
+      :class="syncStatus != SyncStatus.CONNECTED ? 'pending' : ''"
+    >
+      <div class="row">
+        <div class="dot"></div>
+        {{ syncStatus == SyncStatus.CONNECTED ? "Connected" : "Syncing..." }}
+      </div>
+      <div class="detail">
+        <a @click="syncStatus = SyncStatus.DISCONNECTED">Disconnect</a>
+        <span v-if="syncType == SyncType.MANUAL"
+          >| Use '/ag pull' to apply changes</span
+        >
       </div>
     </div>
-    <div class="btn export" @click="$emit('export')">
-      <span class="material-icons">get_app</span>
-      <span class="text">Export savepoint</span>
+    <div
+      class="btn save"
+      :class="
+        !unsavedChange || syncStatus == SyncStatus.SYNCING ? 'inactive' : ''
+      "
+      @click="saveCurrentProject"
+    >
+      <span class="material-icons">save</span>
+      <span class="text"
+        >Save{{ syncStatus != SyncStatus.DISCONNECTED ? " & sync" : "" }}</span
+      >
     </div>
-    <div class="btn export" @click="exportModal = true">
+    <div class="btn export" @click="exportCurrentProject()">
       <span class="material-icons">get_app</span>
-      <span class="text">Export for usage</span>
+      <span class="text">Download</span>
     </div>
-
-    <input
-      type="file"
-      ref="importFileSelect"
-      accept=".json"
-      style="display: none"
-      @change="checkForUpload()"
-    />
-
-    <export-prompt
-      v-model="exportModal"
-      @export="exportProj($event)"
-    ></export-prompt>
     <modal
       title="About this page"
       icon="help_outline"
@@ -173,61 +152,71 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { GeneralSettings } from "@/App.vue";
 
-import { loading } from "@/components/LoadingScreen.vue";
-import ExportPrompt from "@/components/ExportPrompt.vue";
 import Modal from "@/components/Modal.vue";
 import { VERSION } from "../utils/manager/UpdateManager";
+import { settings } from "../utils/manager/SettingsManager";
+import {
+  undo,
+  redo,
+  history,
+  unsavedChange
+} from "../utils/manager/HistoryManager";
+import {
+  exportCurrentProject,
+  projectExplorerOpen,
+  saveCurrentProject
+} from "../utils/manager/ProjectManager";
+import { vueRef } from "../utils/VueRef";
+import {
+  openSyncPrompt,
+  SyncStatus,
+  syncStatus,
+  syncType,
+  SyncType
+} from "../utils/manager/SyncManager";
+import { info } from "../utils/manager/WorkspaceManager";
 
 export default defineComponent({
-  props: {
-    settings: {
-      type: Object as () => GeneralSettings,
-      required: true
-    },
-    canUndo: {
-      type: Boolean
-    },
-    canRedo: {
-      type: Boolean
-    }
-  },
-
-  components: { ExportPrompt, Modal },
+  components: { Modal },
 
   data() {
     return {
+      settings,
+      undo,
+      redo,
+      history,
       importComponent: false,
-      exportModal: false,
       showAbout: false,
       showShortcuts: false,
       showDevMode: false,
-      formatVersion: VERSION
+      formatVersion: VERSION,
+      projectExplorerOpen: vueRef(projectExplorerOpen),
+      unsavedChange: vueRef(unsavedChange),
+      syncStatus: vueRef(syncStatus),
+      SyncStatus,
+      syncType: vueRef(syncType),
+      SyncType,
+
+      openSyncPrompt,
+
+      saveCurrentProject,
+      exportCurrentProject
     };
   },
 
   methods: {
-    async checkForUpload() {
-      const selector = this.$refs.importFileSelect as HTMLInputElement;
-
-      if (selector.files?.length) {
-        loading(true);
-        const file = selector.files[0];
-        const json = await file.text();
-        this.$emit("load-project", JSON.parse(json), this.importComponent);
-        selector.value = "";
+    exitToExplorer() {
+      if (this.unsavedChange) {
+        info("Unsaved changes! Save all your changes before you exit.", false, {
+          label: "Discard changes and exit",
+          callback: () => {
+            this.projectExplorerOpen = true;
+          }
+        });
+      } else {
+        this.projectExplorerOpen = true;
       }
-    },
-
-    triggerImportSelector(componentMode = false) {
-      this.importComponent = componentMode;
-      (this.$refs.importFileSelect as HTMLElement).click();
-    },
-
-    exportProj(key: string) {
-      this.exportModal = false;
-      this.$emit("export-usage", key);
     }
   }
 });

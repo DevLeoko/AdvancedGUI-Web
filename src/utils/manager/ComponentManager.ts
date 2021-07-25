@@ -1,25 +1,8 @@
 import { Component } from "../components/Component";
-import { Action } from "../actions/Action";
-import { Rect } from "../components/Rect";
-import { GroupComponent } from "../components/GroupComponent";
-import { Text } from "../components/Text";
-import { Image } from "../components/Image";
-import { Hover } from "../components/Hover";
-import { View } from "../components/View";
-// import { ref} from "vue"; TODO
 import { actionsFromJson } from "./ActionManager";
-import { Font } from "./FontManager";
-import { CheckComponent } from "../components/CheckComponent";
-import { Template } from "../components/Template";
-import { Replica } from "../components/Replica";
-import { GIF } from "../components/GIF";
-import { RemoteImage } from "../components/RemoteImage";
-import { Dummy } from "../components/Dummy";
-import { reactive } from "vue";
+import { ref } from "vue";
 import { ListItemGroup } from "../ListItem";
-import { ClickAnimation } from "../components/ClickAnimation";
-import { TextInput } from "../components/TextInput";
-import { hexToRgba } from "../ColorUtils";
+import { componentInfo } from "../ComponentMeta";
 
 export type TemplateVariable = string;
 export type TemplateData = { name: string; value: string | number }[];
@@ -29,94 +12,10 @@ export interface JsonObject {
   [key: string]: any;
 }
 
-export type ComponentType =
-  | "Rect"
-  | "Group"
-  | "Hover"
-  | "Text"
-  | "Image"
-  | "View"
-  | "Template"
-  | "Remote Image"
-  | "Text-Input"
-  | "Click Animation"
-  | "Dummy"
-  | "GIF"
-  | "Replica"
-  | "Check";
-
-export interface ExportData {
-  type: "savepoint" | "usage";
-  name: string;
-  version: string;
-  invisible: string[];
-  fonts?: Font[];
-  width: number;
-  height: number;
-  images?: {
-    name: string;
-    data: string;
-  }[];
-  gifs?: {
-    name: string;
-    data: string;
-  }[];
-  componentTree: GroupComponent;
-}
-
-export type JsonConverter = (
-  jsonObj: JsonObject,
-  clickAction: Action[]
-) => Component;
-
-export interface ComponentMeta {
-  generator: () => Component;
-  fromJson: JsonConverter;
-  childComponentProps?: string[];
-  displayName: string;
-  icon: string;
-}
-
-export const invisible: string[] = reactive([]);
+export const invisibleIDs = ref([] as string[]);
 export const components: {
   [key: string]: Component;
 } = {};
-
-export const componentNames = [
-  Rect.displayName,
-  Text.displayName,
-  Image.displayName,
-  RemoteImage.displayName,
-  GIF.displayName,
-  GroupComponent.displayName,
-  Hover.displayName,
-  ClickAnimation.displayName,
-  CheckComponent.displayName,
-  TextInput.displayName,
-  Template.displayName,
-  Replica.displayName,
-  View.displayName,
-  Dummy.displayName
-];
-
-export const componentInfo: {
-  [key: string]: ComponentMeta;
-} = {
-  [Rect.displayName]: Rect,
-  [Text.displayName]: Text,
-  [Image.displayName]: Image,
-  [RemoteImage.displayName]: RemoteImage,
-  [GIF.displayName]: GIF,
-  [GroupComponent.displayName]: GroupComponent,
-  [Hover.displayName]: Hover,
-  [ClickAnimation.displayName]: ClickAnimation,
-  [CheckComponent.displayName]: CheckComponent,
-  [Template.displayName]: Template,
-  [TextInput.displayName]: TextInput,
-  [Replica.displayName]: Replica,
-  [View.displayName]: View,
-  [Dummy.displayName]: Dummy
-};
 
 function randomString(length: number) {
   let result = "";
@@ -137,7 +36,7 @@ export function generateUniqueID() {
 }
 
 export function isInvisible(id: string) {
-  return invisible.indexOf(id) != -1;
+  return invisibleIDs.value.includes(id);
 }
 
 export function toggleVis(id: string) {
@@ -147,10 +46,10 @@ export function toggleVis(id: string) {
       .forEach(toggleVis);
   }
 
-  const index = invisible.indexOf(id);
+  const index = invisibleIDs.value.indexOf(id);
 
-  if (index != -1) invisible.splice(index, 1);
-  else invisible.push(id);
+  if (index != -1) invisibleIDs.value.splice(index, 1);
+  else invisibleIDs.value.push(id);
 }
 
 function _reassignIDs(
@@ -178,6 +77,19 @@ function _reassignIDs(
   }
 }
 
+export function traverseComponent(
+  component: Component,
+  callback: (component: Component) => void
+) {
+  callback(component);
+
+  if (component.isGroup()) {
+    component
+      .getItems()
+      .forEach((comp: Component) => traverseComponent(comp, callback));
+  }
+}
+
 export function getParentComponent(
   component: Component
 ): (ListItemGroup<Component> & Component) | undefined {
@@ -192,10 +104,10 @@ export function registerComponent(component: Component) {
 
   if (
     component.id.includes("#") &&
-    invisible.indexOf(component.id.split("#")[0]) != -1 &&
-    invisible.indexOf(component.id) == -1
+    invisibleIDs.value.indexOf(component.id.split("#")[0]) != -1 &&
+    invisibleIDs.value.indexOf(component.id) == -1
   ) {
-    invisible.push(component.id);
+    invisibleIDs.value.push(component.id);
   }
 }
 
@@ -242,13 +154,4 @@ export function componentFromJson(
   } else {
     return null;
   }
-}
-
-export function getRandomColor() {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return hexToRgba(color, 1);
 }

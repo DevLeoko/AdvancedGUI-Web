@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
 
 body {
   background-color: $dark2;
@@ -6,7 +6,54 @@ body {
   padding: 0;
   margin: 0;
   height: 100vh;
-  font-family: 'Nunito', sans-serif;
+  font-family: "Nunito", sans-serif;
+}
+
+input[type="radio"] {
+  cursor: pointer;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  border: 1px solid $light4;
+  background-color: transparent;
+  margin-right: 0.5rem;
+
+  &:checked {
+    background-color: $light2;
+    border: 3px solid $light4;
+  }
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 1.2s;
+  animation-iteration-count: infinite;
+  cursor: default;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseBorder {
+  0% {
+    border-width: 1px;
+  }
+
+  50% {
+    border-width: 4px;
+  }
+
+  100% {
+    border-width: 1px;
+  }
 }
 
 .row {
@@ -25,7 +72,7 @@ a {
   text-decoration: none;
 }
 
-.btn{
+.btn {
   display: flex;
   padding: 5px 15px;
   align-items: center;
@@ -34,33 +81,33 @@ a {
   cursor: pointer;
   user-select: none;
 
-  
   background-color: $dark3;
   color: $light2;
 
-  &:hover{
+  &:hover {
     background-color: $dark2;
   }
 
-  .material-icons{
+  .material-icons {
     font-size: 20px;
     margin-left: -3px;
     margin-right: 7px;
   }
 
-  .text{
+  .text {
     // text-transform: uppercase;
     font-size: 16px;
     font-weight: 500;
   }
 }
 
-.red-text{
+.red-text {
   color: $red !important;
 }
 
 .absoluteMenu {
-  position: absolute;
+  z-index: 5;
+  position: fixed;
   background-color: $dark3;
   color: $light2;
   border-radius: 10px;
@@ -75,7 +122,7 @@ a {
     height: 1px;
     background-color: $dark1;
 
-    &.lighter{
+    &.lighter {
       background-color: $light3;
     }
   }
@@ -103,29 +150,81 @@ a {
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
 
   .head {
     display: flex;
     align-items: center;
     padding: 20px 20px;
     background-color: $dark3;
-  
-    select {
-      background-color: transparent;
-      width: 70px;
-      color: $light2;
-  
-      border: $inputBorder;
-      border-radius: 8px;
-      padding: 8px 10px;
-      margin-left: 10px;
-        
-      &:focus {
-        outline: none;
+    z-index: 3;
+
+    .syncStatus {
+      color: $green;
+
+      .row {
+        align-items: center;
+
+        .dot {
+          box-sizing: border-box;
+          height: 10px;
+          width: 10px;
+          border-radius: 10px;
+          margin-right: 0.2rem;
+          margin-bottom: 3px;
+          background-color: $green;
+          border: 3px solid transparentize($color: $dark1, $amount: 0.5);
+          animation-name: pulseBorder;
+          animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          animation-duration: 2s;
+          animation-iteration-count: infinite;
+        }
       }
-  
-      option {
-        background-color: $dark1;
+
+      &.pending {
+        color: $blue;
+
+        .dot {
+          background-color: $blue;
+        }
+      }
+
+      .detail {
+        opacity: 0.7;
+        display: block;
+        margin-top: -5px;
+        font-size: 0.8rem;
+
+        a{
+          color: unset;
+          text-decoration: underline;
+          margin-right: 5px;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .exitBtn {
+      border-right: 1px solid $light4;
+      color: $light4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100% + 40px);
+      width: 5rem;
+      cursor: pointer;
+      user-select: none;
+
+      margin-left: -20px;
+      margin-right: 20px;
+
+      span {
+        transform: scaleX(-1);
+      }
+
+      &:hover {
+        background-color: $light4;
+        color: $light3;
       }
     }
 
@@ -134,111 +233,80 @@ a {
       font-weight: 700;
     }
 
-    .inputProjectName{
+    .center {
+      margin: 0 auto;
+      display: flex;
+      align-items: baseline;
+    }
+
+    .inputProjectName {
       background-color: unset;
-      // background-color: $dark1;
       padding: 5px 10px;
       border-radius: 0;
       width: 100px;
       color: $light3;
       font-weight: 400;
       font-size: 20px;
-      // align-self: flex-end;
-      margin-right: 10px;
       border: none;
-      // border-bottom: 1px solid $light4;
+      text-align: right;
 
       &:focus {
         outline: none;
       }
     }
-  
-    .input {
-      margin-right: 20px;
-      cursor: default;
-  
-      span {
-        // background-color: $dark1;
-        border: $inputBorder;
-        border-radius: 8px;
-        padding: 6px 10px;
-        margin-left: 10px;
-        color: $light4;
-      }
-  
+
+    .size {
       input {
         background-color: transparent;
         border: none;
         width: 20px;
-        text-align: right;
-        color: $light2;
-        // border-bottom: 1px solid $light;
+        text-align: center;
+        color: $light3;
+        font-size: 17px;
 
         &:focus {
           outline: none;
         }
       }
-  
+
       input::-webkit-outer-spin-button,
       input::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
       }
-  
+
       /* Firefox */
       input[type="number"] {
         -moz-appearance: textfield;
       }
     }
 
-    .historyControls{
-      margin: 0 auto;
-
-      .btn{
-        border: 1px solid $light3;
-        color: $light3;
-        margin: 0 5px;
-
-        &.inactive{
-          border: 1px solid $light4;
-          color: $light4;
-          cursor: not-allowed;
-        }
-      }
-    }
-
-    .import{
+    .sync {
       border: 1px solid $light3;
       color: $light3;
       position: relative;
 
-      &.secondary{
-        display: none;
-        z-index: 2;
-        position: absolute;
-        opacity: 0.5;
-        left: 0px;
-        top: 100%;
-        // margin-top: 1px;
-
-        &:hover{
-          opacity: 1;
-        }
-      }
-
       &:hover {
         color: $blue;
         border-color: $blue;
-        .secondary{
-          display: flex;
-        }
       }
     }
 
-    .export{
+    .export {
       margin-left: 10px;
       background-color: $green;
       color: $dark1;
+    }
+
+    .save {
+      margin-left: 10px;
+      border: 1px solid $green;
+      color: $green;
+
+      &.inactive {
+        border-color: $light3;
+        color: $light3;
+      }
     }
   }
 
@@ -246,9 +314,10 @@ a {
     margin: 0px;
     flex-grow: 1;
     overflow: hidden;
+    position: relative;
   }
 
-  #compTree{
+  #compTree {
     min-width: 15vw;
     max-width: 25vw;
     background-color: $dark1;
@@ -256,11 +325,11 @@ a {
     flex-direction: column;
     justify-content: space-evenly;
 
-    .compAddMenu{ 
+    .compAddMenu {
       top: 50%;
     }
 
-    .actualTree{
+    .actualTree {
       margin-top: 0;
       padding: 10px 5px 10px 0;
       height: 90%;
@@ -269,7 +338,7 @@ a {
       border-bottom: 1px solid $dark3;
     }
 
-    .btn{
+    .btn {
       margin: auto auto;
     }
   }
@@ -280,7 +349,7 @@ a {
     overflow-y: auto;
     background-color: $dark1;
 
-    .settings-box{
+    .settings-box {
       padding: 20px;
       padding-top: 0;
     }
@@ -291,7 +360,8 @@ a {
       background-color: $dark2;
     }
 
-    h1, h2{
+    h1,
+    h2 {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -302,27 +372,27 @@ a {
 
       color: $light2;
 
-      .material-icons{
+      .material-icons {
         color: $light3;
         font-size: 20px;
         margin-right: 15px;
       }
     }
 
-    .label.heading{
+    .label.heading {
       margin-top: 15px;
     }
 
-    h2{
+    h2 {
       font-size: 20px;
 
-      .material-icons{
+      .material-icons {
         font-size: 18px;
         margin-right: 10px;
       }
     }
 
-    h3{
+    h3 {
       color: $light3;
       text-transform: uppercase;
       font-weight: 700;
@@ -336,14 +406,14 @@ a {
       align-items: center;
       width: 100%;
 
-      &.disribute{
+      &.disribute {
         justify-content: space-between;
       }
     }
 
-    
-  
-    input, textarea, select {
+    input,
+    textarea,
+    select {
       background-color: transparent;
       border: $inputBorder;
       border-radius: 5px;
@@ -351,7 +421,7 @@ a {
       padding: 5px 10px;
       margin-left: 10px;
 
-      option{
+      option {
         color: $light4;
       }
 
@@ -360,11 +430,11 @@ a {
       }
     }
 
-    input[type="color"]{
+    input[type="color"] {
       padding: 0px;
     }
 
-    .input-box{
+    .input-box {
       width: fit-content;
       border: $inputBorder;
       border-radius: 5px;
@@ -382,7 +452,8 @@ a {
         font-size: 14px;
       }
 
-      input, select {
+      input,
+      select {
         background-color: transparent;
         border: none;
         padding: 0 10px 0 0;
@@ -404,74 +475,158 @@ a {
       }
     }
 
-    .clickActions{
-      .addAction{
+    .clickActions {
+      .addAction {
         margin: 0 auto 10px;
         background-color: transparent;
         border: 1px solid $light2;
         color: $light2;
       }
 
-      #actionEditor{
+      #actionEditor {
         // border: 2px solid $dark2;
         box-shadow: $shadowStrong;
         margin: 20px 0 0;
         padding: 15px;
 
-        h2{
+        h2 {
           margin-top: 0;
           margin-bottom: 10px;
           justify-content: start;
         }
       }
     }
-        
+
     p {
       color: $light2;
       margin-top: 5px;
     }
 
-    .gen-box{
-      .label{
+    .gen-box {
+      .label {
         min-width: 70px;
       }
 
-      .id-box{
-        input{
+      .id-box {
+        input {
           width: 100px;
           text-align: center;
           color: $light3;
           // border-color: $dark3;
         }
-          
+
         .material-icons {
           font-size: 20px;
           color: $light3;
           cursor: pointer;
           margin-left: 7px;
-  
-          &:hover{
-          color: $light2;
+
+          &:hover {
+            color: $light2;
           }
         }
       }
     }
   }
 
-  #canvasContainer {
+  .canvasContainer {
     flex-grow: 1;
     overflow: auto;
-  
+    position: relative;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-corner {
+      background: transparentize($color: $light4, $amount: 0.2);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: transparentize($color: $light4, $amount: 0.2);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: $light4;
+    }
+
     #canvasPadding {
       margin: auto;
       padding: 40px;
       width: fit-content;
-  
+
       #canvas {
         display: block;
         border: 1px solid $light4;
         height: fit-content;
         image-rendering: pixelated;
+      }
+    }
+
+    .toolbar {
+      position: fixed;
+      bottom: 2rem;
+      width: 20rem;
+      height: 3rem;
+      background-color: $dark1;
+      left: calc(50% - 10rem);
+
+      display: flex;
+      align-items: center;
+
+      .zoom {
+        margin-right: auto;
+        margin-left: 15px;
+
+        select {
+          background-color: transparent;
+          width: 65px;
+          color: $light2;
+          border: none;
+          margin-left: 10px;
+          padding: 4px 2px;
+
+          &:hover {
+            background-color: $light4;
+          }
+
+          &:focus {
+            outline: none;
+          }
+
+          option {
+            background-color: $dark1;
+          }
+        }
+      }
+
+      .historyControls {
+        .btnHstr {
+          box-sizing: content-box;
+          border-left: 1px solid $light4;
+          color: $light2;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 3rem;
+          width: 3rem;
+          cursor: pointer;
+          user-select: none;
+
+          &:hover {
+            background-color: $light4;
+          }
+
+          &.inactive {
+            color: $light4;
+            cursor: not-allowed;
+
+            &:hover {
+              background-color: unset;
+            }
+          }
+        }
       }
     }
   }

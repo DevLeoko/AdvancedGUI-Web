@@ -1,15 +1,23 @@
 <template>
-  <div class="exportPrompt" :style="{ display: modelValue ? 'flex' : 'none' }">
+  <div
+    class="exportPrompt"
+    :style="{ display: licensePromptDoneAction ? 'flex' : 'none' }"
+  >
     <div class="exportPromptContainer">
-      <h1><span class="material-icons">get_app</span> Export for usage</h1>
+      <h1><span class="material-icons">vpn_key</span> License required</h1>
       <p>
-        Click below to download the AdvancedGUI file that you can use with our
-        plugin. Place this file in the <i>layouts/</i>-folder to use it in-game.
-        Make sure to also download a savepoint as you will
-        <b>not be able to import this file back into the editor!</b>
+        To download project files you are required to have a license key. Saving
+        your projects to the web-editor works without a license key. So you
+        won't lose any progress if you don't have a key yet.
       </p>
       <div class="license-key">
-        <input type="text" placeholder="License key" v-model="key" /> <br />
+        <input
+          type="text"
+          autocomplete="off"
+          placeholder="License key"
+          v-model="licenseKey"
+        />
+        <br />
         <input type="checkbox" v-model="remember" /> <span>Remember key</span>
       </div>
       <p>
@@ -21,21 +29,19 @@
           >discord</a
         >
         and use the <i>#verify-purchase</i> channel. The verifcation process is
-        automated and takes only a few seconds.
+        automated and only takes a few seconds.
       </p>
       <div class="action-row">
         <div
           class="btn export"
-          :class="!key ? 'inactive' : ''"
-          @click="exportFU()"
+          :class="!licenseKey ? 'inactive' : ''"
+          @click="saveKey()"
         >
-          <span class="material-icons">get_app</span>
-          <span class="text">{{
-            key ? "Export" : "Enter license key to export!"
-          }}</span>
+          <span class="material-icons">vpn_key</span>
+          <span class="text">Save license key</span>
         </div>
 
-        <div class="btn close" @click="$emit('update:modelValue', false)">
+        <div class="btn close" @click="licensePromptDoneAction = null">
           <span class="text">Close</span>
         </div>
       </div>
@@ -46,37 +52,40 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { eraseCookie, getCookie, setCookie } from "../utils/CookieUtils";
+import {
+  licenseKey,
+  licensePromptDoneAction
+} from "../utils/manager/ProjectManager";
+import { vueRef } from "../utils/VueRef";
+
 export default defineComponent({
   data() {
     return {
-      key: "",
+      licenseKey: vueRef(licenseKey),
       remember: false,
+      licensePromptDoneAction: vueRef(licensePromptDoneAction),
       savedKey: null as null | string
     };
   },
 
-  props: {
-    modelValue: {
-      type: Boolean
-    }
-  },
-
-  emits: ["export"],
-
   mounted() {
     this.savedKey = getCookie("license-key");
     if (this.savedKey) {
-      this.key = this.savedKey;
+      this.licenseKey = this.savedKey;
       this.remember = true;
     }
   },
 
   methods: {
-    exportFU() {
-      if (!this.key) return;
+    saveKey() {
+      if (!this.licenseKey) return;
 
-      if (this.remember && this.key && this.key != this.savedKey) {
-        setCookie("license-key", this.key, 10 * 365);
+      if (
+        this.remember &&
+        this.licenseKey &&
+        this.licenseKey != this.savedKey
+      ) {
+        setCookie("license-key", this.licenseKey, 10 * 365);
       }
 
       if (!this.remember && this.savedKey) {
@@ -84,7 +93,8 @@ export default defineComponent({
         this.savedKey = "";
       }
 
-      this.$emit("export", this.key);
+      this.licensePromptDoneAction!();
+      this.licensePromptDoneAction = null;
     }
   }
 });

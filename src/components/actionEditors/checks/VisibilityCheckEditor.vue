@@ -6,7 +6,7 @@
         type="text"
         ref="test"
         class="componentIdInput"
-        @focus="setWatcher(val => (action.targetId = val))"
+        @focus="idWatcher = val => (action.targetId = val)"
         v-model="action.targetId"
       />
     </div>
@@ -27,13 +27,14 @@
 import { defineComponent } from "vue";
 import { components } from "@/utils/manager/ComponentManager";
 import { VisibilityCheck } from "@/utils/checks/VisibilityCheck";
-import { setWatcher } from "@/App.vue";
+import { idWatcher } from "@/utils/manager/WorkspaceManager";
+import { vueRef } from "../../../utils/VueRef";
 
 export default defineComponent({
   data() {
     return {
       components,
-      setWatcher
+      idWatcher: vueRef(idWatcher)
     };
   },
 

@@ -1,8 +1,8 @@
 import { BoundingBox } from "../BoundingBox";
 import Editor from "@/components/editors/EmptyEditor.vue";
 import { Action } from "../actions/Action";
-import { JsonObject, ComponentType } from "../manager/ComponentManager";
-import { Component } from "./Component";
+import { JsonObject } from "../manager/ComponentManager";
+import { Component, ComponentType } from "./Component";
 import { markRaw } from "vue";
 
 export class Dummy extends Component {

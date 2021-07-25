@@ -1,4 +1,4 @@
-import { devMode } from "../App.vue";
+import { devMode } from "./manager/WorkspaceManager";
 import { Point } from "./Point";
 
 export class BoundingBox {

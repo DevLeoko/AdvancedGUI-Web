@@ -2,9 +2,10 @@ import { BoundingBox } from "../BoundingBox";
 import ImageEditor from "@/components/editors/ImageEditor.vue";
 import { Rectangular } from "./Rectangular";
 import { Action } from "../actions/Action";
-import { JsonObject, ComponentType } from "../manager/ComponentManager";
+import { JsonObject } from "../manager/ComponentManager";
 import { images } from "../manager/ImageManager";
 import { markRaw } from "vue";
+import { ComponentType } from "./Component";
 
 export class Image extends Rectangular {
   public static displayName: ComponentType = "Image";
@@ -40,7 +41,7 @@ export class Image extends Rectangular {
       );
     else
       context.drawImage(
-        document.getElementById("borken_TAKEN_ID") as HTMLImageElement,
+        document.getElementById("broken_TAKEN_ID") as HTMLImageElement,
         Math.max(this.x, this.x + (this.width - 20) / 2),
         Math.max(this.y, this.y + (this.height - 20) / 2),
         Math.min(this.width, 20),
