@@ -153,7 +153,7 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
     );
     loading(false);
   } catch (exc) {
-    const errorText = `Error durring export: ${exc.message || exc}`;
+    const errorText = `Error during export: ${exc.message || exc}`;
     const licenseError =
       errorText.toLocaleLowerCase().includes("licence") ||
       errorText.toLocaleLowerCase().includes("license");
