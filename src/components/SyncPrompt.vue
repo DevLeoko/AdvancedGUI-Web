@@ -69,7 +69,11 @@
         <b>{{ syncType == SyncType.SOCKET ? "4" : "3" }}.</b>
         <div
           class="btn export"
-          :class="!serverAddress || !syncKey ? 'inactive' : ''"
+          :class="
+            (!serverAddress || !syncKey) && syncType == SyncType.SOCKET
+              ? 'inactive'
+              : ''
+          "
           @click="sync()"
         >
           <span class="material-icons">cloud_upload</span>
