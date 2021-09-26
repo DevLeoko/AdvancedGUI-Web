@@ -240,6 +240,7 @@ export default defineComponent({
 
     .card {
       background-size: cover;
+      background-position: center;
       margin-left: 2rem;
       margin-bottom: 2rem;
       cursor: pointer;
