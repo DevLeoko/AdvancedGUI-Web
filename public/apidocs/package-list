@@ -1,5 +1,6 @@
 me.leoko.advancedgui
 me.leoko.advancedgui.commands
+me.leoko.advancedgui.hooks
 me.leoko.advancedgui.listener
 me.leoko.advancedgui.manager
 me.leoko.advancedgui.utils
@@ -7,5 +8,7 @@ me.leoko.advancedgui.utils.actions
 me.leoko.advancedgui.utils.checks
 me.leoko.advancedgui.utils.components
 me.leoko.advancedgui.utils.components.states
+me.leoko.advancedgui.utils.dependencyinjection
 me.leoko.advancedgui.utils.deserializer
 me.leoko.advancedgui.utils.events
+me.leoko.advancedgui.utils.exceptions
