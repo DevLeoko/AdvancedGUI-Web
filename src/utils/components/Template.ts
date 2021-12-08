@@ -67,6 +67,14 @@ export class Template extends GroupComponent {
               value.toString()
             );
           } else {
+            if (
+              /#[0-9A-F]{6},((1(\.0)?)|0\.[0-9]+|0)/g.test(value.toUpperCase())
+            )
+              value = hexToRgba(
+                value.split(",")[0],
+                Number.parseFloat(value.split(",")[1])
+              );
+
             if (/#[0-9A-F]{6}/.test(value.toUpperCase()))
               value = hexToRgba(value, 1);
 
