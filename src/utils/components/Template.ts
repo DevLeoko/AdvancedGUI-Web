@@ -62,6 +62,10 @@ export class Template extends GroupComponent {
               new RegExp(`"#${entry.name}"`, "g"),
               value.toString()
             );
+            json = json.replace(
+              new RegExp(`#${entry.name}`, "g"),
+              value.toString()
+            );
           } else {
             if (/#[0-9A-F]{6}/.test(value.toUpperCase()))
               value = hexToRgba(value, 1);
