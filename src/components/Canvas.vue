@@ -66,6 +66,7 @@ export default defineComponent({
       pauseRendering: vueRef(pauseRendering),
 
       devMode: vueRef(devMode),
+      lastMove: Date.now(),
       lastSnap: new Date().getTime() - 1000 * 12
     };
   },
@@ -321,10 +322,9 @@ export default defineComponent({
             });
           else updateSelection({ value: hovered! });
         }
-
-        this.redraw();
       }
 
+      this.redraw();
       updateHistory();
 
       this.modifying = null;
@@ -357,8 +357,11 @@ export default defineComponent({
     },
 
     onMove(event: MouseEvent) {
-      const point = this.getCursorPosition(event);
+      if (this.modifying && Date.now() <= this.lastMove + 20) return;
 
+      this.lastMove = Date.now();
+
+      const point = this.getCursorPosition(event);
       const hovered = this.getElementAt(point);
 
       if (this.modifying) {
