@@ -37,9 +37,8 @@ export class Replica extends Component {
     return comp as Template;
   }
 
-  private getGroup(forUsage = false): GroupComponent | undefined {
+  private getGroup(): GroupComponent | undefined {
     return this.getTemplate()?.transpileToGroup(
-      forUsage,
       this.templateData,
       this.position,
       this.id
@@ -65,7 +64,7 @@ export class Replica extends Component {
 
   toDataObj(forUsage: boolean) {
     if (forUsage) {
-      return this.getGroup(true)?.toDataObj(true) || {};
+      return this.getGroup()?.toDataObj(true) || {};
     } else {
       return {
         type: Replica.displayName,

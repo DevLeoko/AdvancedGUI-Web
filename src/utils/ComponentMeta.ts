@@ -13,6 +13,7 @@ import { Text } from "./components/Text";
 import { Hover } from "./components/Hover";
 import { Image } from "./components/Image";
 import { Component, JsonConverter } from "./components/Component";
+import { List } from "./components/List";
 
 export interface ComponentMeta {
   generator: () => Component;
@@ -33,9 +34,10 @@ export const componentNames = [
   ClickAnimation.displayName,
   CheckComponent.displayName,
   TextInput.displayName,
+  View.displayName,
   Template.displayName,
   Replica.displayName,
-  View.displayName,
+  List.displayName,
   Dummy.displayName
 ];
 
@@ -51,9 +53,10 @@ export const componentInfo: {
   [Hover.displayName]: Hover,
   [ClickAnimation.displayName]: ClickAnimation,
   [CheckComponent.displayName]: CheckComponent,
-  [Template.displayName]: Template,
   [TextInput.displayName]: TextInput,
-  [Replica.displayName]: Replica,
   [View.displayName]: View,
+  [Template.displayName]: Template,
+  [Replica.displayName]: Replica,
+  [List.displayName]: List,
   [Dummy.displayName]: Dummy
 };

@@ -11,6 +11,60 @@ import { GroupComponent } from "./GroupComponent";
 import { markRaw } from "vue";
 import { hexToRgba } from "../ColorUtils";
 
+export function transpileToGroup(
+  data: TemplateData,
+  position = null as { x: number; y: number } | null,
+  id: string,
+  components: Component[]
+): GroupComponent {
+  const idGenerator = (compId: string) => `${compId}#${id}`;
+
+  const newComps = components
+    .map(comp => {
+      let json = comp.toJson(true);
+      for (const entry of data) {
+        let value = entry.value;
+        if (typeof value == "number") {
+          json = json.replace(
+            new RegExp(`"#${entry.name}"`, "g"),
+            value.toString()
+          );
+          json = json.replace(
+            new RegExp(`#${entry.name}`, "g"),
+            value.toString()
+          );
+        } else {
+          if (/#[0-9A-F]{6},((1(\.0)?)|0\.[0-9]+|0)/g.test(value.toUpperCase()))
+            value = hexToRgba(
+              value.split(",")[0],
+              Number.parseFloat(value.split(",")[1])
+            );
+
+          if (/#[0-9A-F]{6}/.test(value.toUpperCase()))
+            value = hexToRgba(value, 1);
+
+          json = json.replace(new RegExp(`#${entry.name}`, "g"), value);
+        }
+      }
+      return json;
+    })
+    .map(
+      json => componentFromJson(reassignIDs(JSON.parse(json), idGenerator))!
+    );
+
+  const group = new GroupComponent(id, "-", [], newComps, true);
+  if (position) {
+    const boundingBox = group.getBoundingBox();
+
+    boundingBox.x = position.x;
+    boundingBox.y = position.y;
+
+    group.modify(boundingBox);
+  }
+
+  return group;
+}
+
 export class Template extends GroupComponent {
   public static inputTransformer = (
     ev: KeyboardEvent,
@@ -45,63 +99,15 @@ export class Template extends GroupComponent {
   }
 
   transpileToGroup(
-    forUsage = false,
     data = this.defaultData,
     position = null as { x: number; y: number } | null,
     id = this.id
   ): GroupComponent {
-    const idGenerator = (compId: string) => `${compId}#${id}`;
-
-    const newComps = this.components
-      .map(comp => {
-        let json = comp.toJson(forUsage);
-        for (const entry of data) {
-          let value = entry.value;
-          if (typeof value == "number") {
-            json = json.replace(
-              new RegExp(`"#${entry.name}"`, "g"),
-              value.toString()
-            );
-            json = json.replace(
-              new RegExp(`#${entry.name}`, "g"),
-              value.toString()
-            );
-          } else {
-            if (
-              /#[0-9A-F]{6},((1(\.0)?)|0\.[0-9]+|0)/g.test(value.toUpperCase())
-            )
-              value = hexToRgba(
-                value.split(",")[0],
-                Number.parseFloat(value.split(",")[1])
-              );
-
-            if (/#[0-9A-F]{6}/.test(value.toUpperCase()))
-              value = hexToRgba(value, 1);
-
-            json = json.replace(new RegExp(`#${entry.name}`, "g"), value);
-          }
-        }
-        return json;
-      })
-      .map(
-        json => componentFromJson(reassignIDs(JSON.parse(json), idGenerator))!
-      );
-
-    const group = new GroupComponent(id, "-", [], newComps, true);
-    if (position) {
-      const boundingBox = group.getBoundingBox();
-
-      boundingBox.x = position.x;
-      boundingBox.y = position.y;
-
-      group.modify(boundingBox);
-    }
-
-    return group;
+    return transpileToGroup(data, position, id, this.components);
   }
 
   draw(context: CanvasRenderingContext2D): void {
-    this.transpileToGroup(true).draw(context);
+    this.transpileToGroup().draw(context);
   }
 
   toDataObj(forUsage: boolean) {
@@ -113,10 +119,6 @@ export class Template extends GroupComponent {
     } else {
       return this.transpileToGroup().toDataObj(forUsage);
     }
-  }
-
-  toExportJson() {
-    return this.transpileToGroup().toJson(true);
   }
 
   static fromJson(jsonObj: JsonObject, clickAction: Action[]) {

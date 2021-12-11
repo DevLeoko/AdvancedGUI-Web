@@ -104,11 +104,13 @@ export function registerComponent(component: Component) {
 
   if (
     component.id.includes("#") &&
-    invisibleIDs.value.indexOf(component.id.split("#")[0]) != -1 &&
-    invisibleIDs.value.indexOf(component.id) == -1
+    invisibleIDs.value.includes(component.id.split("#")[0]) &&
+    !invisibleIDs.value.includes(component.id)
   ) {
     invisibleIDs.value.push(component.id);
   }
+
+  return component;
 }
 
 export function unregisterComponent(component: Component) {

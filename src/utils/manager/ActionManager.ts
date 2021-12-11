@@ -10,6 +10,7 @@ import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
 import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
 import DelayEditor from "@/components/actionEditors/DelayEditor.vue";
 import GifControlEditor from "@/components/actionEditors/GifControlEditor.vue";
+import ListNextEditor from "@/components/actionEditors/ListNextEditor.vue";
 import { MessageAction } from "../actions/MessageAction";
 import { VisibilityAction } from "../actions/VisibilityAction";
 import { Component } from "../components/Component";
@@ -18,6 +19,7 @@ import { checkIDs, checks } from "./CheckManager";
 import { CheckAction } from "../actions/CheckAction";
 import { DelayAction } from "../actions/DelayAction";
 import { GifControlAction } from "../actions/GifControlAction";
+import { ListNextAction } from "../actions/ListNextAction";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;
@@ -32,6 +34,7 @@ export const actionIDs = [
   VisibilityAction.id,
   GifControlAction.id,
   ViewAction.id,
+  ListNextAction.id,
   DelayAction.id,
   ListAction.id,
   ...checkIDs
@@ -78,6 +81,12 @@ export const actions: { [key: string]: ActionMeta } = {
     generator: () => new ListAction([], true),
     fromJson: ListAction.fromJson,
     icon: ListAction.icon
+  },
+  [ListNextAction.id]: {
+    generator: () => new ListNextAction("", true),
+    fromJson: ListNextAction.fromJson,
+    icon: ListNextAction.icon,
+    component: markRaw(ListNextEditor)
   },
 
   ...Object.fromEntries(

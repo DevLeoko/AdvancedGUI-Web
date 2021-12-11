@@ -8,6 +8,7 @@ import { Check } from "../checks/Check";
 import { JsonObject } from "./ComponentManager";
 import { PlaceholderCheck } from "../checks/PlaceholderCheck";
 import { StandbyCheck } from "../checks/StandbyCheck";
+import { ListNextCheck } from "../checks/ListNextCheck";
 
 interface CheckMeta {
   generator: () => Check;
@@ -22,6 +23,7 @@ export const checkIDs = [
   PermissionCheck.id,
   VisibilityCheck.id,
   PlaceholderCheck.id,
+  ListNextCheck.id,
   StandbyCheck.id
 ];
 
@@ -31,6 +33,7 @@ export const checks: { [key: string]: CheckMeta } = {
   [PermissionCheck.id]: PermissionCheck,
   [VisibilityCheck.id]: VisibilityCheck,
   [PlaceholderCheck.id]: PlaceholderCheck,
+  [ListNextCheck.id]: ListNextCheck,
   [StandbyCheck.id]: StandbyCheck
 };
 

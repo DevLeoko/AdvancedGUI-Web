@@ -17,6 +17,7 @@ export type ComponentType =
   | "Text"
   | "Image"
   | "View"
+  | "List"
   | "Template"
   | "Remote Image"
   | "Text-Input"
