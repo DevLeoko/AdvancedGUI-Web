@@ -8,6 +8,7 @@ import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
 import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
 import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
 import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
+import MetadataEditor from "@/components/actionEditors/MetadataEditor.vue";
 import DelayEditor from "@/components/actionEditors/DelayEditor.vue";
 import GifControlEditor from "@/components/actionEditors/GifControlEditor.vue";
 import ListNextEditor from "@/components/actionEditors/ListNextEditor.vue";
@@ -20,6 +21,7 @@ import { CheckAction } from "../actions/CheckAction";
 import { DelayAction } from "../actions/DelayAction";
 import { GifControlAction } from "../actions/GifControlAction";
 import { ListNextAction } from "../actions/ListNextAction";
+import { MetadataAction } from "../actions/MetadataAction";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;
@@ -35,6 +37,7 @@ export const actionIDs = [
   GifControlAction.id,
   ViewAction.id,
   ListNextAction.id,
+  MetadataAction.id,
   DelayAction.id,
   ListAction.id,
   ...checkIDs
@@ -70,6 +73,12 @@ export const actions: { [key: string]: ActionMeta } = {
     fromJson: ViewAction.fromJson,
     icon: ViewAction.icon,
     component: markRaw(ViewEditor)
+  },
+  [MetadataAction.id]: {
+    generator: () => new MetadataAction("my-variable-name", "new value :)"),
+    fromJson: MetadataAction.fromJson,
+    icon: MetadataAction.icon,
+    component: markRaw(MetadataEditor)
   },
   [DelayAction.id]: {
     generator: () => new DelayAction(20, [], true),
