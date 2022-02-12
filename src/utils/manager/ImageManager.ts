@@ -85,7 +85,9 @@ export function placeRemoteImage(
     .replace(/%UUID%/g, "3feef46e-6eac-4dfd-8da4-493bd46c52ae")
     .replace(/%NAME%/g, "Leoko");
 
-  let resImage = imageContainer.querySelector(`#${id}`) as HTMLImageElement;
+  let resImage = imageContainer.querySelector(
+    `[id="${id}"]`
+  ) as HTMLImageElement;
 
   if (!resImage) {
     resImage = document.createElement("img") as HTMLImageElement;
@@ -107,7 +109,7 @@ export function placeRemoteImage(
 }
 
 export function getRemoteImage(id: string): HTMLImageElement | null {
-  return imageContainer.querySelector(`#${id}`) as HTMLImageElement;
+  return imageContainer.querySelector(`[id="${id}"]`) as HTMLImageElement;
 }
 
 export async function registerImage(
