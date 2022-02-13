@@ -7,6 +7,8 @@ import { Component as VueComponent, markRaw } from "vue"; // computed also work?
 import CommandEditor from "@/components/actionEditors/CommandEditor.vue";
 import MessageEditor from "@/components/actionEditors/MessageEditor.vue";
 import VisibilityEditor from "@/components/actionEditors/VisibilityEditor.vue";
+import PermissionEditor from "@/components/actionEditors/PermissionEditor.vue";
+import MoneyEditor from "@/components/actionEditors/MoneyEditor.vue";
 import ViewEditor from "@/components/actionEditors/ViewEditor.vue";
 import MetadataEditor from "@/components/actionEditors/MetadataEditor.vue";
 import DelayEditor from "@/components/actionEditors/DelayEditor.vue";
@@ -22,6 +24,8 @@ import { DelayAction } from "../actions/DelayAction";
 import { GifControlAction } from "../actions/GifControlAction";
 import { ListNextAction } from "../actions/ListNextAction";
 import { MetadataAction } from "../actions/MetadataAction";
+import { MoneyAction } from "../actions/MoneyAction";
+import { PermissionAction } from "../actions/PermissionAction";
 
 interface ActionMeta {
   generator: (comonent: Component) => Action;
@@ -34,6 +38,8 @@ export const actionIDs = [
   CommandAction.id,
   MessageAction.id,
   VisibilityAction.id,
+  MoneyAction.id,
+  PermissionAction.id,
   GifControlAction.id,
   ViewAction.id,
   ListNextAction.id,
@@ -61,6 +67,18 @@ export const actions: { [key: string]: ActionMeta } = {
     fromJson: VisibilityAction.fromJson,
     icon: VisibilityAction.icon,
     component: markRaw(VisibilityEditor)
+  },
+  [MoneyAction.id]: {
+    generator: () => new MoneyAction(12),
+    fromJson: MoneyAction.fromJson,
+    icon: MoneyAction.icon,
+    component: markRaw(MoneyEditor)
+  },
+  [PermissionAction.id]: {
+    generator: () => new PermissionAction("essentials.fly", true),
+    fromJson: PermissionAction.fromJson,
+    icon: PermissionAction.icon,
+    component: markRaw(PermissionEditor)
   },
   [GifControlAction.id]: {
     generator: () => new GifControlAction("", true, false),
