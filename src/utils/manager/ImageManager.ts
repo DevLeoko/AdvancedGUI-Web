@@ -105,7 +105,8 @@ export function placeRemoteImage(
     requestRedraw();
   };
 
-  resImage.src = imageUrl;
+  if (resImage.src != imageUrl)
+    resImage.src = imageUrl;
 }
 
 export function getRemoteImage(id: string): HTMLImageElement | null {
