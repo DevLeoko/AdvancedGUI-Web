@@ -96,8 +96,27 @@ export const resizers: Resizer[] = [
   }
 ];
 
-export const moveModifier: Modifier = (diff, sBox) =>
-  new BoundingBox(sBox.x + diff.x, sBox.y + diff.y, sBox.width, sBox.height);
+let shiftDown = false;
+document.addEventListener("keydown", e => {
+  shiftDown = e.shiftKey;
+});
+document.addEventListener("keyup", e => {
+  shiftDown = e.shiftKey;
+});
+
+export const moveModifier: Modifier = (diff, sBox) => {
+  if (shiftDown) {
+    if (Math.abs(diff.x) < Math.abs(diff.y)) diff.x = 0;
+    else diff.y = 0;
+  }
+
+  return new BoundingBox(
+    sBox.x + diff.x,
+    sBox.y + diff.y,
+    sBox.width,
+    sBox.height
+  );
+};
 
 export type Modifier = (
   pointDifference: Point,

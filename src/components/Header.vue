@@ -120,6 +120,7 @@
         <span>SHIFT</span> <span>ARROW KEY</span> &ensp; Move component by 10
         pixel <br />
         <span>CTRL</span> <span>S</span> &ensp; Download savepoint <br />
+        Press <span>SHIFT</span> while moving an element to snap to x- or y-axis
       </p>
     </modal>
     <modal title="Dev-Mode" icon="code" v-model="showDevMode" closeBtn>

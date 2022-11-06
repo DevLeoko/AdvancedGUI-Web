@@ -15,7 +15,7 @@ import {
 } from "../manager/WorkspaceManager";
 
 function getParentList(component: Component) {
-  if (componentTree.value.some(c => c.id == selection.value?.component.id)) {
+  if (componentTree.value.some(c => c.id == component.id)) {
     return componentTree.value;
   } else {
     return getParentComponent(component)?.getItems();
