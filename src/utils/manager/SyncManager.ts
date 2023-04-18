@@ -24,13 +24,13 @@ export const syncStatus = ref(SyncStatus.DISCONNECTED);
 export const syncType = ref(SyncType.SOCKET);
 
 async function manaulSync(): Promise<void> {
-  const resp = await fetch(`${BACKEND_URL}/sync`, {
+  const resp = await fetch(`${BACKEND_URL}/sync/write`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "x-api-key": licenseKey.value
     },
     body: JSON.stringify({
-      key: licenseKey.value,
       name: settings.projectName,
       savepoint: getCurrentTransferData()
     })
@@ -42,13 +42,13 @@ async function manaulSync(): Promise<void> {
 }
 
 async function socketSync(): Promise<void> {
-  const resp = await fetch(`${BACKEND_URL}/sync-direct-call`, {
+  const resp = await fetch(`${BACKEND_URL}/sync/direct-call`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "x-api-key": licenseKey.value
     },
     body: JSON.stringify({
-      key: licenseKey.value,
       name: settings.projectName,
       savepoint: getCurrentTransferData(),
       serverAddress: serverAddress.value
@@ -61,15 +61,13 @@ async function socketSync(): Promise<void> {
 }
 
 async function querySyncKey(): Promise<string> {
-  const resp = await fetch(
-    `${BACKEND_URL}/sync-key/${encodeURIComponent(licenseKey.value)}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json"
-      }
+  const resp = await fetch(`${BACKEND_URL}/sync/generate-key`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": licenseKey.value
     }
-  );
+  });
 
   const data = await resp.text();
 
@@ -79,6 +77,9 @@ async function querySyncKey(): Promise<string> {
 }
 
 export function openSyncPrompt() {
+  error("The live sync feature is temporarily unavailable. Check back again in a few days.")
+  return;
+
   if (!licenseKey.value) {
     licensePromptDoneAction.value = openSyncPrompt;
     return;

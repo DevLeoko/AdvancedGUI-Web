@@ -123,14 +123,12 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "x-api-key": key
         },
         body: JSON.stringify({
-          key,
-          savepoint: {
-            invisible: savepoint.invisible,
-            componentTree: savepoint.exportedTree.draft
-          }
+          invisible: savepoint.invisible,
+          componentTree: savepoint.exportedTree.draft
         })
       }
     );
