@@ -113,7 +113,8 @@ a {
   border-radius: 10px;
   display: none;
   box-shadow: $shadow;
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: 200px;
   transition-duration: 150ms;
   transition-property: opacity;
 
