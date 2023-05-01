@@ -113,10 +113,14 @@ a {
   border-radius: 10px;
   display: none;
   box-shadow: $shadow;
-  overflow-y: auto;
-  max-height: 300px;
+  overflow: hidden;
   transition-duration: 150ms;
   transition-property: opacity;
+
+  @media screen and (max-width: 1080px) {
+    max-height: 300px;
+    overflow-y: auto;
+  }
 
   .divider {
     width: 100%;
@@ -146,6 +150,7 @@ a {
     }
   }
 }
+
 
 #app {
   display: flex;
