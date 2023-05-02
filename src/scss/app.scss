@@ -117,8 +117,8 @@ a {
   transition-duration: 150ms;
   transition-property: opacity;
 
-  @media screen and (max-width: 1080px) {
-    max-height: 300px;
+  @media screen and (max-height: 1080px) {
+    max-height: 50vh;
     overflow-y: auto;
   }
 
@@ -150,7 +150,6 @@ a {
     }
   }
 }
-
 
 #app {
   display: flex;
@@ -201,7 +200,7 @@ a {
         margin-top: -5px;
         font-size: 0.8rem;
 
-        a{
+        a {
           color: unset;
           text-decoration: underline;
           margin-right: 5px;
