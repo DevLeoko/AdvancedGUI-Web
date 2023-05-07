@@ -77,9 +77,6 @@ async function querySyncKey(): Promise<string> {
 }
 
 export function openSyncPrompt() {
-  error("The live sync feature is temporarily unavailable. Check back again in a few days.")
-  return;
-
   if (!licenseKey.value) {
     licensePromptDoneAction.value = openSyncPrompt;
     return;
