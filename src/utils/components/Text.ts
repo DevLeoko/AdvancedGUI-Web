@@ -5,6 +5,7 @@ import { JsonObject } from "../manager/ComponentManager";
 import { Component, ComponentType } from "./Component";
 import { markRaw } from "vue";
 import { getRandomColor } from "../ColorUtils";
+import { ParsedText } from "../ParsedText";
 
 export class Text extends Component {
   public static displayName: ComponentType = "Text";
@@ -13,7 +14,7 @@ export class Text extends Component {
   public icon = Text.icon;
   public vueComponent = markRaw(TextEditor);
 
-  private lastWidth = 50;
+  private parsedText: ParsedText | null = null;
 
   constructor(
     public id: string,
@@ -34,27 +35,55 @@ export class Text extends Component {
 
   draw(context: CanvasRenderingContext2D): void {
     const renderText = this.placeholder ? this.previewText : this.text;
+
     context.font = `${this.size}px ${this.font}`;
-    context.fillStyle = this.color;
-    this.lastWidth = context.measureText(renderText).width;
-    context.fillText(
-      renderText,
-      this.x - (this.alignment / 2) * this.lastWidth,
-      this.y
-    );
+
+    if (
+      this.parsedText?.rawText !== renderText ||
+      this.parsedText.defaultColor !== this.color ||
+      this.parsedText.state !== context.font
+    ) {
+      this.parsedText = new ParsedText(
+        renderText,
+        this.color,
+        context.font,
+        context
+      );
+    }
+
+    const lineCount = this.parsedText.getLineCount();
+    for (let l = 0; l < lineCount; l++) {
+      const line = this.parsedText.getLine(l);
+
+      let xOffset = 0;
+      const lineWidth = line.reduce((sum, f) => sum + f.width, 0);
+      for (const fragment of line) {
+        context.fillStyle = fragment.color;
+        context.fillText(
+          fragment.text,
+          this.x - (this.alignment / 2) * lineWidth + xOffset,
+          this.y - (lineCount - 1 - l) * this.size
+        );
+
+        xOffset += fragment.width;
+      }
+    }
   }
 
   modify(newBoundingBox: BoundingBox): void {
-    this.x = newBoundingBox.x + (this.alignment / 2) * this.lastWidth;
-    this.y = newBoundingBox.y + this.size;
+    this.x =
+      newBoundingBox.x + (this.alignment / 2) * (this.parsedText?.width || 0);
+    this.y =
+      newBoundingBox.y + this.size * (this.parsedText?.getLineCount() || 0);
   }
 
   getBoundingBox() {
+    const lineCount = this.parsedText?.getLineCount() || 0;
     return new BoundingBox(
-      this.x - (this.alignment / 2) * this.lastWidth,
-      this.y - this.size,
-      this.lastWidth,
-      this.size
+      this.x - (this.alignment / 2) * (this.parsedText?.width || 0),
+      this.y - this.size * lineCount,
+      this.parsedText?.width || 0,
+      this.size * lineCount
     );
   }
 
