@@ -38,6 +38,22 @@ import {
 } from "../manager/WorkspaceManager";
 import { Project, ProjectTransferData } from "../Project";
 
+let storedBk = localStorage.getItem("bk");
+
+if (!storedBk) {
+  // Gen random bk
+  storedBk =
+    Math.random()
+      .toString(36)
+      .substring(2, 15) +
+    Math.random()
+      .toString(36)
+      .substring(2, 15);
+  localStorage.setItem("bk", storedBk);
+}
+
+export const BK = storedBk;
+
 const SECRET_ELEVATED_LICENSE_KEY = "003c9693-a62b-4b88-93a5-9288524dc532";
 
 function createComponentTreeGroup() {
@@ -141,9 +157,11 @@ export async function downloadProjectFile(savepoint: Project, key: string) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": key
+          "x-api-key": key,
+          "x-bk": BK
         },
         body: JSON.stringify({
+          name: savepoint.name,
           invisible: savepoint.invisible,
           componentTree: savepoint.exportedTree.draft
         })

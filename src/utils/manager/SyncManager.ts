@@ -1,7 +1,10 @@
 import { ref } from "vue";
 import { BACKEND_URL } from "../Config";
 import { getCookie } from "../CookieUtils";
-import { getCurrentTransferData } from "../handler/ProjectSerializationHandler";
+import {
+  BK,
+  getCurrentTransferData
+} from "../handler/ProjectSerializationHandler";
 import { licenseKey, licensePromptDoneAction } from "./ProjectManager";
 import { settings } from "./SettingsManager";
 import { error } from "./WorkspaceManager";
@@ -28,7 +31,8 @@ async function manaulSync(): Promise<void> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": licenseKey.value
+      "x-api-key": licenseKey.value,
+      "x-bk": BK
     },
     body: JSON.stringify({
       name: settings.projectName,
@@ -46,7 +50,8 @@ async function socketSync(): Promise<void> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": licenseKey.value
+      "x-api-key": licenseKey.value,
+      "x-bk": BK
     },
     body: JSON.stringify({
       name: settings.projectName,
@@ -65,8 +70,12 @@ async function querySyncKey(): Promise<string> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": licenseKey.value
-    }
+      "x-api-key": licenseKey.value,
+      "x-bk": BK
+    },
+    body: JSON.stringify({
+      name: settings.projectName
+    })
   });
 
   const data = await resp.text();
