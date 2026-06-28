@@ -35,6 +35,7 @@ import {
 import { unsavedChange, updateHistory } from "../utils/manager/HistoryManager";
 import { vueRef } from "../utils/VueRef";
 import { updateCurrentThumbnail } from "../utils/manager/ProjectManager";
+import { snapImageDataToMapColors } from "../utils/MapColorPalette";
 
 let redrawFunction: Function | null = null;
 
@@ -193,6 +194,16 @@ export default defineComponent({
         );
 
         this.lastSnap = new Date().getTime();
+      }
+
+      if (this.devMode) {
+        try {
+          const imageData = canvas.getImageData(0, 0, this.width, this.height);
+          snapImageDataToMapColors(imageData.data);
+          canvas.putImageData(imageData, 0, 0);
+        } catch (e) {
+          console.warn("Map color preview unavailable:", e);
+        }
       }
 
       if (
