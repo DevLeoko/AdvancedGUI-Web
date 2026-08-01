@@ -11,6 +11,7 @@
 
       <div class="moreMenu">
         <div class="entry" @click="showShortcuts = true">Shortcuts</div>
+        <div class="entry" @click="showPlaceholders = true">Placeholders</div>
         <div class="entry" @click="showDevMode = true">Dev-Mode</div>
         <div class="entry" @click="showAbout = true">About</div>
       </div>
@@ -123,6 +124,60 @@
         Press <span>SHIFT</span> while moving an element to snap to x- or y-axis
       </p>
     </modal>
+    <modal title="Placeholders" icon="tag" v-model="showPlaceholders" closeBtn>
+      <div class="placeholderContent">
+        <p>
+          Placeholders can be used in any text field: component texts,
+          commands, messages, image URLs and checks.
+        </p>
+        <p>
+          <b>Instance placeholders</b> resolve against the placed GUI, which
+          makes layouts <i>portable</i>: place the GUI somewhere else and
+          commands that interact with the world keep working without being
+          edited. On wall GUIs the anchor is the top-left item frame; handheld
+          GUIs resolve against the player holding the map.
+        </p>
+        <p class="placeholders">
+          <span>%instance.x%</span> <span>%instance.y%</span>
+          <span>%instance.z%</span> &ensp; Anchor block coordinates <br />
+          <span>%instance.pos%</span> &ensp; Anchor as "x y z" — drop-in for
+          command coordinates <br />
+          <span>%instance.world%</span> &ensp; World name <br />
+          <span>%instance.direction%</span> &ensp; Facing of the GUI (handheld:
+          of the player) <br />
+          <span>%instance.center%</span> &ensp; Center of the GUI plane (may
+          contain decimals) <br />
+          <span>%instance.id%</span> &ensp; Instance id (handheld: map id)
+          <br />
+          <span>%instance.layout%</span> &ensp; Layout name <br />
+          <span>%instance.offset.&lt;dx&gt;.&lt;dy&gt;.&lt;dz&gt;%</span> &ensp;
+          Anchor shifted along the world axes, as "x y z" <br />
+          <span>%instance.rel.&lt;right&gt;.&lt;up&gt;.&lt;front&gt;%</span>
+          &ensp; Anchor shifted relative to the GUI's orientation —
+          <i>front</i> points out of the screen towards the viewer <br />
+        </p>
+        <p>
+          Example:
+          <span class="placeholders-chip">
+            /setblock %instance.rel.0.0.-1% air</span
+          >
+          always targets the block the top-left frame hangs on, no matter where
+          the GUI is placed or which way it faces.
+        </p>
+        <p>
+          Also available:
+          <span class="placeholders-chip">%meta.&lt;key&gt;%</span>
+          (values stored by metadata actions), and every
+          <a
+            href="https://wiki.placeholderapi.com/users/placeholder-list/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >PlaceholderAPI</a
+          >
+          placeholder when installed on the server.
+        </p>
+      </div>
+    </modal>
     <modal title="Dev-Mode" icon="code" v-model="showDevMode" closeBtn>
       <p>
         The AdvancedGUI web editor is designed to have a very intuitive user
@@ -193,6 +248,7 @@ export default defineComponent({
       importComponent: false,
       showAbout: false,
       showShortcuts: false,
+      showPlaceholders: false,
       showDevMode: false,
       formatVersion: VERSION,
       projectExplorerOpen: vueRef(projectExplorerOpen),
@@ -236,6 +292,42 @@ export default defineComponent({
     padding: 2px 4px 0px;
     border-bottom: $light3 3px solid;
   }
+}
+
+.placeholderContent {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
+
+  p:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.placeholders {
+  line-height: 2.2;
+
+  span {
+    font-size: 13px;
+    font-family: monospace;
+    background-color: $light4;
+    padding: 2px 4px 0px;
+    border-bottom: $light3 3px solid;
+    white-space: nowrap;
+  }
+}
+
+.placeholders-chip {
+  font-size: 13px;
+  font-family: monospace;
+  background-color: $light4;
+  padding: 2px 4px 0px;
+  border-bottom: $light3 3px solid;
+  white-space: nowrap;
 }
 
 .moreBtn {
