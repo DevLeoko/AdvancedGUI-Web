@@ -175,7 +175,7 @@ export class RemoteImage extends GroupComponent {
       20,
       50,
       50,
-      "https://visage.surgeplay.com/head/%UUID_U%",
+      "https://api.mineatar.io/head/%UUID_U%",
       true,
       0,
       1
